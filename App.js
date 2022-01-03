@@ -1,4 +1,5 @@
 import { StatusBar } from "expo-status-bar";
+import Game1Screen from "./";
 import {
   StyleSheet,
   Text,
@@ -7,16 +8,42 @@ import {
   Button,
   ImageBackground,
 } from "react-native";
+import "react-native-gesture-handler";
+import { useFonts } from "expo-font";
 import * as React from "react";
 import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/native-stack";
+import { createStackNavigator } from "@react-navigation/stack";
 let backgroundImg = require("./bg_images/main_bg.png");
 let gameselectImg = require("./bg_images/selectBox.png");
 
 export default function App() {
+  const [loaded] = useFonts({
+    DungGeunMo: require("./assets/fonts/DungGeunMo.ttf"),
+  });
+
+  if (!loaded) {
+    return null;
+  }
+
+  <StatusBar style="light" />;
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen
+          name="Main"
+          component={HomeScreen}
+          options={{ title: "메인화면" }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
+
+const Stack = createStackNavigator();
+
+function HomeScreen() {
   return (
     <View style={styles.container}>
-      <StatusBar style="light" />
       <ImageBackground
         style={styles.backgroundImage}
         source={backgroundImg}
@@ -55,8 +82,9 @@ const styles = StyleSheet.create({
   titleText: {
     marginTop: 90,
     textAlign: "center",
-    fontSize: 40,
+    fontSize: 39,
     color: "yellow",
+    fontFamily: "DungGeunMo",
   },
   boxContainer: {
     alignItems: "center",
