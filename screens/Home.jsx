@@ -1,4 +1,3 @@
-import { useFonts } from 'expo-font';
 import { StatusBar } from 'expo-status-bar';
 import {
   Image,
