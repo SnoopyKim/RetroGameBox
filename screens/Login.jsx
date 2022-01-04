@@ -16,10 +16,16 @@ const LoginScreen = ({ navigation }) => {
       <TextButton
         title="로그인"
         onPressed={() => navigation.navigate('Home')}
+        leading={require('../bg_images/selectBox.png')}
+        trailing={require('../bg_images/selectBox.png')}
       />
       <ImageButton
+        width={100}
+        height={100}
         src={require('../bg_images/selectBox.png')}
         onPressed={() => ToastAndroid.show('까꿍', ToastAndroid.SHORT)}
+        title={'로그인'}
+        titleColor={'white'}
       />
     </SafeAreaView>
   );
