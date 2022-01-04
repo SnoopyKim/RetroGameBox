@@ -1,15 +1,25 @@
 import { StatusBar } from 'expo-status-bar';
-import { Button, SafeAreaView, StyleSheet, Text } from 'react-native';
+import {
+  Button,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  ToastAndroid,
+} from 'react-native';
+import ImageButton from '../components/buttons/ImageButton';
 import TextButton from '../components/buttons/TextButton';
 
 const LoginScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.center}>
       <StatusBar />
-      <Text style={styles.title}>LoginScreen</Text>
       <TextButton
-        title="Go to Home"
-        onPress={() => navigation.navigate('Home')}
+        title="로그인"
+        onPressed={() => navigation.navigate('Home')}
+      />
+      <ImageButton
+        src={require('../bg_images/selectBox.png')}
+        onPressed={() => ToastAndroid.show('까꿍', ToastAndroid.SHORT)}
       />
     </SafeAreaView>
   );

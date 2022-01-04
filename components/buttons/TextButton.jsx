@@ -1,25 +1,33 @@
-import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { Text, TouchableOpacity } from 'react-native';
 
 const TextButton = ({
   title,
   onPressed,
-  width,
-  height,
+  fontSize,
   color,
-  backgrounColor,
+  backgroundColor,
+  borderColor,
 }) => {
+  const buttonStyle = {
+    borderWidth: 2,
+    borderRadius: 10,
+    borderColor: borderColor || '#333',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    backgroundColor: backgroundColor || '#FFF',
+  };
+
+  const titleStyle = {
+    fontFamily: 'DGM',
+    fontSize: fontSize || 20,
+    color: color || '#333',
+  };
+
   return (
-    <TouchableOpacity onPress={onPressed}>
-      <Text style={styles.title}>{title}</Text>
+    <TouchableOpacity style={buttonStyle} onPress={onPressed}>
+      <Text style={titleStyle}>{title}</Text>
     </TouchableOpacity>
   );
 };
-
-const styles = StyleSheet.create({
-  title: {
-    fontFamily: 'DGM',
-    fontSize: 20,
-  },
-});
 
 export default TextButton;
