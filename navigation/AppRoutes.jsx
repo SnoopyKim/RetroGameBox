@@ -1,8 +1,8 @@
-import HomeScreen from '../screens/Home';
-import LoginScreen from '../screens/Login';
-import GameScreen from '../screens/Game';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import HomeScreen from '../screens/Home';
+import LoginScreen from '../screens/Login';
+import SnakeGameScreen from '../screens/SnakeGame';
 
 const Stack = createNativeStackNavigator();
 
@@ -15,11 +15,7 @@ const AppNavigator = () => {
         component={HomeScreen}
         options={{ header: () => null }}
       />
-      <Stack.Screen
-        name="Game"
-        component={GameScreen}
-        options={{ header: () => null }}
-      />
+      <Stack.Screen name="SnakeGame" component={SnakeGameScreen} />
     </Stack.Navigator>
   );
 };

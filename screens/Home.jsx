@@ -5,13 +5,15 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
+import ImageButton from '../components/buttons/ImageButton';
 
 const backgroundImg = require('../bg_images/main_bg.png');
 const gameselectImg = require('../bg_images/selectBox.png');
 
-const HomeScreen = () => {
+const HomeScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.center}>
       <StatusBar style="light" />
@@ -22,16 +24,15 @@ const HomeScreen = () => {
       >
         <Text style={styles.titleText}>레트로 게임 모음</Text>
         <View style={styles.boxContainer}>
-          <Image style={styles.gameSelectBox} source={gameselectImg}></Image>
-          <Image style={styles.gameSelectBox} source={gameselectImg}></Image>
-        </View>
-        <View style={styles.boxContainer}>
-          <Image style={styles.gameSelectBox} source={gameselectImg}></Image>
-          <Image style={styles.gameSelectBox} source={gameselectImg}></Image>
-        </View>
-        <View style={styles.boxContainer}>
-          <Image style={styles.gameSelectBox} source={gameselectImg}></Image>
-          <Image style={styles.gameSelectBox} source={gameselectImg}></Image>
+          <ImageButton
+            src={gameselectImg}
+            onPressed={() => navigation.navigate('SnakeGame')}
+            title={'SnakeGame'}
+            titleColor={'white'}
+            titleSize={30}
+            width={200}
+            height={200}
+          />
         </View>
       </ImageBackground>
     </SafeAreaView>
@@ -51,6 +52,7 @@ const styles = StyleSheet.create({
   },
   titleText: {
     marginTop: 90,
+    marginBottom: 20,
     textAlign: 'center',
     fontFamily: 'DGM',
     fontSize: 40,
@@ -58,9 +60,7 @@ const styles = StyleSheet.create({
   },
   boxContainer: {
     alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row',
-    marginTop: 10,
+    marginVertical: 10,
   },
   gameSelectBox: {
     margin: -50,
