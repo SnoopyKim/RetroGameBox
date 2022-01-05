@@ -1,9 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { useRef, useState } from 'react';
 import {
-  Dimensions,
-  Image,
-  ImageBackground,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -11,17 +8,12 @@ import {
   View,
 } from 'react-native';
 import { GameEngine } from 'react-native-game-engine';
-import Food from '../components/Food';
-import Head from '../components/Head';
-import Tail from '../components/Tail';
-import GameLoop from '../systems/GameLoop';
-
-export const Constants = {
-  MAX_WIDTH: Dimensions.get('screen').width,
-  MAX_HEIGHT: Dimensions.get('screen').height,
-  GRID_SIZE: 15,
-  CELL_SIZE: 20,
-};
+import TextButton from '../../components/buttons/TextButton';
+import Constants from './Constants';
+import Food from './entities/Food';
+import Head from './entities/Head';
+import Tail from './entities/Tail';
+import GameLoop from './GameLoop';
 
 const SnakeGameScreen = () => {
   const BoardSize = Constants.GRID_SIZE * Constants.CELL_SIZE;
@@ -142,8 +134,8 @@ const SnakeGameScreen = () => {
           <Text
             style={{
               color: 'white',
-              fontSize: 40,
-              fontWeight: 'bold',
+              fontFamily: 'DGM',
+              fontSize: 48,
               textShadowColor: 'white',
               textShadowRadius: 5,
               marginBottom: 80,
@@ -151,20 +143,12 @@ const SnakeGameScreen = () => {
           >
             GAME OVER
           </Text>
-          <TouchableOpacity onPress={resetGame}>
-            <Text
-              style={{
-                color: 'black',
-                fontSize: 20,
-                paddingHorizontal: 16,
-                paddingVertical: 10,
-                backgroundColor: 'white',
-                borderRadius: 10,
-              }}
-            >
-              Start New Game
-            </Text>
-          </TouchableOpacity>
+          <TextButton
+            title={'Start New Game'}
+            onPressed={resetGame}
+            borderColor={'white'}
+            fontSize={20}
+          />
         </View>
       )}
     </SafeAreaView>

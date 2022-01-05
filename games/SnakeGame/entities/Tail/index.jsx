@@ -1,5 +1,5 @@
 import { View } from 'react-native';
-import { Constants } from '../../screens/SnakeGame';
+import Constants from '../../Constants';
 
 export default function Tail({ elements, position, size }) {
   const tailList = elements.map((el, idx) => (
