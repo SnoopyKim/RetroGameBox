@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from '../screens/Home';
 import LoginScreen from '../screens/Login';
 import SnakeGameScreen from '../games/SnakeGame';
+import BirdGameScreen from '../games/BirdGame';
 
 const Stack = createNativeStackNavigator();
 
@@ -16,6 +17,7 @@ const AppNavigator = () => {
         options={{ header: () => null }}
       />
       <Stack.Screen name="SnakeGame" component={SnakeGameScreen} />
+      <Stack.Screen name="BirdGame" component={BirdGameScreen} />
     </Stack.Navigator>
   );
 };

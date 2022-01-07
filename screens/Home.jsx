@@ -34,6 +34,17 @@ const HomeScreen = ({ navigation }) => {
             height={200}
           />
         </View>
+        <View style={styles.boxContainer}>
+          <ImageButton
+            src={gameselectImg}
+            onPressed={() => navigation.navigate('BirdGame')}
+            title={'BirdGame'}
+            titleColor={'white'}
+            titleSize={30}
+            width={200}
+            height={200}
+          />
+        </View>
       </ImageBackground>
     </SafeAreaView>
   );

@@ -3739,6 +3739,11 @@
   dependencies:
     "object-visit" "^1.0.0"
 
+"matter-js@0.18.0":
+  "integrity" "sha512-/ZVem4WygUnbmo/iE4oHZpZS97btfBtYy5Iwn1396vUZU7YhgVEN8J4UWwfZwY1ZqoTYlPgjvSw9WXauuXL0mg=="
+  "resolved" "https://registry.npmjs.org/matter-js/-/matter-js-0.18.0.tgz"
+  "version" "0.18.0"
+
 "md5-file@^3.2.3":
   "integrity" "sha512-3Tkp1piAHaworfcCgH0jKbTvj1jWWFgbvh2cXaNCgHwyTCBxxvD1Y04rmfpvdPm1P4oXMOpm6+2H7sr7v9v8Fw=="
   "resolved" "https://registry.npmjs.org/md5-file/-/md5-file-3.2.3.tgz"
