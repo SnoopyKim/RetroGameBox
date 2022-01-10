@@ -14,24 +14,7 @@ import { StatusBar } from 'expo-status-bar';
 import Physics from './systems/Physics';
 import Wall from './entities/Wall';
 import TextButton from './../../components/buttons/TextButton';
-
-export const randomBetween = (min, max) => {
-  return Math.floor(Math.random() * (max - min + 1) + min);
-};
-
-export const generatePipes = () => {
-  let topPipeHeight = randomBetween(100, Constants.MAX_HEIGHT / 2 - 100);
-  let bottomPipeHeight =
-    Constants.MAX_HEIGHT - topPipeHeight - Constants.GAP_SIZE;
-
-  let sizes = [topPipeHeight, bottomPipeHeight];
-
-  if (Math.random() < 0.5) {
-    sizes = sizes.reverse();
-  }
-
-  return sizes;
-};
+import { generatePipes } from './systems/utils';
 
 export default function BirdGameScreen() {
   const [running, setRunning] = useState(true);
@@ -123,25 +106,25 @@ export default function BirdGameScreen() {
         body: pipe1,
         size: [Constants.PIPE_WIDTH, pipe1Height],
         color: 'green',
-        renderer: Wall,
+        renderer: <Wall />,
       },
       pipe2: {
         body: pipe2,
         size: [Constants.PIPE_WIDTH, pipe2Height],
         color: 'green',
-        renderer: Wall,
+        renderer: <Wall />,
       },
       pipe3: {
         body: pipe3,
         size: [Constants.PIPE_WIDTH, pipe3Height],
         color: 'green',
-        renderer: Wall,
+        renderer: <Wall />,
       },
       pipe4: {
         body: pipe4,
         size: [Constants.PIPE_WIDTH, pipe4Height],
         color: 'green',
-        renderer: Wall,
+        renderer: <Wall />,
       },
     };
   };
