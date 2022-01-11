@@ -1,17 +1,18 @@
-import { StatusBar } from 'expo-status-bar';
+import { StatusBar } from "expo-status-bar";
 import {
   Image,
   ImageBackground,
   SafeAreaView,
   StyleSheet,
+  Button,
   Text,
   View,
-} from 'react-native';
+} from "react-native";
 
-const backgroundImg = require('../bg_images/main_bg.png');
-const gameselectImg = require('../bg_images/selectBox.png');
+const backgroundImg = require("../bg_images/main_bg.png");
+const gameselectImg = require("../bg_images/selectBox.png");
 
-const HomeScreen = () => {
+const HomeScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.center}>
       <StatusBar style="light" />
@@ -22,16 +23,25 @@ const HomeScreen = () => {
       >
         <Text style={styles.titleText}>레트로 게임 모음</Text>
         <View style={styles.boxContainer}>
-          <Image style={styles.gameSelectBox} source={gameselectImg}></Image>
-          <Image style={styles.gameSelectBox} source={gameselectImg}></Image>
+          <Button
+            title="Go to game"
+            onPress={() => navigation.navigate("Game1")}
+          />
+          <Button
+            title="Go to game2"
+            onPress={() => navigation.navigate("GameEx")}
+          />
         </View>
         <View style={styles.boxContainer}>
-          <Image style={styles.gameSelectBox} source={gameselectImg}></Image>
-          <Image style={styles.gameSelectBox} source={gameselectImg}></Image>
+          <Button
+            title="Go to game3"
+            onPress={() => navigation.navigate("GameEx2")}
+          />
+          <Image style={styles.gameSelectBox} source={gameselectImg} />
         </View>
         <View style={styles.boxContainer}>
-          <Image style={styles.gameSelectBox} source={gameselectImg}></Image>
-          <Image style={styles.gameSelectBox} source={gameselectImg}></Image>
+          <Image style={styles.gameSelectBox} source={gameselectImg} />
+          <Image style={styles.gameSelectBox} source={gameselectImg} />
         </View>
       </ImageBackground>
     </SafeAreaView>
@@ -41,8 +51,8 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   center: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   backgroundImage: {
     flex: 1,
@@ -51,20 +61,22 @@ const styles = StyleSheet.create({
   },
   titleText: {
     marginTop: 90,
-    textAlign: 'center',
-    fontFamily: 'DGM',
+    textAlign: "center",
+    fontFamily: "DGM",
     fontSize: 40,
-    color: 'yellow',
+    color: "yellow",
   },
   boxContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row',
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
     marginTop: 10,
   },
   gameSelectBox: {
-    margin: -50,
-    transform: [{ scale: 0.5 }],
+    margin: 10,
+    marginTop: 10,
+    width: 150,
+    height: 150,
   },
 });
 
