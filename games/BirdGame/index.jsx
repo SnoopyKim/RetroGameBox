@@ -18,6 +18,7 @@ import { generatePipes } from './systems/utils';
 
 export default function BirdGameScreen() {
   const [running, setRunning] = useState(true);
+  const [score, setScore] = useState(0);
   const gameEngine = useRef();
 
   const initWorld = () => {
@@ -89,6 +90,9 @@ export default function BirdGameScreen() {
 
     return {
       physics: { engine: engine, world: world },
+      events: {
+        addScore: () => gameEngine.current.dispatch({ type: 'score' }),
+      },
       bird: { body: bird, size: [50, 50], color: 'red', renderer: <Bird /> },
       floor: {
         body: floor,
@@ -132,12 +136,15 @@ export default function BirdGameScreen() {
   onEvent = (e) => {
     if (e.type === 'game-over') {
       setRunning(false);
+    } else if (e.type === 'score') {
+      setScore(score + 1);
     }
   };
 
   reset = () => {
     gameEngine.current.swap(initWorld());
     setRunning(true);
+    setScore(0);
   };
 
   return (
@@ -151,9 +158,13 @@ export default function BirdGameScreen() {
         systems={[Physics]}
         entities={initWorld()}
       ></GameEngine>
+      <Text style={styles.scoreText}>Score: {score}</Text>
       {!running && (
         <View style={styles.fullScreen} onPress={reset}>
           <Text style={styles.gameOverText}>Game Over</Text>
+          <Text style={[styles.scoreText, { marginBottom: 30 }]}>
+            Score: {score}
+          </Text>
           <TextButton
             title={'RETRY'}
             onPressed={reset}
@@ -182,7 +193,13 @@ const styles = StyleSheet.create({
     fontFamily: 'DGM',
     color: 'white',
     fontSize: 48,
-    marginBottom: 50,
+  },
+  scoreText: {
+    fontFamily: 'DGM',
+    color: 'white',
+    fontSize: 20,
+    marginVertical: 10,
+    marginHorizontal: 20,
   },
   fullScreen: {
     position: 'absolute',

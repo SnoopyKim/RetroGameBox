@@ -17,6 +17,7 @@ const Physics = (entities, { touches, time }) => {
       entities['pipe' + i].body.position.x <=
       -1 * (Constants.PIPE_WIDTH / 2)
     ) {
+      entities.events.addScore();
       Matter.World.remove(world, entities['pipe' + i].body);
       Matter.World.remove(world, entities['pipe' + (i + 1)].body);
       let [pipe1Height, pipe2Height] = generatePipes();
