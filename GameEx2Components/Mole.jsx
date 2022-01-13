@@ -27,6 +27,7 @@ export default class Mole extends Component {
     this.isWhacked = false;
     this.isAttacking = false;
     this.isPopping = true;
+
     this.isFeisty = Math.random() < 0.4;
     if (!this.isFeisty) {
       this.isHealing = Math.random() < 0.05;
@@ -157,23 +158,3 @@ export default class Mole extends Component {
     );
   }
 }
-
-pop = () => {
-  this.isPopping = true;
-  this.mole.play({
-    type: "appear",
-    fps: 24,
-    onFinish: () => {
-      this.actionTimeout = setTimeout(() => {
-        this.mole.play({
-          type: "hide",
-          fps: 24,
-          onFinish: () => {
-            this.isPopping = false;
-            this.props.onFinishPopping(this.props.index);
-          },
-        });
-      }, 1000);
-    },
-  });
-};

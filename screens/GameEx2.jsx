@@ -9,6 +9,9 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import Images from "../GameEx2Components/image";
+import GameOver from "../GameEx2Components/GameOver";
+import Clear from "../GameEx2Components/Clear";
+import Pause from "../GameEx2Components/Pause";
 import Mole from "../GameEx2Components/Mole";
 import Constants from "../GameEx2Components/Constants";
 
@@ -47,7 +50,7 @@ export default class GameEx2 extends Component {
   randomBetween = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1) + min);
   };
-  onFinishPoping = (index) => {
+  onFinishPopping = (index) => {
     this.molesPopping -= 1;
   };
   popRandomMole = () => {
