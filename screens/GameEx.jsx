@@ -15,7 +15,7 @@ import Wall from "../GameExComponents/Wall";
 import Constants from "../GameExComponents/Constants";
 import Physics from "../GameExComponents/Physics";
 
-export default class App extends Component {
+export default class GameEx extends Component {
   constructor(props) {
     super(props);
 
@@ -40,7 +40,7 @@ export default class App extends Component {
     );
     let floor = Matter.Bodies.rectangle(
       Constants.MAX_WIDTH / 2,
-      Constants.MAX_HEIGHT - 90,
+      Constants.MAX_HEIGHT - 20,
       Constants.MAX_WIDTH,
       50,
       { isStatic: true }
@@ -73,14 +73,14 @@ export default class App extends Component {
     let [pipe3Height, pipe4Height] = generatePipes();
 
     let pipe3 = Matter.Bodies.rectangle(
-      Constants.MAX_WIDTH - Constants.PIPE_WIDTH / 2,
+      Constants.MAX_WIDTH * 2 - Constants.PIPE_WIDTH / 2,
       pipe3Height / 2,
       Constants.PIPE_WIDTH,
       pipe3Height,
       { isStatic: true }
     );
     let pipe4 = Matter.Bodies.rectangle(
-      Constants.MAX_WIDTH - Constants.PIPE_WIDTH / 2,
+      Constants.MAX_WIDTH * 2 - Constants.PIPE_WIDTH / 2,
       Constants.MAX_HEIGHT - pipe4Height / 2,
       Constants.PIPE_WIDTH,
       pipe4Height,
@@ -96,41 +96,41 @@ export default class App extends Component {
 
     return {
       physics: { engine: engine, world: world },
-      bird: { body: bird, size: [50, 50], color: "red", renderer: Bird },
+      bird: { body: bird, size: [50, 50], color: "tomato", renderer: Bird },
       floor: {
         body: floor,
         size: [Constants.MAX_WIDTH, 50],
-        color: "green",
+        color: "teal",
         renderer: Wall,
       },
       ceiling: {
         body: ceiling,
         size: [Constants.MAX_WIDTH, 50],
-        color: "green",
+        color: "teal",
         renderer: Wall,
       },
       pipe1: {
         body: pipe1,
         size: [Constants.PIPE_WIDTH, pipe1Height],
-        color: "green",
+        color: "teal",
         renderer: Wall,
       },
       pipe2: {
         body: pipe2,
         size: [Constants.PIPE_WIDTH, pipe2Height],
-        color: "green",
+        color: "teal",
         renderer: Wall,
       },
       pipe3: {
         body: pipe3,
         size: [Constants.PIPE_WIDTH, pipe3Height],
-        color: "green",
+        color: "teal",
         renderer: Wall,
       },
       pipe4: {
         body: pipe4,
         size: [Constants.PIPE_WIDTH, pipe4Height],
-        color: "green",
+        color: "teal",
         renderer: Wall,
       },
     };

@@ -11,6 +11,9 @@ import {
 import Images from "../GameEx2Components/image";
 import Mole from "../GameEx2Components/Mole";
 import Constants from "../GameEx2Components/Constants";
+import GameOver from "../GameEx2Components/GameOver";
+import Clear from "../GameEx2Components/Clear";
+import Pause from "../GameEx2Components/Pause";
 
 const DEFAULT_TIME = 5;
 const DEFAULT_STATE = {
@@ -23,18 +26,19 @@ const DEFAULT_STATE = {
   health: 100,
 };
 
-export default class GameEx2 extends Component {
+export default class App extends Component {
   constructor(props) {
     super(props);
-
     this.moles = [];
     this.state = DEFAULT_STATE;
     this.interval = null;
     this.timeInterval = null;
   }
+
   componentDidMount = () => {
-    this.setState(DEFAULT_STATE, this.setupTicks);
+    this.setState(DEFAULT_STATE, this.pause);
   };
+
   setupTicks = () => {
     let speed = 750 - this.state.level * 50;
     if (speed < 350) {
@@ -44,22 +48,44 @@ export default class GameEx2 extends Component {
     this.timeInterval = setInterval(this.timerTick, 1000);
   };
 
-  randomBetween = (min, max) => {
-    return Math.floor(Math.random() * (max - min + 1) + min);
+  reset = () => {
+    this.molesPopping = 0;
+
+    this.setState(DEFAULT_STATE, this.setupTicks);
   };
-  onFinishPoping = (index) => {
-    this.molesPopping -= 1;
+
+  pause = () => {
+    if (this.interval) clearInterval(this.interval);
+    if (this.timeInterval) clearInterval(this.timeInterval);
+    this.setState({
+      paused: true,
+    });
   };
-  popRandomMole = () => {
-    if (this.moles.length != 12) {
-      return;
-    }
-    let randomIndex = this.randomBetween(0, 11);
-    if (!this.moles[randomIndex].isPopping && this.molesPopping < 3) {
-      this.molesPopping += 1;
-      this.moles[randomIndex].pop();
-    }
+
+  resume = () => {
+    this.molesPopping = 0;
+    this.setState(
+      {
+        paused: false,
+      },
+      this.setupTicks
+    );
   };
+
+  nextLevel = () => {
+    this.molesPopping = 0;
+
+    this.setState(
+      {
+        level: this.state.level + 1,
+        cleared: false,
+        gameover: false,
+        time: DEFAULT_TIME,
+      },
+      this.setupTicks
+    );
+  };
+
   timerTick = () => {
     if (this.state.time === 0) {
       clearInterval(this.interval);
@@ -69,8 +95,51 @@ export default class GameEx2 extends Component {
       });
     } else {
       this.setState({
-        time: (this.state.time -= 1),
+        time: this.state.time - 1,
       });
+    }
+  };
+
+  randomBetween = (min, max) => {
+    return Math.floor(Math.random() * (max - min + 1) + min);
+  };
+
+  onFinishPopping = (index) => {
+    this.molesPopping -= 1;
+  };
+
+  popRandomMole = () => {
+    if (this.moles.length != 12) {
+      console.log(this.moles.length);
+      return;
+    }
+
+    let randomIndex = this.randomBetween(0, 11);
+    if (!this.moles[randomIndex].isPopping && this.molesPopping < 3) {
+      this.molesPopping += 1;
+      this.moles[randomIndex].pop();
+    }
+  };
+
+  onScore = () => {
+    this.setState({
+      score: this.state.score + 1,
+    });
+  };
+
+  onDamage = () => {
+    if (this.state.cleared || this.state.gameOver || this.state.paused) {
+      return;
+    }
+
+    let targetHealth = this.state.health - 10 < 0 ? 0 : this.state.health - 10;
+
+    this.setState({
+      health: targetHealth,
+    });
+
+    if (targetHealth <= 0) {
+      this.gameOver();
     }
   };
 
@@ -82,62 +151,13 @@ export default class GameEx2 extends Component {
       gameover: true,
     });
   };
-  onScore = () => {
-    this.setState({
-      score: this.state.score + 1,
-    });
-  };
-  onDamage = () => {
-    if (this.state.cleared || this.state.gameOver || this.state.paused) {
-      return;
-    }
-    let targetHealth = this.state.health - 10 < 0 ? 0 : this.state.health - 10;
-    this.setState({
-      health: targetHealth,
-    });
-    if (targetHealth <= 0) {
-      this.gameOver();
-    }
-  };
+
   onHeal = () => {
     let targetHealth =
       this.state.health + 10 > 100 ? 100 : this.state.health + 10;
     this.setState({
       health: targetHealth,
     });
-  };
-
-  reset = () => {
-    this.molesPopping = 0;
-    this.setState(DEFAULT_STATE, this.setupTicks);
-  };
-  pause = () => {
-    if (this.interval) clearInterval(this.interval);
-    if (this.timeInterval) clearInterval(this.timeInterval);
-    this.setState({
-      paused: true,
-    });
-  };
-  resume = () => {
-    this.molesPopping = 0;
-    this.setState(
-      {
-        paused: false,
-      },
-      this.setupTicks
-    );
-  };
-  nextLevel = () => {
-    this.molesPopping = 0;
-    this.setState(
-      {
-        level: this.state.level + 1,
-        cleared: false,
-        gameover: false,
-        time: DEFAULT_TIME,
-      },
-      this.setupTicks
-    );
   };
 
   render() {

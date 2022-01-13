@@ -37,7 +37,10 @@ const HomeScreen = ({ navigation }) => {
             title="Go to game3"
             onPress={() => navigation.navigate("GameEx2")}
           />
-          <Image style={styles.gameSelectBox} source={gameselectImg} />
+          <Button
+            title="Go to game4"
+            onPress={() => navigation.navigate("GameMy")}
+          />
         </View>
         <View style={styles.boxContainer}>
           <Image style={styles.gameSelectBox} source={gameselectImg} />

@@ -27,10 +27,12 @@ export default class Mole extends Component {
     this.isWhacked = false;
     this.isAttacking = false;
     this.isPopping = true;
+
     this.isFeisty = Math.random() < 0.4;
     if (!this.isFeisty) {
       this.isHealing = Math.random() < 0.05;
     }
+
     if (this.isHealing) {
       this.mole.play({
         type: "heal",
@@ -141,7 +143,13 @@ export default class Mole extends Component {
         />
         <TouchableWithoutFeedback
           onPress={this.whack}
-          style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+          }}
         >
           <View
             style={{
@@ -157,23 +165,3 @@ export default class Mole extends Component {
     );
   }
 }
-
-pop = () => {
-  this.isPopping = true;
-  this.mole.play({
-    type: "appear",
-    fps: 24,
-    onFinish: () => {
-      this.actionTimeout = setTimeout(() => {
-        this.mole.play({
-          type: "hide",
-          fps: 24,
-          onFinish: () => {
-            this.isPopping = false;
-            this.props.onFinishPopping(this.props.index);
-          },
-        });
-      }, 1000);
-    },
-  });
-};
