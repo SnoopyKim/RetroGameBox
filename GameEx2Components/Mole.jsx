@@ -32,6 +32,7 @@ export default class Mole extends Component {
     if (!this.isFeisty) {
       this.isHealing = Math.random() < 0.05;
     }
+
     if (this.isHealing) {
       this.mole.play({
         type: "heal",
@@ -142,7 +143,13 @@ export default class Mole extends Component {
         />
         <TouchableWithoutFeedback
           onPress={this.whack}
-          style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+          }}
         >
           <View
             style={{

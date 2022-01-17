@@ -4,6 +4,8 @@ import GameScreen from "../screens/Game";
 import Game1Screen from "../screens/Game1";
 import GameExScreen from "../screens/GameEx";
 import GameEx2Screen from "../screens/GameEx2";
+import GameMy from "../screens/myGame";
+
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
@@ -40,6 +42,11 @@ const AppNavigator = () => {
       <Stack.Screen
         name="GameEx2"
         component={GameEx2Screen}
+        options={{ header: () => null }}
+      />
+      <Stack.Screen
+        name="GameMy"
+        component={GameMy}
         options={{ header: () => null }}
       />
     </Stack.Navigator>
