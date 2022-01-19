@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import Puppet from "../myGameComponents/Puppet";
 import Wall from "../myGameComponents/Wall";
+import Shelf from "../myGameComponents/Shelf";
 import Basket from "../myGameComponents/Basket";
 import Matter from "matter-js";
 import Physics from "../myGameComponents/Physics";
@@ -55,11 +56,21 @@ export default class Mygame extends Component {
       }
     );
 
+    let shelf = Matter.Bodies.rectangle(
+      Constants.MAX_WIDTH / 3.5 - 36,
+      Constants.MAX_HEIGHT / 1.5 - 25,
+      40,
+      80,
+      {
+        isStatic: true,
+      }
+    );
+
     let basket = Matter.Bodies.rectangle(
       Constants.MAX_WIDTH,
       Constants.MAX_HEIGHT / 3,
       Constants.MAX_WIDTH / 18,
-      Constants.MAX_HEIGHT / 8,
+      Constants.MAX_HEIGHT / 1.2,
       { isStatic: true }
     );
     let basket2 = Matter.Bodies.rectangle(
@@ -76,15 +87,15 @@ export default class Mygame extends Component {
       Constants.MAX_HEIGHT / 6,
       { isStatic: true }
     );
-    let puppet = Matter.Bodies.circle(
+    let puppet1 = Matter.Bodies.circle(
       Constants.MAX_WIDTH / 2,
-      Constants.MAX_HEIGHT / 2,
+      Constants.MAX_HEIGHT / 4,
       25,
       { isStatic: false }
     );
     let puppet2 = Matter.Bodies.circle(
       Constants.MAX_WIDTH / 2,
-      Constants.MAX_HEIGHT / 4,
+      Constants.MAX_HEIGHT / 2,
       25,
       { isStatic: false }
     );
@@ -107,6 +118,8 @@ export default class Mygame extends Component {
       { isStatic: false }
     );
 
+    Matter.Body.rotate(shelf, 0.6);
+
     Matter.Events.on(engine, "collisionactive", (event) => {
       var pairs = event.pairs;
     });
@@ -114,10 +127,11 @@ export default class Mygame extends Component {
       crane,
       ceiling,
       floor,
-      puppet,
+      shelf,
       basket,
       basket2,
       basket3,
+      puppet1,
       puppet2,
       puppet3,
       puppet4,
@@ -144,9 +158,15 @@ export default class Mygame extends Component {
         color: "teal",
         renderer: Wall,
       },
+      shelf: {
+        body: shelf,
+        size: [40, 80],
+        color: "teal",
+        renderer: Shelf,
+      },
       basket: {
         body: basket,
-        size: [Constants.MAX_WIDTH / 18, Constants.MAX_HEIGHT / 1.5],
+        size: [Constants.MAX_WIDTH / 18, Constants.MAX_HEIGHT / 1.2],
         color: "teal",
         renderer: Wall,
       },
@@ -162,8 +182,8 @@ export default class Mygame extends Component {
         color: "teal",
         renderer: Wall,
       },
-      puppet: {
-        body: puppet,
+      puppet1: {
+        body: puppet1,
         color: "tomato",
         renderer: Puppet,
       },
@@ -240,7 +260,7 @@ export default class Mygame extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "purple",
+    backgroundColor: "white",
     alignItems: "center",
     justifyContent: "center",
   },

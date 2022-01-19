@@ -104,9 +104,7 @@ export default class SnakeApp extends Component {
         >
           <StatusBar hidden={true} />
         </GameEngine>
-
         <Button title="New Game" onPress={this.reset} />
-
         <View style={styles.controls}>
           <View style={styles.controlRow}>
             <TouchableOpacity
@@ -144,6 +142,7 @@ export default class SnakeApp extends Component {
             </TouchableOpacity>
           </View>
         </View>
+        0.
       </View>
     );
   }
