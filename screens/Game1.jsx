@@ -142,7 +142,6 @@ export default class SnakeApp extends Component {
             </TouchableOpacity>
           </View>
         </View>
-        0.
       </View>
     );
   }

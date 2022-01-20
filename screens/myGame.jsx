@@ -15,7 +15,7 @@ import Basket from "../myGameComponents/Basket";
 import Matter from "matter-js";
 import Physics from "../myGameComponents/Physics";
 import Constants from "../myGameComponents/Constants";
-import { GameEngine } from "react-native-game-engine";
+import { GameEngine, dispatch } from "react-native-game-engine";
 
 export default class Mygame extends Component {
   constructor(props) {
@@ -47,22 +47,21 @@ export default class Mygame extends Component {
     );
 
     let crane = Matter.Bodies.rectangle(
-      Constants.MAX_WIDTH / 8,
+      Constants.MAX_WIDTH / 6,
       100,
       20,
       Constants.MAX_HEIGHT / 3,
-      {
-        isStatic: true,
-      }
+      {}
     );
 
     let shelf = Matter.Bodies.rectangle(
-      Constants.MAX_WIDTH / 3.5 - 36,
+      Constants.MAX_WIDTH / 3.5 - 35,
       Constants.MAX_HEIGHT / 1.5 - 25,
       40,
       80,
       {
         isStatic: true,
+        rotate: 4,
       }
     );
 
@@ -117,8 +116,14 @@ export default class Mygame extends Component {
       25,
       { isStatic: false }
     );
+    const Constraint = Matter.Constraint.create({
+      ceiling,
+      crane,
+      length: 0.01,
+      stiffness: 0.1,
+    });
 
-    Matter.Body.rotate(shelf, 0.6);
+    Matter.Body.rotate(shelf, 4);
 
     Matter.Events.on(engine, "collisionactive", (event) => {
       var pairs = event.pairs;
@@ -137,9 +142,10 @@ export default class Mygame extends Component {
       puppet4,
       puppet5,
     ]);
+    Matter.World.addConstraint(world, constraint);
 
     return {
-      physics: { engine: engine, world: world },
+      physics: { engine: engine, world: world, constraint: constraint },
       crane: {
         body: crane,
         size: [20, Constants.MAX_HEIGHT / 3],
@@ -232,7 +238,7 @@ export default class Mygame extends Component {
           <View style={styles.controlRow}>
             <TouchableOpacity
               onPress={() => {
-                console.log("Press Button1");
+                this.engine.dispatch({ type: "craneMove" });
               }}
             >
               <View style={styles.control} />
