@@ -4,6 +4,7 @@ import HomeScreen from '../screens/Home';
 import LoginScreen from '../screens/Login';
 import SnakeGameScreen from '../games/SnakeGame';
 import BirdGameScreen from '../games/BirdGame';
+import RivalGameScreen from '../games/RivalGame';
 
 const Stack = createNativeStackNavigator();
 
@@ -18,6 +19,7 @@ const AppNavigator = () => {
       />
       <Stack.Screen name="SnakeGame" component={SnakeGameScreen} />
       <Stack.Screen name="BirdGame" component={BirdGameScreen} />
+      <Stack.Screen name="RivalGame" component={RivalGameScreen} />
     </Stack.Navigator>
   );
 };
