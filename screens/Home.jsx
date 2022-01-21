@@ -1,4 +1,4 @@
-import { StatusBar } from "expo-status-bar";
+import { StatusBar } from 'expo-status-bar';
 import {
   Image,
   ImageBackground,
@@ -8,29 +8,29 @@ import {
   Text,
   TouchableOpacity,
   View,
-} from "react-native";
-import ImageButton from "../components/buttons/ImageButton";
+} from 'react-native';
+import ImageButton from '../components/buttons/ImageButton';
 
-const backgroundImg = require("../assets/images/main_bg.png");
-const gameselectImg = require("../assets/images/selectBox.png");
+const backgroundImg = require('../assets/images/main_bg.png');
+const gameselectImg = require('../assets/images/selectBox.png');
 
 const HomeScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.center}>
-      <StatusBar style="light" />
+      <StatusBar style='light' />
       <ImageBackground
         style={styles.backgroundImage}
         source={backgroundImg}
-        resizeMode="cover"
+        resizeMode='cover'
       >
         <Text style={styles.titleText}>레트로 게임 모음</Text>
         <ScrollView>
           <View style={styles.boxContainer}>
             <ImageButton
               src={gameselectImg}
-              onPressed={() => navigation.navigate("SnakeGame")}
-              title={"SnakeGame"}
-              titleColor={"white"}
+              onPressed={() => navigation.navigate('SnakeGame')}
+              title={'SnakeGame'}
+              titleColor={'white'}
               titleSize={30}
               width={200}
               height={200}
@@ -39,9 +39,9 @@ const HomeScreen = ({ navigation }) => {
           <View style={styles.boxContainer}>
             <ImageButton
               src={gameselectImg}
-              onPressed={() => navigation.navigate("BirdGame")}
-              title={"BirdGame"}
-              titleColor={"white"}
+              onPressed={() => navigation.navigate('BirdGame')}
+              title={'BirdGame'}
+              titleColor={'white'}
               titleSize={30}
               width={200}
               height={200}
@@ -50,9 +50,9 @@ const HomeScreen = ({ navigation }) => {
           <View style={styles.boxContainer}>
             <ImageButton
               src={gameselectImg}
-              onPressed={() => navigation.navigate("RivalGame")}
-              title={"RivalGame"}
-              titleColor={"white"}
+              onPressed={() => navigation.navigate('NPCGame')}
+              title={'NPCGame'}
+              titleColor={'white'}
               titleSize={30}
               width={300}
               height={200}
@@ -67,8 +67,8 @@ const HomeScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   center: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   backgroundImage: {
     flex: 1,
@@ -78,13 +78,13 @@ const styles = StyleSheet.create({
   titleText: {
     marginTop: 90,
     marginBottom: 20,
-    textAlign: "center",
-    fontFamily: "DGM",
+    textAlign: 'center',
+    fontFamily: 'DGM',
     fontSize: 40,
-    color: "yellow",
+    color: 'yellow',
   },
   boxContainer: {
-    alignItems: "center",
+    alignItems: 'center',
     marginVertical: 10,
   },
   gameSelectBox: {

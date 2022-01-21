@@ -7,8 +7,8 @@ const TouchSystem = (entities, { touches, time }) => {
   touches.forEach((t) => {
     if (t.type === 'start') {
       Matter.Body.setPosition(finger, {
-        x: t.event.locationX,
-        y: t.event.locationY,
+        x: t.event.pageX,
+        y: t.event.pageY - 82,
       });
     } else if (t.type === 'move') {
       Matter.Body.translate(finger, {

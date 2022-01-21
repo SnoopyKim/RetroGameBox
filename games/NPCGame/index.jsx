@@ -12,10 +12,11 @@ import {
 } from 'react-native';
 import { GameEngine } from 'react-native-game-engine';
 import Finger from './components/Finger';
+import Floor from './components/Floor';
 import Constants from './Constants';
 import TouchSystem from './systems/TouchSystem';
 
-const RivalGameScreen = () => {
+const NPCGameScreen = () => {
   const gameEngine = useRef(null);
   const matterEngine = useRef(null);
 
@@ -24,16 +25,33 @@ const RivalGameScreen = () => {
   const initEntities = () => {
     matterEngine.current = Matter.Engine.create({ enableSleeping: false });
 
+    let floor = Matter.Bodies.rectangle(
+      Constants.MAX_WIDTH / 2,
+      Constants.MAX_HEIGHT - 20,
+      Constants.MAX_WIDTH,
+      40,
+      { isStatic: true }
+    );
+
     let finger = Matter.Bodies.circle(
       Constants.MAX_WIDTH / 2,
       Constants.MAX_HEIGHT / 2,
       20,
       { isStatic: true }
     );
-    Matter.World.add(matterEngine.current.world, finger);
+
+    let player = Matter.Bodies.polygon();
+
+    let enemy = Matter.Bodies.polygon();
+
+    Matter.World.add(matterEngine.current.world, [floor, finger]);
 
     return {
       matter: matterEngine.current,
+      floor: {
+        body: floor,
+        renderer: <Floor />,
+      },
       finger: {
         body: finger,
         renderer: <Finger />,
@@ -82,4 +100,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RivalGameScreen;
+export default NPCGameScreen;

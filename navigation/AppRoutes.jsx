@@ -4,22 +4,22 @@ import HomeScreen from '../screens/Home';
 import LoginScreen from '../screens/Login';
 import SnakeGameScreen from '../games/SnakeGame';
 import BirdGameScreen from '../games/BirdGame';
-import RivalGameScreen from '../games/RivalGame';
+import NPCGameScreen from '../games/NPCGame';
 
 const Stack = createNativeStackNavigator();
 
 const AppNavigator = () => {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name='Login' component={LoginScreen} />
       <Stack.Screen
-        name="Home"
+        name='Home'
         component={HomeScreen}
         options={{ header: () => null }}
       />
-      <Stack.Screen name="SnakeGame" component={SnakeGameScreen} />
-      <Stack.Screen name="BirdGame" component={BirdGameScreen} />
-      <Stack.Screen name="RivalGame" component={RivalGameScreen} />
+      <Stack.Screen name='SnakeGame' component={SnakeGameScreen} />
+      <Stack.Screen name='BirdGame' component={BirdGameScreen} />
+      <Stack.Screen name='NPCGame' component={NPCGameScreen} />
     </Stack.Navigator>
   );
 };
