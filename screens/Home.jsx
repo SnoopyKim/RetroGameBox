@@ -3,6 +3,7 @@ import {
   Image,
   ImageBackground,
   SafeAreaView,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -10,41 +11,54 @@ import {
 } from 'react-native';
 import ImageButton from '../components/buttons/ImageButton';
 
-const backgroundImg = require('../bg_images/main_bg.png');
-const gameselectImg = require('../bg_images/selectBox.png');
+const backgroundImg = require('../assets/images/main_bg.png');
+const gameselectImg = require('../assets/images/selectBox.png');
 
 const HomeScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.center}>
-      <StatusBar style="light" />
+      <StatusBar style='light' />
       <ImageBackground
         style={styles.backgroundImage}
         source={backgroundImg}
-        resizeMode="cover"
+        resizeMode='cover'
       >
         <Text style={styles.titleText}>레트로 게임 모음</Text>
-        <View style={styles.boxContainer}>
-          <ImageButton
-            src={gameselectImg}
-            onPressed={() => navigation.navigate('SnakeGame')}
-            title={'SnakeGame'}
-            titleColor={'white'}
-            titleSize={30}
-            width={200}
-            height={200}
-          />
-        </View>
-        <View style={styles.boxContainer}>
-          <ImageButton
-            src={gameselectImg}
-            onPressed={() => navigation.navigate('BirdGame')}
-            title={'BirdGame'}
-            titleColor={'white'}
-            titleSize={30}
-            width={200}
-            height={200}
-          />
-        </View>
+        <ScrollView>
+          <View style={styles.boxContainer}>
+            <ImageButton
+              src={gameselectImg}
+              onPressed={() => navigation.navigate('SnakeGame')}
+              title={'SnakeGame'}
+              titleColor={'white'}
+              titleSize={30}
+              width={200}
+              height={200}
+            />
+          </View>
+          <View style={styles.boxContainer}>
+            <ImageButton
+              src={gameselectImg}
+              onPressed={() => navigation.navigate('BirdGame')}
+              title={'BirdGame'}
+              titleColor={'white'}
+              titleSize={30}
+              width={200}
+              height={200}
+            />
+          </View>
+          <View style={styles.boxContainer}>
+            <ImageButton
+              src={gameselectImg}
+              onPressed={() => navigation.navigate('NPCGame')}
+              title={'NPCGame'}
+              titleColor={'white'}
+              titleSize={30}
+              width={300}
+              height={200}
+            />
+          </View>
+        </ScrollView>
       </ImageBackground>
     </SafeAreaView>
   );
