@@ -48,10 +48,10 @@ export default class Mygame extends Component {
 
     let crane = Matter.Bodies.rectangle(
       Constants.MAX_WIDTH / 6,
-      100,
+      175,
       20,
       Constants.MAX_HEIGHT / 3,
-      {}
+      { isStatic: true }
     );
 
     let shelf = Matter.Bodies.rectangle(
@@ -116,12 +116,6 @@ export default class Mygame extends Component {
       25,
       { isStatic: false }
     );
-    const Constraint = Matter.Constraint.create({
-      ceiling,
-      crane,
-      length: 0.01,
-      stiffness: 0.1,
-    });
 
     Matter.Body.rotate(shelf, 4);
 
@@ -142,10 +136,9 @@ export default class Mygame extends Component {
       puppet4,
       puppet5,
     ]);
-    Matter.World.addConstraint(world, constraint);
 
     return {
-      physics: { engine: engine, world: world, constraint: constraint },
+      physics: { engine: engine, world: world },
       crane: {
         body: crane,
         size: [20, Constants.MAX_HEIGHT / 3],
@@ -238,7 +231,7 @@ export default class Mygame extends Component {
           <View style={styles.controlRow}>
             <TouchableOpacity
               onPress={() => {
-                this.engine.dispatch({ type: "craneMove" });
+                alert("cheese");
               }}
             >
               <View style={styles.control} />
