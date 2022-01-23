@@ -16,8 +16,9 @@ import Tail from './entities/Tail';
 import GameLoop from './GameLoop';
 
 const SnakeGameScreen = () => {
-  const BoardSize = Constants.GRID_SIZE * Constants.CELL_SIZE;
-  const engine = useRef(null);
+  const BOARD_SIZE = Constants.GRID_SIZE * Constants.CELL_SIZE;
+
+  const gameEngine = useRef(null);
 
   const [isGameRunning, setIsGameRunning] = useState(true);
 
@@ -25,14 +26,14 @@ const SnakeGameScreen = () => {
     return Math.floor(Math.random() * (max - min + 1) + min);
   };
 
-  const resetGame = () => {
-    engine.current.swap({
+  const initGame = () => {
+    return {
       head: {
         position: [0, 0],
         size: Constants.CELL_SIZE,
         updateFrequency: 10,
         nextMove: 10,
-        xspeed: 0,
+        xspeed: 1,
         yspeed: 0,
         renderer: <Head />,
       },
@@ -42,10 +43,6 @@ const SnakeGameScreen = () => {
           randomPositions(0, Constants.GRID_SIZE - 1),
         ],
         size: Constants.CELL_SIZE,
-        updateFrequency: 10,
-        nextMove: 10,
-        xspeed: 0,
-        yspeed: 0,
         renderer: <Food />,
       },
       tail: {
@@ -53,7 +50,11 @@ const SnakeGameScreen = () => {
         elements: [],
         renderer: <Tail />,
       },
-    });
+    };
+  };
+
+  const resetGame = () => {
+    gameEngine.current.swap(initGame());
     setIsGameRunning(true);
   };
 
@@ -61,37 +62,14 @@ const SnakeGameScreen = () => {
     <SafeAreaView style={styles.canvas}>
       <StatusBar style="light" />
       <GameEngine
-        ref={engine}
+        ref={gameEngine}
         style={{
-          width: BoardSize,
-          height: BoardSize,
+          width: BOARD_SIZE,
+          height: BOARD_SIZE,
           flex: null,
           backgroundColor: 'white',
         }}
-        entities={{
-          head: {
-            position: [0, 0],
-            size: Constants.CELL_SIZE,
-            updateFrequency: 10,
-            nextMove: 10,
-            xspeed: 0,
-            yspeed: 0,
-            renderer: <Head />,
-          },
-          food: {
-            position: [
-              randomPositions(0, Constants.GRID_SIZE - 1),
-              randomPositions(0, Constants.GRID_SIZE - 1),
-            ],
-            size: Constants.CELL_SIZE,
-            renderer: <Food />,
-          },
-          tail: {
-            size: Constants.CELL_SIZE,
-            elements: [],
-            renderer: <Tail />,
-          },
-        }}
+        entities={initGame()}
         systems={[GameLoop]}
         running={isGameRunning}
         onEvent={(e) => {
@@ -104,26 +82,28 @@ const SnakeGameScreen = () => {
       />
       <View style={styles.controlContainer}>
         <View style={styles.controllerRow}>
-          <TouchableOpacity onPress={() => engine.current.dispatch('move-up')}>
+          <TouchableOpacity
+            onPress={() => gameEngine.current.dispatch('move-up')}
+          >
             <View style={styles.controlBtn} />
           </TouchableOpacity>
         </View>
         <View style={styles.controllerRow}>
           <TouchableOpacity
-            onPress={() => engine.current.dispatch('move-left')}
+            onPress={() => gameEngine.current.dispatch('move-left')}
           >
             <View style={styles.controlBtn} />
           </TouchableOpacity>
           <View style={[styles.controlBtn, { backgroundColor: null }]} />
           <TouchableOpacity
-            onPress={() => engine.current.dispatch('move-right')}
+            onPress={() => gameEngine.current.dispatch('move-right')}
           >
             <View style={styles.controlBtn} />
           </TouchableOpacity>
         </View>
         <View style={styles.controllerRow}>
           <TouchableOpacity
-            onPress={() => engine.current.dispatch('move-down')}
+            onPress={() => gameEngine.current.dispatch('move-down')}
           >
             <View style={styles.controlBtn} />
           </TouchableOpacity>
