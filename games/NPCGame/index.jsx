@@ -11,8 +11,11 @@ import {
   View,
 } from 'react-native';
 import { GameEngine } from 'react-native-game-engine';
+import Enemy from './components/Enemy';
 import Finger from './components/Finger';
 import Floor from './components/Floor';
+import Player from './components/Player';
+import StatusBoard from './components/StatusBoard';
 import Constants from './Constants';
 import TouchSystem from './systems/TouchSystem';
 
@@ -24,27 +27,51 @@ const NPCGameScreen = () => {
 
   const initEntities = () => {
     matterEngine.current = Matter.Engine.create({ enableSleeping: false });
-
     let floor = Matter.Bodies.rectangle(
-      Constants.MAX_WIDTH / 2,
-      Constants.MAX_HEIGHT - 20,
-      Constants.MAX_WIDTH,
+      Constants.GAME_WIDTH / 2,
+      Constants.GAME_HEIGHT - 20,
+      Constants.GAME_WIDTH,
       40,
       { isStatic: true }
     );
 
     let finger = Matter.Bodies.circle(
-      Constants.MAX_WIDTH / 2,
-      Constants.MAX_HEIGHT / 2,
+      Constants.GAME_WIDTH / 2,
+      Constants.GAME_HEIGHT / 2,
       20,
-      { isStatic: true }
+      {
+        isStatic: true,
+      }
     );
 
-    let player = Matter.Bodies.polygon();
+    let player = Matter.Bodies.rectangle(
+      35,
+      Constants.GAME_HEIGHT - 70,
+      30,
+      60,
+      {
+        isStatic: true,
+        chamfer: { radius: [15, 15, 0, 0] },
+      }
+    );
 
-    let enemy = Matter.Bodies.polygon();
+    let enemy = Matter.Bodies.rectangle(
+      Constants.GAME_WIDTH - 35,
+      Constants.GAME_HEIGHT - 70,
+      30,
+      60,
+      {
+        isStatic: true,
+        chamfer: { radius: [15, 15, 0, 0] },
+      }
+    );
 
-    Matter.World.add(matterEngine.current.world, [floor, finger]);
+    Matter.World.add(matterEngine.current.world, [
+      floor,
+      finger,
+      player,
+      enemy,
+    ]);
 
     return {
       matter: matterEngine.current,
@@ -55,6 +82,14 @@ const NPCGameScreen = () => {
       finger: {
         body: finger,
         renderer: <Finger />,
+      },
+      player: {
+        body: player,
+        renderer: <Player />,
+      },
+      enemy: {
+        body: enemy,
+        renderer: <Enemy />,
       },
     };
   };
@@ -82,6 +117,9 @@ const NPCGameScreen = () => {
           }
         }}
       />
+      <View style={styles.boardContainer}>
+        <StatusBoard />
+      </View>
     </SafeAreaView>
   );
 };
@@ -93,10 +131,18 @@ const styles = StyleSheet.create({
   },
   gameContainer: {
     position: 'absolute',
+    width: Constants.GAME_WIDTH,
+    height: Constants.GAME_HEIGHT,
     top: 0,
     bottom: 0,
     left: 0,
     right: 0,
+    overflow: 'hidden',
+  },
+  boardContainer: {
+    position: 'absolute',
+    width: Constants.MAX_WIDTH,
+    top: Constants.GAME_HEIGHT,
   },
 });
 

@@ -20,7 +20,7 @@ const setCritical = (value) =>
       : MAX_CRITICAL
     : MIN_CRITICAL;
 
-const initStats = {
+export const initStats = {
   HP_MAX: 100,
   HP_CURRENT: 100,
   ATTACK_POWER: MIN_ATTACK,
