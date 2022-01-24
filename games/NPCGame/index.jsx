@@ -12,12 +12,13 @@ import {
 } from 'react-native';
 import { GameEngine } from 'react-native-game-engine';
 import Enemy from './components/Enemy';
-import Finger from './components/Finger';
+import Finger from './components/Rock';
 import Floor from './components/Floor';
 import Player from './components/Player';
 import StatusBoard from './components/StatusBoard';
 import Constants from './Constants';
-import TouchSystem from './systems/TouchSystem';
+import AttackSystem from './systems/AttackSystem';
+import Rocks from './components/Rocks';
 
 const NPCGameScreen = () => {
   const gameEngine = useRef(null);
@@ -27,21 +28,14 @@ const NPCGameScreen = () => {
 
   const initEntities = () => {
     matterEngine.current = Matter.Engine.create({ enableSleeping: false });
+    matterEngine.current.gravity.y = 0;
+
     let floor = Matter.Bodies.rectangle(
       Constants.GAME_WIDTH / 2,
       Constants.GAME_HEIGHT - 20,
       Constants.GAME_WIDTH,
       40,
       { isStatic: true }
-    );
-
-    let finger = Matter.Bodies.circle(
-      Constants.GAME_WIDTH / 2,
-      Constants.GAME_HEIGHT / 2,
-      20,
-      {
-        isStatic: true,
-      }
     );
 
     let player = Matter.Bodies.rectangle(
@@ -51,6 +45,7 @@ const NPCGameScreen = () => {
       60,
       {
         isStatic: true,
+        name: 'player',
         chamfer: { radius: [15, 15, 0, 0] },
       }
     );
@@ -62,16 +57,20 @@ const NPCGameScreen = () => {
       60,
       {
         isStatic: true,
+        name: 'enemy',
         chamfer: { radius: [15, 15, 0, 0] },
       }
     );
 
-    Matter.World.add(matterEngine.current.world, [
-      floor,
-      finger,
-      player,
-      enemy,
-    ]);
+    Matter.World.add(matterEngine.current.world, [floor, player, enemy]);
+
+    Matter.Events.on(matterEngine.current, 'collisionEnd', (event) => {
+      var { bodyA, bodyB } = event.pairs[0];
+      if (bodyB.name === 'rock') {
+        gameEngine.current.dispatch({ type: 'HIT', rock: bodyB });
+      }
+      // gameEngine.current.dispatch({ type: 'game-over' });
+    });
 
     return {
       matter: matterEngine.current,
@@ -79,9 +78,9 @@ const NPCGameScreen = () => {
         body: floor,
         renderer: <Floor />,
       },
-      finger: {
-        body: finger,
-        renderer: <Finger />,
+      rocks: {
+        bodies: [],
+        renderer: <Rocks />,
       },
       player: {
         body: player,
@@ -107,15 +106,9 @@ const NPCGameScreen = () => {
         ref={gameEngine}
         style={styles.gameContainer}
         entities={initEntities()}
-        systems={[TouchSystem]}
+        systems={[AttackSystem]}
         running={isGameRunning}
-        onEvent={(e) => {
-          switch (e) {
-            case 'game-over':
-              setIsGameRunning(false);
-              return;
-          }
-        }}
+        onEvent={(e) => {}}
       />
       <View style={styles.boardContainer}>
         <StatusBoard />

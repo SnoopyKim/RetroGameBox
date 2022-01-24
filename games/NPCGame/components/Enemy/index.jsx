@@ -21,10 +21,9 @@ export default function Enemy({ body }) {
           flex: 1,
           width: null,
           height: null,
-          transform: [{ scaleX: -1 }],
           resizeMode: 'stretch',
         }}
-        source={require('../../../../assets/images/player.png')}
+        source={require('../../../../assets/images/enemy.png')}
       />
     </View>
   );
