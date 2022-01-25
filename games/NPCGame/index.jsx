@@ -12,7 +12,6 @@ import {
 } from 'react-native';
 import { GameEngine } from 'react-native-game-engine';
 import Enemy from './components/Enemy';
-import Finger from './components/Rock';
 import Floor from './components/Floor';
 import Player from './components/Player';
 import StatusBoard from './components/StatusBoard';
@@ -25,7 +24,7 @@ const NPCGameScreen = () => {
   const matterEngine = useRef(null);
 
   const [isGameRunning, setIsGameRunning] = useState(true);
-
+  console.log('GAME RUNNING:', isGameRunning);
   const initEntities = () => {
     matterEngine.current = Matter.Engine.create({ enableSleeping: false });
     matterEngine.current.gravity.y = 0;
@@ -47,6 +46,9 @@ const NPCGameScreen = () => {
         isStatic: true,
         name: 'player',
         chamfer: { radius: [15, 15, 0, 0] },
+        collisionFilter: {
+          category: 0x0002,
+        },
       }
     );
 
@@ -59,17 +61,26 @@ const NPCGameScreen = () => {
         isStatic: true,
         name: 'enemy',
         chamfer: { radius: [15, 15, 0, 0] },
+        collisionFilter: {
+          category: 0x0001,
+        },
       }
     );
 
     Matter.World.add(matterEngine.current.world, [floor, player, enemy]);
 
-    Matter.Events.on(matterEngine.current, 'collisionEnd', (event) => {
-      var { bodyA, bodyB } = event.pairs[0];
-      if (bodyB.name === 'rock') {
-        gameEngine.current.dispatch({ type: 'HIT', rock: bodyB });
-      }
-      // gameEngine.current.dispatch({ type: 'game-over' });
+    Matter.Events.on(matterEngine.current, 'collisionStart', (event) => {
+      event.pairs.forEach((pair) => {
+        const { bodyA, bodyB } = pair;
+        if (bodyB.name === 'rock') {
+          gameEngine.current.dispatch({ type: 'ERASE', rock: bodyB });
+          if (bodyA.name === 'player') {
+            // 플레이어가 맞음
+          } else if (bodyB.name === 'enemy') {
+            // 적이 맞음
+          }
+        }
+      });
     });
 
     return {

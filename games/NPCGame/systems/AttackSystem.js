@@ -6,25 +6,45 @@ let time = 0;
 const AttackSystem = (entities, { events, dispatch }) => {
   let engine = entities.matter;
   let player = entities.player;
+  let enemy = entities.enemy;
 
   time++;
   if (time % initStats.SPEED === 0) {
-    console.log('ATTACK!');
-    let newRock = Matter.Bodies.circle(
-      player.body.position.x + 16,
+    let playerRock = Matter.Bodies.circle(
+      player.body.position.x,
       player.body.position.y - 10,
       10,
-      { name: 'rock', throw: 'player' }
+      {
+        name: 'rock',
+        throw: 'player',
+        collisionFilter: { mask: 0x0001 },
+      }
     );
-    Matter.World.add(engine.world, newRock);
-    entities.rocks.bodies = [...entities.rocks.bodies, newRock];
-    Matter.Body.applyForce(newRock, newRock.position, { x: 0.01, y: 0 });
+
+    Matter.World.add(engine.world, playerRock);
+    entities.rocks.bodies = [...entities.rocks.bodies, playerRock];
+    Matter.Body.applyForce(playerRock, playerRock.position, { x: 0.01, y: 0 });
+  }
+  if (time % initStats.SPEED === 0) {
+    let enemyRock = Matter.Bodies.circle(
+      enemy.body.position.x,
+      enemy.body.position.y - 10,
+      10,
+      {
+        name: 'rock',
+        throw: 'enemy',
+        collisionFilter: { mask: 0x0002 },
+      }
+    );
+    Matter.World.add(engine.world, enemyRock);
+    entities.rocks.bodies = [...entities.rocks.bodies, enemyRock];
+    Matter.Body.applyForce(enemyRock, enemyRock.position, { x: -0.01, y: 0 });
   }
 
   if (events.length) {
     events.forEach((e) => {
       switch (e.type) {
-        case 'HIT':
+        case 'ERASE':
           entities.rocks.bodies = entities.rocks.bodies.filter(
             (rock) => rock != e.rock
           );
