@@ -19,11 +19,8 @@ import Constants from './Constants';
 import AttackSystem from './systems/AttackSystem';
 import Rocks from './components/Rocks';
 import AssetLoading from '../../components/AssetLoading';
-import {
-  initStats,
-  playerReducer,
-  usePlayerStatus,
-} from './hooks/PlayerStatus';
+import { usePlayerStatus } from './hooks/PlayerStatus';
+import { useEnemyStatus } from './hooks/EnemyStatus';
 
 const NPCGameScreen = () => {
   const gameEngine = useRef(null);
@@ -32,6 +29,7 @@ const NPCGameScreen = () => {
   const [isGameRunning, setIsGameRunning] = useState(true);
 
   const [playerStatus, playerDispatch] = usePlayerStatus();
+  const [enemyStatus, enemyDispatch] = useEnemyStatus();
 
   const initEntities = () => {
     matterEngine.current = Matter.Engine.create({ enableSleeping: false });
@@ -84,9 +82,10 @@ const NPCGameScreen = () => {
           gameEngine.current.dispatch({ type: 'ERASE', rock: bodyB });
           if (bodyA.name === 'player') {
             // 플레이어가 맞음
-            playerDispatch({ type: 'DAMAGE', value: 10 });
-          } else if (bodyB.name === 'enemy') {
+            playerDispatch({ type: 'DAMAGE', value: enemyStatus.ATTACK_POWER });
+          } else if (bodyA.name === 'enemy') {
             // 적이 맞음
+            enemyDispatch({ type: 'DAMAGE', value: playerStatus.ATTACK_POWER });
           }
         }
       });
@@ -104,10 +103,12 @@ const NPCGameScreen = () => {
       },
       player: {
         body: player,
+        speed: playerStatus.SPEED,
         renderer: <Player />,
       },
       enemy: {
         body: enemy,
+        speed: enemyStatus.SPEED,
         renderer: <Enemy />,
       },
     };
@@ -138,7 +139,7 @@ const NPCGameScreen = () => {
           onEvent={(e) => {}}
         />
         <View style={styles.boardContainer}>
-          <StatusBoard player={playerStatus} />
+          <StatusBoard player={playerStatus} enemy={enemyStatus} />
         </View>
       </AssetLoading>
     </SafeAreaView>

@@ -20,12 +20,12 @@ const setCritical = (value) =>
       : MAX_CRITICAL
     : MIN_CRITICAL;
 
-export const initStats = {
+const initStats = {
   HP_MAX: 100,
   HP_CURRENT: 100,
   ATTACK_POWER: MIN_ATTACK,
   DEFENCE_POWER: MIN_DEFENCE,
-  SPEED: 60,
+  SPEED: 120,
   CRITICAL: MIN_CRITICAL,
   SPECIAL: [],
 };

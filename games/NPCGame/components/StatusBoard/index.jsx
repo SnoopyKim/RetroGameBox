@@ -2,12 +2,12 @@ import { StyleSheet, Text, View } from 'react-native';
 import Constants from '../../Constants';
 import { initStats } from '../../hooks/PlayerStatus';
 
-export default function StatusBoard({ player }) {
+export default function StatusBoard({ player, enemy }) {
   return (
     <View style={styles.board}>
       <View style={styles.row}>
         <Stats name={'나'} stats={player} align='flex-start' />
-        <Stats name={'적'} stats={initStats} align='flex-end' />
+        <Stats name={'적'} stats={enemy} align='flex-end' />
       </View>
     </View>
   );

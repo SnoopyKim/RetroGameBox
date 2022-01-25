@@ -1,5 +1,4 @@
 import Matter from 'matter-js';
-import { initStats } from '../hooks/PlayerStatus';
 
 let time = 0;
 
@@ -9,7 +8,7 @@ const AttackSystem = (entities, { events, dispatch }) => {
   let enemy = entities.enemy;
 
   time++;
-  if (time % initStats.SPEED === 0) {
+  if (time % player.speed === 0) {
     let playerRock = Matter.Bodies.circle(
       player.body.position.x,
       player.body.position.y - 10,
@@ -25,7 +24,7 @@ const AttackSystem = (entities, { events, dispatch }) => {
     entities.rocks.bodies = [...entities.rocks.bodies, playerRock];
     Matter.Body.applyForce(playerRock, playerRock.position, { x: 0.005, y: 0 });
   }
-  if (time % initStats.SPEED === 0) {
+  if (time % enemy.speed === 0) {
     let enemyRock = Matter.Bodies.circle(
       enemy.body.position.x,
       enemy.body.position.y - 10,
