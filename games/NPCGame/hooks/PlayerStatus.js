@@ -1,4 +1,4 @@
-import { useReducer } from 'react';
+import { useReducer, useState } from 'react';
 
 const MIN_HP = 0;
 const MIN_ATTACK = 10;
@@ -48,7 +48,7 @@ function playerReducer(state, action) {
           ? setAttack(state.ATTACK_POWER + action.ap)
           : state.ATTACK_POWER,
         DEFENCE_POWER: action.dp
-          ? setDefence(setstate.DEFENCE_POWER + action.dp)
+          ? setDefence(state.DEFENCE_POWER + action.dp)
           : state.DEFENCE_POWER,
         SPEED: action.sp ? setSpeed(state.SPEED + action.sp) : state.SPEED,
         CRITICAL: action.ct
@@ -58,4 +58,9 @@ function playerReducer(state, action) {
     default:
       return state;
   }
+}
+
+export function usePlayerStatus() {
+  const [status, dispatch] = useReducer(playerReducer, initStats);
+  return [status, dispatch];
 }

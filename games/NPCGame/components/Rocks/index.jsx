@@ -23,6 +23,7 @@ export default function Rocks({ bodies }) {
             height: null,
             resizeMode: 'stretch',
           }}
+          fadeDuration={0}
           source={require('retrogamebox/assets/images/rock.png')}
         />
       </View>

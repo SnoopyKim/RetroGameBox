@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import Matter from 'matter-js';
-import { useRef, useState } from 'react';
+import { useReducer, useRef, useState } from 'react';
 import {
   Button,
   SafeAreaView,
@@ -18,13 +18,21 @@ import StatusBoard from './components/StatusBoard';
 import Constants from './Constants';
 import AttackSystem from './systems/AttackSystem';
 import Rocks from './components/Rocks';
+import AssetLoading from '../../components/AssetLoading';
+import {
+  initStats,
+  playerReducer,
+  usePlayerStatus,
+} from './hooks/PlayerStatus';
 
 const NPCGameScreen = () => {
   const gameEngine = useRef(null);
   const matterEngine = useRef(null);
 
   const [isGameRunning, setIsGameRunning] = useState(true);
-  console.log('GAME RUNNING:', isGameRunning);
+
+  const [playerStatus, playerDispatch] = usePlayerStatus();
+
   const initEntities = () => {
     matterEngine.current = Matter.Engine.create({ enableSleeping: false });
     matterEngine.current.gravity.y = 0;
@@ -76,6 +84,7 @@ const NPCGameScreen = () => {
           gameEngine.current.dispatch({ type: 'ERASE', rock: bodyB });
           if (bodyA.name === 'player') {
             // 플레이어가 맞음
+            playerDispatch({ type: 'DAMAGE', value: 10 });
           } else if (bodyB.name === 'enemy') {
             // 적이 맞음
           }
@@ -112,18 +121,26 @@ const NPCGameScreen = () => {
 
   return (
     <SafeAreaView style={styles.canvas}>
-      <StatusBar style='light' />
-      <GameEngine
-        ref={gameEngine}
-        style={styles.gameContainer}
-        entities={initEntities()}
-        systems={[AttackSystem]}
-        running={isGameRunning}
-        onEvent={(e) => {}}
-      />
-      <View style={styles.boardContainer}>
-        <StatusBoard />
-      </View>
+      <AssetLoading
+        images={[
+          require('retrogamebox/assets/images/player.png'),
+          require('retrogamebox/assets/images/enemy.png'),
+          require('retrogamebox/assets/images/rock.png'),
+        ]}
+      >
+        <StatusBar style='light' />
+        <GameEngine
+          ref={gameEngine}
+          style={styles.gameContainer}
+          entities={initEntities()}
+          systems={[AttackSystem]}
+          running={isGameRunning}
+          onEvent={(e) => {}}
+        />
+        <View style={styles.boardContainer}>
+          <StatusBoard player={playerStatus} />
+        </View>
+      </AssetLoading>
     </SafeAreaView>
   );
 };

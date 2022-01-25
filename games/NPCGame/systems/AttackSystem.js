@@ -23,7 +23,7 @@ const AttackSystem = (entities, { events, dispatch }) => {
 
     Matter.World.add(engine.world, playerRock);
     entities.rocks.bodies = [...entities.rocks.bodies, playerRock];
-    Matter.Body.applyForce(playerRock, playerRock.position, { x: 0.01, y: 0 });
+    Matter.Body.applyForce(playerRock, playerRock.position, { x: 0.005, y: 0 });
   }
   if (time % initStats.SPEED === 0) {
     let enemyRock = Matter.Bodies.circle(
@@ -38,7 +38,7 @@ const AttackSystem = (entities, { events, dispatch }) => {
     );
     Matter.World.add(engine.world, enemyRock);
     entities.rocks.bodies = [...entities.rocks.bodies, enemyRock];
-    Matter.Body.applyForce(enemyRock, enemyRock.position, { x: -0.01, y: 0 });
+    Matter.Body.applyForce(enemyRock, enemyRock.position, { x: -0.005, y: 0 });
   }
 
   if (events.length) {
