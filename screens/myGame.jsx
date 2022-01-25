@@ -15,7 +15,7 @@ import Basket from "../myGameComponents/Basket";
 import Matter from "matter-js";
 import Physics from "../myGameComponents/Physics";
 import Constants from "../myGameComponents/Constants";
-import { GameEngine, dispatch } from "react-native-game-engine";
+import { GameEngine } from "react-native-game-engine";
 
 export default class Mygame extends Component {
   constructor(props) {
@@ -48,9 +48,9 @@ export default class Mygame extends Component {
 
     let crane = Matter.Bodies.rectangle(
       Constants.MAX_WIDTH / 6,
-      175,
-      20,
-      Constants.MAX_HEIGHT / 3,
+      Constants.MAX_HEIGHT / 6 - Constants.MAX_HEIGHT / 4,
+      15,
+      Constants.MAX_HEIGHT / 2,
       { isStatic: true }
     );
 
@@ -141,7 +141,7 @@ export default class Mygame extends Component {
       physics: { engine: engine, world: world },
       crane: {
         body: crane,
-        size: [20, Constants.MAX_HEIGHT / 3],
+        size: [15, Constants.MAX_HEIGHT / 2],
         color: "silver",
         renderer: Wall,
       },
@@ -231,21 +231,21 @@ export default class Mygame extends Component {
           <View style={styles.controlRow}>
             <TouchableOpacity
               onPress={() => {
-                alert("cheese");
+                this.gameEngine.dispatch({ type: "craneMove" });
               }}
             >
               <View style={styles.control} />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
-                console.log("Press Button2");
+                this.gameEngine.dispatch({ type: "craneStop" });
               }}
             >
               <View style={styles.control} />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
-                console.log("Press Button3");
+                this.gameEngine.dispatch({ type: "craneGrab" });
               }}
             >
               <View style={styles.control} />

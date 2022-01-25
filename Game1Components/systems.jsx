@@ -5,7 +5,7 @@ const randomBetween = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1) + min);
 };
 
-const GameLoop = (entities, { touches, dispatch, events }) => {
+const GameLoop = (entities, { touches, dispdatch, events }) => {
   let head = entities.head;
   let food = entities.food;
   let tail = entities.tail;
@@ -15,6 +15,7 @@ const GameLoop = (entities, { touches, dispatch, events }) => {
       if (events[i].type === "move-down" && head.yspeed != -1) {
         head.yspeed = 1;
         head.xspeed = 0;
+        console.log(events);
       } else if (events[i].type === "move-up" && head.yspeed != 1) {
         head.yspeed = -1;
         head.xspeed = 0;
