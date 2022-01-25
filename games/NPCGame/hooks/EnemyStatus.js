@@ -10,20 +10,23 @@ const setSpeed = (value) => (value >= MAX_SPEED ? value : MAX_SPEED);
 
 const setLevel = (prev, value) => {
   const hp = Math.round(Math.random() * 50);
-  const atk = 0,
+  let atk = 0,
     def = 0,
     sp = 0;
   switch (value % 3) {
     case 0:
       sp = 10;
+      break;
     case 1:
       atk = Math.round(Math.random() * 3);
+      break;
     case 2:
       def = Math.round(Math.random() * 3);
+      break;
   }
   return {
     HP_MAX: prev.HP_MAX + hp,
-    HP_CURRENT: prev.HP_CURRENT + hp,
+    HP_CURRENT: prev.HP_MAX + hp,
     ATTACK_POWER: prev.ATTACK_POWER + atk,
     DEFENCE_POWER: prev.DEFENCE_POWER + def,
     SPEED: setSpeed(prev.SPEED - sp),

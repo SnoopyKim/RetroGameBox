@@ -55,6 +55,11 @@ function playerReducer(state, action) {
           ? setCritical(state.CRITICAL + action.ct)
           : state.CRITICAL,
       };
+    case 'RECOVER':
+      return {
+        ...state,
+        HP_CURRENT: state.HP_MAX,
+      };
     default:
       return state;
   }

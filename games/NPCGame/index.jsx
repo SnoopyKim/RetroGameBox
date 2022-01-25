@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import Matter from 'matter-js';
-import { useReducer, useRef, useState } from 'react';
+import { useReducer, useRef, useState, useEffect } from 'react';
 import {
   Button,
   SafeAreaView,
@@ -21,19 +21,69 @@ import Rocks from './components/Rocks';
 import AssetLoading from '../../components/AssetLoading';
 import { usePlayerStatus } from './hooks/PlayerStatus';
 import { useEnemyStatus } from './hooks/EnemyStatus';
+import TextButton from '../../components/buttons/TextButton';
+
+const initState = {
+  running: true,
+  round: 1,
+  status: 'SELECT',
+};
 
 const NPCGameScreen = () => {
   const gameEngine = useRef(null);
   const matterEngine = useRef(null);
 
-  const [isGameRunning, setIsGameRunning] = useState(true);
+  const [gameState, setGameState] = useState(initState);
+  const timer = useRef(null);
 
   const [playerStatus, playerDispatch] = usePlayerStatus();
   const [enemyStatus, enemyDispatch] = useEnemyStatus();
 
-  const initEntities = () => {
+  useEffect(() => {
+    if (!gameState.running) return;
+
+    if (gameState.status === 'WIN') {
+      timer.current = setTimeout(() => {
+        playerDispatch({ type: 'RECOVER' });
+        enemyDispatch({ type: 'LEVEL', value: gameState.round - 1 });
+        setGameState({
+          ...gameState,
+          round: gameState.round + 1,
+          status: 'SELECT',
+        });
+      }, 3000);
+    }
+    if (gameState.status === 'LOSE') {
+      timer.current = setTimeout(
+        () => setGameState({ ...gameState, running: false }),
+        3000
+      );
+    }
+
+    return () => {
+      clearTimeout(timer.current);
+    };
+  }, [gameState]);
+
+  useEffect(() => {
+    if (gameState.status !== 'FIGHT') return;
+    if (gameState === initState && matterEngine.current) {
+      console.log('RESTART MATTER');
+      Matter.Engine.clear(matterEngine.current);
+      gameEngine.current.swap(initEntities(playerStatus, enemyStatus));
+    }
+    if (enemyStatus.HP_CURRENT === 0) {
+      gameEngine.current.dispatch({ type: 'WIN' });
+    } else if (playerStatus.HP_CURRENT === 0) {
+      gameEngine.current.dispatch({ type: 'LOSE' });
+    }
+  }, [playerStatus, enemyStatus, gameState]);
+
+  const initEntities = (playerStats, enemyStats) => {
     matterEngine.current = Matter.Engine.create({ enableSleeping: false });
     matterEngine.current.gravity.y = 0;
+
+    console.log(playerStatus, enemyStatus);
 
     let floor = Matter.Bodies.rectangle(
       Constants.GAME_WIDTH / 2,
@@ -51,6 +101,7 @@ const NPCGameScreen = () => {
       {
         isStatic: true,
         name: 'player',
+        atkSpeed: playerStats.SPEED,
         chamfer: { radius: [15, 15, 0, 0] },
         collisionFilter: {
           category: 0x0002,
@@ -66,6 +117,7 @@ const NPCGameScreen = () => {
       {
         isStatic: true,
         name: 'enemy',
+        atkSpeed: enemyStats.SPEED,
         chamfer: { radius: [15, 15, 0, 0] },
         collisionFilter: {
           category: 0x0001,
@@ -80,12 +132,18 @@ const NPCGameScreen = () => {
         const { bodyA, bodyB } = pair;
         if (bodyB.name === 'rock') {
           gameEngine.current.dispatch({ type: 'ERASE', rock: bodyB });
-          if (bodyA.name === 'player') {
-            // 플레이어가 맞음
-            playerDispatch({ type: 'DAMAGE', value: enemyStatus.ATTACK_POWER });
-          } else if (bodyA.name === 'enemy') {
+          if (bodyA.name === 'enemy') {
             // 적이 맞음
-            enemyDispatch({ type: 'DAMAGE', value: playerStatus.ATTACK_POWER });
+            enemyDispatch({
+              type: 'DAMAGE',
+              value: playerStats.ATTACK_POWER,
+            });
+          } else if (bodyA.name === 'player') {
+            // 플레이어가 맞음
+            playerDispatch({
+              type: 'DAMAGE',
+              value: enemyStats.ATTACK_POWER,
+            });
           }
         }
       });
@@ -103,21 +161,42 @@ const NPCGameScreen = () => {
       },
       player: {
         body: player,
-        speed: playerStatus.SPEED,
         renderer: <Player />,
       },
       enemy: {
         body: enemy,
-        speed: enemyStatus.SPEED,
         renderer: <Enemy />,
       },
     };
   };
 
   const resetGame = () => {
-    Matter.Engine.clear(matterEngine.current);
-    gameEngine.current.swap(initEntities());
-    setIsGameRunning(true);
+    playerDispatch({ type: 'INIT' });
+    enemyDispatch({ type: 'INIT' });
+    setGameState(initState);
+  };
+
+  const onEvent = (event) => {
+    switch (event.type) {
+      case 'WIN':
+        console.log('WIN!');
+        setGameState({
+          ...gameState,
+          status: 'WIN',
+        });
+        break;
+      case 'LOSE':
+        console.log('LOSE!');
+        setGameState({
+          ...gameState,
+          status: 'LOSE',
+        });
+        break;
+      case 'START':
+        console.log('START ROUND', gameState.round);
+        setGameState({ ...gameState, status: 'FIGHT' });
+        break;
+    }
   };
 
   return (
@@ -133,16 +212,63 @@ const NPCGameScreen = () => {
         <GameEngine
           ref={gameEngine}
           style={styles.gameContainer}
-          entities={initEntities()}
+          entities={initEntities(playerStatus, enemyStatus)}
           systems={[AttackSystem]}
-          running={isGameRunning}
-          onEvent={(e) => {}}
-        />
+          running={gameState.running}
+          onEvent={onEvent}
+        >
+          {{
+            WIN: <ResultText text={'WIN!'} />,
+            LOSE: <ResultText text={'LOSE...'} />,
+            SELECT: (
+              <TextButton
+                title={'START'}
+                onPressed={() => {
+                  Matter.Engine.clear(matterEngine.current);
+                  gameEngine.current.swap(
+                    initEntities(playerStatus, enemyStatus)
+                  );
+                  gameEngine.current.dispatch({ type: 'START' });
+                }}
+              />
+            ),
+          }[gameState.status] || <></>}
+        </GameEngine>
         <View style={styles.boardContainer}>
           <StatusBoard player={playerStatus} enemy={enemyStatus} />
         </View>
       </AssetLoading>
+      {!gameState.running && (
+        <View style={styles.dialogContainer}>
+          <Text
+            style={{
+              color: 'white',
+              fontFamily: 'DGM',
+              fontSize: 48,
+              textShadowColor: 'white',
+              textShadowRadius: 5,
+              marginBottom: 80,
+            }}
+          >
+            GAME OVER
+          </Text>
+          <TextButton
+            title={'RESTART'}
+            onPressed={resetGame}
+            borderColor={'white'}
+            fontSize={20}
+          />
+        </View>
+      )}
     </SafeAreaView>
+  );
+};
+
+const ResultText = ({ text }) => {
+  return (
+    <View style={styles.resultWrapper}>
+      <Text style={styles.resultText}>{text}</Text>
+    </View>
   );
 };
 
@@ -166,6 +292,25 @@ const styles = StyleSheet.create({
     width: Constants.MAX_WIDTH,
     top: Constants.GAME_HEIGHT,
   },
+  dialogContainer: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#000000CC',
+  },
+  resultWrapper: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: Constants.GAME_HEIGHT / 3,
+  },
+  resultText: {
+    color: 'black',
+    fontFamily: 'DGM',
+    fontSize: 48,
+  },
+  selectText: {},
 });
 
 export default NPCGameScreen;

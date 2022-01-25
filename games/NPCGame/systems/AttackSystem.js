@@ -1,17 +1,21 @@
 import Matter from 'matter-js';
 
-let time = 0;
+let running = false;
+let roundTime = 1;
 
-const AttackSystem = (entities, { events, dispatch }) => {
+const AttackSystem = (entities, { events, time, dispatch }) => {
   let engine = entities.matter;
-  let player = entities.player;
-  let enemy = entities.enemy;
+  let player = entities.player.body;
+  let enemy = entities.enemy.body;
 
-  time++;
-  if (time % player.speed === 0) {
+  if (roundTime === 1) {
+    console.log(running, player.atkSpeed, enemy.atkSpeed);
+  }
+  if (running) roundTime++;
+  if (roundTime % player.atkSpeed === 0) {
     let playerRock = Matter.Bodies.circle(
-      player.body.position.x,
-      player.body.position.y - 10,
+      player.position.x,
+      player.position.y - 10,
       10,
       {
         name: 'rock',
@@ -22,12 +26,12 @@ const AttackSystem = (entities, { events, dispatch }) => {
 
     Matter.World.add(engine.world, playerRock);
     entities.rocks.bodies = [...entities.rocks.bodies, playerRock];
-    Matter.Body.applyForce(playerRock, playerRock.position, { x: 0.005, y: 0 });
+    Matter.Body.applyForce(playerRock, playerRock.position, { x: 0.006, y: 0 });
   }
-  if (time % enemy.speed === 0) {
+  if (roundTime % enemy.atkSpeed === 0) {
     let enemyRock = Matter.Bodies.circle(
-      enemy.body.position.x,
-      enemy.body.position.y - 10,
+      enemy.position.x,
+      enemy.position.y - 10,
       10,
       {
         name: 'rock',
@@ -37,10 +41,11 @@ const AttackSystem = (entities, { events, dispatch }) => {
     );
     Matter.World.add(engine.world, enemyRock);
     entities.rocks.bodies = [...entities.rocks.bodies, enemyRock];
-    Matter.Body.applyForce(enemyRock, enemyRock.position, { x: -0.005, y: 0 });
+    Matter.Body.applyForce(enemyRock, enemyRock.position, { x: -0.0055, y: 0 });
   }
 
   if (events.length) {
+    console.log('EVENTS', events);
     events.forEach((e) => {
       switch (e.type) {
         case 'ERASE':
@@ -48,22 +53,15 @@ const AttackSystem = (entities, { events, dispatch }) => {
             (rock) => rock != e.rock
           );
           Matter.World.remove(engine.world, e.rock);
-          return;
-        case 'move-right':
-          if (head.xspeed === -1) return;
-          head.xspeed = 1;
-          head.yspeed = 0;
-          return;
-        case 'move-down':
-          if (head.yspeed === -1) return;
-          head.yspeed = 1;
-          head.xspeed = 0;
-          return;
-        case 'move-left':
-          if (head.xspeed === 1) return;
-          head.xspeed = -1;
-          head.yspeed = 0;
-          return;
+          break;
+        case 'WIN':
+        case 'LOSE':
+          roundTime = 1;
+          running = false;
+          break;
+        case 'START':
+          running = true;
+          break;
       }
     });
   }

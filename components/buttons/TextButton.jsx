@@ -12,6 +12,7 @@ const TextButton = ({
 }) => {
   const buttonStyle = {
     flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
     borderRadius: 10,

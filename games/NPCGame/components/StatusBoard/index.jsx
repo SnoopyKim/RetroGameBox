@@ -24,7 +24,13 @@ const Stats = ({ name, stats, align = 'flex-start' || 'flex-end' }) => {
     SPECIAL,
   } = stats;
   return (
-    <View style={{ alignItems: align }}>
+    <View
+      style={{
+        height: Constants.BOARD_HEIGHT,
+        justifyContent: 'space-evenly',
+        alignItems: align,
+      }}
+    >
       <Text style={styles.title}>{name}</Text>
       <Text style={styles.title}>{HP_MAX + ' / ' + HP_CURRENT}</Text>
       <Text style={styles.title}>{ATTACK_POWER}</Text>
@@ -44,6 +50,7 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
   },
   row: {
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
