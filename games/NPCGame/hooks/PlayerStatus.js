@@ -40,20 +40,19 @@ function playerReducer(state, action) {
         HP_CURRENT: setHP(state.HP_CURRENT - action.value),
       };
     case 'CHANGE':
+      const { hp, ap, dp, sp, ct } = action.value;
       return {
         ...state,
-        HP_MAX: action.hp ? setHP(state.HP_MAX + action.hp) : state.HP_MAX,
-        HP_CURRENT: action.hp ? setHP(state.HP_MAX + action.hp) : state.HP_MAX,
-        ATTACK_POWER: action.ap
-          ? setAttack(state.ATTACK_POWER + action.ap)
+        HP_MAX: hp ? setHP(state.HP_MAX + hp) : state.HP_MAX,
+        HP_CURRENT: hp ? setHP(state.HP_MAX + hp) : state.HP_MAX,
+        ATTACK_POWER: ap
+          ? setAttack(state.ATTACK_POWER + ap)
           : state.ATTACK_POWER,
-        DEFENCE_POWER: action.dp
-          ? setDefence(state.DEFENCE_POWER + action.dp)
+        DEFENCE_POWER: dp
+          ? setDefence(state.DEFENCE_POWER + dp)
           : state.DEFENCE_POWER,
-        SPEED: action.sp ? setSpeed(state.SPEED + action.sp) : state.SPEED,
-        CRITICAL: action.ct
-          ? setCritical(state.CRITICAL + action.ct)
-          : state.CRITICAL,
+        SPEED: sp ? setSpeed(state.SPEED + sp) : state.SPEED,
+        CRITICAL: ct ? setCritical(state.CRITICAL + ct) : state.CRITICAL,
       };
     case 'RECOVER':
       return {

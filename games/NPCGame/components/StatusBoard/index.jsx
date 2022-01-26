@@ -2,11 +2,20 @@ import { StyleSheet, Text, View } from 'react-native';
 import Constants from '../../Constants';
 import { initStats } from '../../hooks/PlayerStatus';
 
-export default function StatusBoard({ player, enemy }) {
+export default function StatusBoard({ player, enemy, round }) {
   return (
     <View style={styles.board}>
       <View style={styles.row}>
         <Stats name={'나'} stats={player} align='flex-start' />
+        <View
+          style={{
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <Text style={styles.title}>ROUND</Text>
+          <Text style={{ ...styles.title, fontSize: 30 }}>{round}</Text>
+        </View>
         <Stats name={'적'} stats={enemy} align='flex-end' />
       </View>
     </View>
@@ -26,13 +35,13 @@ const Stats = ({ name, stats, align = 'flex-start' || 'flex-end' }) => {
   return (
     <View
       style={{
-        height: Constants.BOARD_HEIGHT,
+        height: '100%',
         justifyContent: 'space-evenly',
         alignItems: align,
       }}
     >
-      <Text style={styles.title}>{name}</Text>
-      <Text style={styles.title}>{HP_MAX + ' / ' + HP_CURRENT}</Text>
+      <Text style={{ ...styles.title, marginBottom: 10 }}>{name}</Text>
+      <Text style={styles.title}>{HP_CURRENT + ' / ' + HP_MAX}</Text>
       <Text style={styles.title}>{ATTACK_POWER}</Text>
       <Text style={styles.title}>{DEFENCE_POWER}</Text>
       <Text style={styles.title}>{SPEED}</Text>
@@ -47,7 +56,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     paddingHorizontal: 20,
-    paddingVertical: 20,
+    paddingVertical: 16,
   },
   row: {
     flex: 1,

@@ -1,16 +1,13 @@
 import Matter from 'matter-js';
 
-let running = false;
 let roundTime = 1;
 
 const AttackSystem = (entities, { events, time, dispatch }) => {
   let engine = entities.matter;
-  let player = entities.player.body;
-  let enemy = entities.enemy.body;
+  const player = entities.player.body;
+  const enemy = entities.enemy.body;
+  const running = entities.gameStatus === 'FIGHT';
 
-  if (roundTime === 1) {
-    console.log(running, player.atkSpeed, enemy.atkSpeed);
-  }
   if (running) roundTime++;
   if (roundTime % player.atkSpeed === 0) {
     let playerRock = Matter.Bodies.circle(
@@ -45,8 +42,8 @@ const AttackSystem = (entities, { events, time, dispatch }) => {
   }
 
   if (events.length) {
-    console.log('EVENTS', events);
     events.forEach((e) => {
+      console.log(e.type);
       switch (e.type) {
         case 'ERASE':
           entities.rocks.bodies = entities.rocks.bodies.filter(
@@ -56,11 +53,11 @@ const AttackSystem = (entities, { events, time, dispatch }) => {
           break;
         case 'WIN':
         case 'LOSE':
-          roundTime = 1;
-          running = false;
+          entities.gameStatus = 'STOP';
           break;
         case 'START':
-          running = true;
+          roundTime = 1;
+          entities.gameStatus = 'FIGHT';
           break;
       }
     });
