@@ -11,7 +11,7 @@ import {
 import Puppet from "../myGameComponents/Puppet";
 import Wall from "../myGameComponents/Wall";
 import Shelf from "../myGameComponents/Shelf";
-import Basket from "../myGameComponents/Basket";
+import Crane from "../myGameComponents/Crane";
 import Matter from "matter-js";
 import Physics from "../myGameComponents/Physics";
 import Constants from "../myGameComponents/Constants";
@@ -54,15 +54,27 @@ export default class Mygame extends Component {
       { isStatic: true }
     );
 
+    let cranePin1 = Matter.Bodies.rectangle(
+      Constants.MAX_WIDTH / 6 - 5,
+      Constants.MAX_HEIGHT / 6 + 20,
+      7,
+      50,
+      { isStatic: true }
+    );
+    let cranePin2 = Matter.Bodies.rectangle(
+      Constants.MAX_WIDTH / 6 + 5,
+      Constants.MAX_HEIGHT / 6 + 20,
+      7,
+      50,
+      { isStatic: true }
+    );
+
     let shelf = Matter.Bodies.rectangle(
-      Constants.MAX_WIDTH / 3.5 - 35,
-      Constants.MAX_HEIGHT / 1.5 - 25,
-      40,
-      80,
-      {
-        isStatic: true,
-        rotate: 4,
-      }
+      Constants.MAX_WIDTH / 3.5 - 41,
+      Constants.MAX_HEIGHT / 1.5 - 29,
+      45,
+      97,
+      { isStatic: true }
     );
 
     let basket = Matter.Bodies.rectangle(
@@ -82,7 +94,7 @@ export default class Mygame extends Component {
     let basket3 = Matter.Bodies.rectangle(
       Constants.MAX_WIDTH / 3.5,
       Constants.MAX_HEIGHT / 1.7,
-      Constants.MAX_WIDTH / 18,
+      Constants.MAX_WIDTH / 18 + 3,
       Constants.MAX_HEIGHT / 6,
       { isStatic: true }
     );
@@ -124,6 +136,8 @@ export default class Mygame extends Component {
     });
     Matter.World.add(world, [
       crane,
+      cranePin1,
+      cranePin2,
       ceiling,
       floor,
       shelf,
@@ -143,7 +157,19 @@ export default class Mygame extends Component {
         body: crane,
         size: [15, Constants.MAX_HEIGHT / 2],
         color: "silver",
-        renderer: Wall,
+        renderer: Crane,
+      },
+      cranePin1: {
+        body: cranePin1,
+        size: [7, 50],
+        color: "silver",
+        renderer: Crane,
+      },
+      cranePin2: {
+        body: cranePin2,
+        size: [7, 50],
+        color: "silver",
+        renderer: Crane,
       },
       floor: {
         body: floor,
@@ -159,7 +185,7 @@ export default class Mygame extends Component {
       },
       shelf: {
         body: shelf,
-        size: [40, 80],
+        size: [45, 97],
         color: "teal",
         renderer: Shelf,
       },
@@ -177,7 +203,7 @@ export default class Mygame extends Component {
       },
       basket3: {
         body: basket3,
-        size: [Constants.MAX_WIDTH / 18, Constants.MAX_HEIGHT / 6],
+        size: [Constants.MAX_WIDTH / 18 + 3, Constants.MAX_HEIGHT / 6],
         color: "teal",
         renderer: Wall,
       },
@@ -209,6 +235,7 @@ export default class Mygame extends Component {
     };
   };
   render() {
+    let pressedBtn1 = false;
     return (
       <View style={styles.container}>
         <GameEngine
@@ -224,21 +251,21 @@ export default class Mygame extends Component {
         </GameEngine>
         <View style={styles.controls}>
           <View style={styles.textControl}>
-            <Text style={styles.textBox}>Move</Text>
-            <Text style={styles.textBox}>Grab</Text>
+            <Text style={styles.textBox} name="Txtbox">
+              Move&Grab
+            </Text>
             <Text style={styles.textBox}>Stop</Text>
           </View>
           <View style={styles.controlRow}>
             <TouchableOpacity
               onPress={() => {
-                this.gameEngine.dispatch({ type: "craneMove" });
-              }}
-            >
-              <View style={styles.control} />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                this.gameEngine.dispatch({ type: "craneStop" });
+                if (pressedBtn1 === false) {
+                  this.gameEngine.dispatch({ type: "craneMove" });
+                  pressedBtn1 = true;
+                } else {
+                  this.gameEngine.dispatch({ type: "craneStop" });
+                  pressedBtn1 = false;
+                }
               }}
             >
               <View style={styles.control} />
@@ -296,15 +323,17 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   textBox: {
-    marginVertical: 15,
-    width: 100,
-    fontSize: 25,
+    marginTop: 20,
+    marginVertical: 5,
+    width: 120,
+    fontSize: 20,
     textAlign: "center",
   },
   control: {
     width: 80,
     height: 80,
     margin: 15,
+    borderRadius: 100,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "teal",

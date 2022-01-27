@@ -1,7 +1,7 @@
 import { View } from "react-native";
 import React, { Component } from "react";
 
-export default class Wall extends Component {
+export default class Crane extends Component {
   render() {
     const width = this.props.size[0];
     const height = this.props.size[1];
@@ -13,10 +13,11 @@ export default class Wall extends Component {
         style={{
           position: "absolute",
           left: x,
-          top: y + 600,
+          top: y,
           width: width,
           height: height,
           backgroundColor: this.props.color,
+          borderRadius: 15,
         }}
       ></View>
     );
