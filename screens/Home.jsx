@@ -3,14 +3,17 @@ import {
   Image,
   ImageBackground,
   SafeAreaView,
+  ScrollView,
   StyleSheet,
   Button,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
+import ImageButton from "../components/buttons/ImageButton";
 
-const backgroundImg = require("../bg_images/main_bg.png");
-const gameselectImg = require("../bg_images/selectBox.png");
+const backgroundImg = require("../assets/images/main_bg.png");
+const gameselectImg = require("../assets/images/selectBox.png");
 
 const HomeScreen = ({ navigation }) => {
   return (
@@ -22,30 +25,41 @@ const HomeScreen = ({ navigation }) => {
         resizeMode="cover"
       >
         <Text style={styles.titleText}>레트로 게임 모음</Text>
-        <View style={styles.boxContainer}>
-          <Button
-            title="Go to game"
-            onPress={() => navigation.navigate("Game1")}
-          />
-          <Button
-            title="Go to game2"
-            onPress={() => navigation.navigate("GameEx")}
-          />
-        </View>
-        <View style={styles.boxContainer}>
-          <Button
-            title="Go to game3"
-            onPress={() => navigation.navigate("GameEx2")}
-          />
-          <Button
-            title="Go to game4"
-            onPress={() => navigation.navigate("GameMy")}
-          />
-        </View>
-        <View style={styles.boxContainer}>
-          <Image style={styles.gameSelectBox} source={gameselectImg} />
-          <Image style={styles.gameSelectBox} source={gameselectImg} />
-        </View>
+        <ScrollView>
+          <View style={styles.boxContainer}>
+            <ImageButton
+              src={gameselectImg}
+              onPressed={() => navigation.navigate("GameMy")}
+              title={"312Game"}
+              titleColor={"white"}
+              titleSize={30}
+              width={200}
+              height={200}
+            />
+          </View>
+          <View style={styles.boxContainer}>
+            <ImageButton
+              src={gameselectImg}
+              onPressed={() => navigation.navigate("BirdGame")}
+              title={"BirdGame"}
+              titleColor={"white"}
+              titleSize={30}
+              width={200}
+              height={200}
+            />
+          </View>
+          <View style={styles.boxContainer}>
+            <ImageButton
+              src={gameselectImg}
+              onPressed={() => navigation.navigate("NPCGame")}
+              title={"NPCGame"}
+              titleColor={"white"}
+              titleSize={30}
+              width={300}
+              height={200}
+            />
+          </View>
+        </ScrollView>
       </ImageBackground>
     </SafeAreaView>
   );
@@ -64,6 +78,7 @@ const styles = StyleSheet.create({
   },
   titleText: {
     marginTop: 90,
+    marginBottom: 20,
     textAlign: "center",
     fontFamily: "DGM",
     fontSize: 40,
@@ -71,9 +86,7 @@ const styles = StyleSheet.create({
   },
   boxContainer: {
     alignItems: "center",
-    justifyContent: "center",
-    flexDirection: "row",
-    marginTop: 10,
+    marginVertical: 10,
   },
   gameSelectBox: {
     margin: 10,

@@ -16,12 +16,15 @@ import Matter from "matter-js";
 import Physics from "../myGameComponents/Physics";
 import Constants from "../myGameComponents/Constants";
 import { GameEngine } from "react-native-game-engine";
+import { isDisabled } from "react-native/Libraries/LogBox/Data/LogBoxData";
 
 export default class Mygame extends Component {
   constructor(props) {
     super(props);
     this.state = {
       running: true,
+      isMove: false,
+      isGrab: false,
     };
     this.gameEngine = null;
     this.entities = this.setupWorld();
@@ -55,15 +58,15 @@ export default class Mygame extends Component {
     );
 
     let cranePin1 = Matter.Bodies.rectangle(
-      Constants.MAX_WIDTH / 6 - 5,
-      Constants.MAX_HEIGHT / 6 + 20,
+      crane.position.x + 2.5,
+      crane.position.y + 20 + Constants.MAX_HEIGHT / 4,
       7,
       50,
       { isStatic: true }
     );
     let cranePin2 = Matter.Bodies.rectangle(
-      Constants.MAX_WIDTH / 6 + 5,
-      Constants.MAX_HEIGHT / 6 + 20,
+      crane.position.x + 12.5,
+      crane.position.y + 20 + Constants.MAX_HEIGHT / 4,
       7,
       50,
       { isStatic: true }
@@ -129,6 +132,16 @@ export default class Mygame extends Component {
       { isStatic: false }
     );
 
+    let craneA = Matter.Constraint.create({
+      bodyB: cranePin1,
+      bodyA: crane,
+      length: 0,
+    });
+
+    const craneComposite = Matter.Composite.create({ label: "Crane" });
+    Matter.Composite.add(craneComposite, crane);
+    Matter.Composite.add(craneComposite, cranePin1);
+    Matter.Composite.add(craneComposite, cranePin2);
     Matter.Body.rotate(shelf, 4);
 
     Matter.Events.on(engine, "collisionactive", (event) => {
@@ -138,6 +151,7 @@ export default class Mygame extends Component {
       crane,
       cranePin1,
       cranePin2,
+      craneComposite,
       ceiling,
       floor,
       shelf,
@@ -234,8 +248,8 @@ export default class Mygame extends Component {
       },
     };
   };
+
   render() {
-    let pressedBtn1 = false;
     return (
       <View style={styles.container}>
         <GameEngine
@@ -246,36 +260,33 @@ export default class Mygame extends Component {
           running={this.state.running}
           systems={[Physics]}
           entities={this.entities}
+          onEvent={(e) => {
+            if (e.type === "resetCrane") {
+              this.setState({ isGrab: false });
+            }
+          }}
         >
           <StatusBar hidden={true} />
         </GameEngine>
         <View style={styles.controls}>
-          <View style={styles.textControl}>
-            <Text style={styles.textBox} name="Txtbox">
-              Move&Grab
-            </Text>
-            <Text style={styles.textBox}>Stop</Text>
-          </View>
           <View style={styles.controlRow}>
             <TouchableOpacity
+              disabled={this.state.isGrab}
               onPress={() => {
-                if (pressedBtn1 === false) {
+                if (this.state.isMove === false) {
                   this.gameEngine.dispatch({ type: "craneMove" });
-                  pressedBtn1 = true;
+                  this.setState({ isMove: true });
                 } else {
                   this.gameEngine.dispatch({ type: "craneStop" });
-                  pressedBtn1 = false;
+                  this.setState({ isMove: false, isGrab: true });
                 }
               }}
             >
-              <View style={styles.control} />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                this.gameEngine.dispatch({ type: "craneGrab" });
-              }}
-            >
-              <View style={styles.control} />
+              <View style={styles.control}>
+                <Text style={styles.textBox}>
+                  {this.state.isMove ? "Grab" : "Move"}
+                </Text>
+              </View>
             </TouchableOpacity>
           </View>
         </View>
@@ -306,32 +317,21 @@ const styles = StyleSheet.create({
     top: Constants.MAX_HEIGHT / 1.45,
     flexDirection: "column",
   },
-  textControl: {
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "orange",
-    height: 80,
-    flexDirection: "row",
-  },
   controlRow: {
     justifyContent: "center",
     alignItems: "center",
-    top: 0,
+    top: 20,
     height: Constants.MAX_HEIGHT / 5,
     backgroundColor: "orange",
     width: Constants.MAX_WIDTH,
     flexDirection: "row",
   },
   textBox: {
-    marginTop: 20,
-    marginVertical: 5,
-    width: 120,
-    fontSize: 20,
-    textAlign: "center",
+    fontSize: 40,
   },
   control: {
-    width: 80,
-    height: 80,
+    width: 120,
+    height: 120,
     margin: 15,
     borderRadius: 100,
     justifyContent: "center",

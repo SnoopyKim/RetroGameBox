@@ -67,6 +67,7 @@ const Physics = (entities, { touches, time, dispatch, events }) => {
           x: Constants.MAX_WIDTH / 8,
           y: Constants.MAX_HEIGHT / 6 - Constants.MAX_HEIGHT / 4,
         });
+        dispatch({ type: "resetCrane" });
       } else {
         craneMove = true;
         LR = false;

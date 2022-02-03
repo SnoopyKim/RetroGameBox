@@ -1,25 +1,43 @@
-import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { Image, Text, TouchableOpacity } from 'react-native';
 
 const TextButton = ({
   title,
   onPressed,
-  width,
-  height,
+  fontSize,
   color,
-  backgrounColor,
+  backgroundColor,
+  borderColor,
+  leading,
+  trailing,
 }) => {
+  const buttonStyle = {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderRadius: 10,
+    borderColor: borderColor || '#333',
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    backgroundColor: backgroundColor || '#FFF',
+  };
+
+  const titleStyle = {
+    fontFamily: 'DGM',
+    fontSize: fontSize || 20,
+    color: color || '#333',
+    marginHorizontal: 10,
+  };
+
   return (
-    <TouchableOpacity onPress={onPressed}>
-      <Text style={styles.title}>{title}</Text>
+    <TouchableOpacity style={buttonStyle} onPress={onPressed}>
+      {leading && <Image source={leading} style={{ width: 30, height: 30 }} />}
+      <Text style={titleStyle}>{title}</Text>
+      {trailing && (
+        <Image source={trailing} style={{ width: 30, height: 30 }} />
+      )}
     </TouchableOpacity>
   );
 };
-
-const styles = StyleSheet.create({
-  title: {
-    fontFamily: 'DGM',
-    fontSize: 20,
-  },
-});
 
 export default TextButton;
