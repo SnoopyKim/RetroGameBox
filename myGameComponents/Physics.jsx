@@ -9,12 +9,38 @@ const Physics = (entities, { touches, time, dispatch, events }) => {
   let engine = entities.physics.engine;
   let puppet = entities.puppet1.body;
   let crane = entities.crane.body;
+  let cranepin1 = entities.cranePin1.body;
+  let cranepin2 = entities.cranePin2.body;
+  let cranepin3 = entities.cranePin3.body;
+  let cranepin4 = entities.cranePin4.body;
+  let shelf = entities.shelf.body;
 
   touches
     .filter((t) => t.type === "press")
     .forEach((t) => {
       Matter.Body.applyForce(puppet, puppet.position, { x: -0.002, y: -0.03 });
     });
+
+  Matter.Body.setPosition(cranepin1, {
+    x: crane.position.x - 15,
+    y: crane.position.y + 200,
+  });
+  Matter.Body.setPosition(cranepin2, {
+    x: crane.position.x + 15,
+    y: crane.position.y + 200,
+  });
+  Matter.Body.setPosition(cranepin3, {
+    x: crane.position.x - 20,
+    y: crane.position.y + 240,
+  });
+  Matter.Body.setPosition(cranepin4, {
+    x: crane.position.x + 20,
+    y: crane.position.y + 240,
+  });
+  Matter.Body.rotate(cranepin1, 45);
+  Matter.Body.rotate(cranepin2, -45);
+  Matter.Body.rotate(cranepin3, -20);
+  Matter.Body.rotate(cranepin4, 20);
 
   if (events.length) {
     for (let i = 0; i < events.length; i++) {

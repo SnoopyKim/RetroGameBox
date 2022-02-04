@@ -18,6 +18,7 @@ export default class Crane extends Component {
           height: height,
           backgroundColor: this.props.color,
           borderRadius: 15,
+          rotation: this.props.rotate,
         }}
       ></View>
     );

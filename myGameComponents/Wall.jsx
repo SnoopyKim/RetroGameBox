@@ -17,6 +17,7 @@ export default class Wall extends Component {
           width: width,
           height: height,
           backgroundColor: this.props.color,
+          rotation: this.props.rotate,
         }}
       ></View>
     );

@@ -53,22 +53,36 @@ export default class Mygame extends Component {
       Constants.MAX_WIDTH / 6,
       Constants.MAX_HEIGHT / 6 - Constants.MAX_HEIGHT / 4,
       15,
-      Constants.MAX_HEIGHT / 2,
+      Constants.MAX_HEIGHT / 1.5,
       { isStatic: true }
     );
 
     let cranePin1 = Matter.Bodies.rectangle(
-      crane.position.x + 2.5,
+      Constants.MAX_WIDTH / 6 + 5,
       crane.position.y + 20 + Constants.MAX_HEIGHT / 4,
       7,
       50,
       { isStatic: true }
     );
     let cranePin2 = Matter.Bodies.rectangle(
-      crane.position.x + 12.5,
+      Constants.MAX_WIDTH / 6 - 5,
       crane.position.y + 20 + Constants.MAX_HEIGHT / 4,
       7,
       50,
+      { isStatic: true }
+    );
+    let cranePin3 = Matter.Bodies.rectangle(
+      Constants.MAX_WIDTH / 6 - 5,
+      crane.position.y + 20 + Constants.MAX_HEIGHT / 4,
+      7,
+      60,
+      { isStatic: true }
+    );
+    let cranePin4 = Matter.Bodies.rectangle(
+      Constants.MAX_WIDTH / 6 - 5,
+      crane.position.y + 20 + Constants.MAX_HEIGHT / 4,
+      7,
+      60,
       { isStatic: true }
     );
 
@@ -82,7 +96,7 @@ export default class Mygame extends Component {
 
     let basket = Matter.Bodies.rectangle(
       Constants.MAX_WIDTH,
-      Constants.MAX_HEIGHT / 3,
+      Constants.MAX_HEIGHT / 3 - 10,
       Constants.MAX_WIDTH / 18,
       Constants.MAX_HEIGHT / 1.2,
       { isStatic: true }
@@ -131,17 +145,6 @@ export default class Mygame extends Component {
       25,
       { isStatic: false }
     );
-
-    let craneA = Matter.Constraint.create({
-      bodyB: cranePin1,
-      bodyA: crane,
-      length: 0,
-    });
-
-    const craneComposite = Matter.Composite.create({ label: "Crane" });
-    Matter.Composite.add(craneComposite, crane);
-    Matter.Composite.add(craneComposite, cranePin1);
-    Matter.Composite.add(craneComposite, cranePin2);
     Matter.Body.rotate(shelf, 4);
 
     Matter.Events.on(engine, "collisionactive", (event) => {
@@ -151,7 +154,8 @@ export default class Mygame extends Component {
       crane,
       cranePin1,
       cranePin2,
-      craneComposite,
+      cranePin3,
+      cranePin4,
       ceiling,
       floor,
       shelf,
@@ -178,12 +182,28 @@ export default class Mygame extends Component {
         size: [7, 50],
         color: "silver",
         renderer: Crane,
+        rotate: 45,
       },
       cranePin2: {
         body: cranePin2,
         size: [7, 50],
         color: "silver",
         renderer: Crane,
+        rotate: -45,
+      },
+      cranePin3: {
+        body: cranePin3,
+        size: [7, 60],
+        color: "silver",
+        renderer: Crane,
+        rotate: -20,
+      },
+      cranePin4: {
+        body: cranePin4,
+        size: [7, 60],
+        color: "silver",
+        renderer: Crane,
+        rotate: 20,
       },
       floor: {
         body: floor,
@@ -202,6 +222,7 @@ export default class Mygame extends Component {
         size: [45, 97],
         color: "teal",
         renderer: Shelf,
+        rotate: 20,
       },
       basket: {
         body: basket,
