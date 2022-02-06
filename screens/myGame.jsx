@@ -5,6 +5,7 @@ import {
   Text,
   View,
   StatusBar,
+  ImageBackground,
   Alert,
   TouchableOpacity,
 } from "react-native";
@@ -17,6 +18,8 @@ import Physics from "../myGameComponents/Physics";
 import Constants from "../myGameComponents/Constants";
 import { GameEngine } from "react-native-game-engine";
 import { isDisabled } from "react-native/Libraries/LogBox/Data/LogBoxData";
+
+const backgroundImg = require("../assets/images/main_bg.png");
 
 export default class Mygame extends Component {
   constructor(props) {
@@ -174,72 +177,72 @@ export default class Mygame extends Component {
       crane: {
         body: crane,
         size: [15, Constants.MAX_HEIGHT / 2],
-        color: "silver",
+        color: "gold",
         renderer: Crane,
       },
       cranePin1: {
         body: cranePin1,
         size: [7, 50],
-        color: "silver",
+        color: "gold",
         renderer: Crane,
         rotate: 45,
       },
       cranePin2: {
         body: cranePin2,
         size: [7, 50],
-        color: "silver",
+        color: "gold",
         renderer: Crane,
         rotate: -45,
       },
       cranePin3: {
         body: cranePin3,
         size: [7, 60],
-        color: "silver",
+        color: "gold",
         renderer: Crane,
         rotate: -20,
       },
       cranePin4: {
         body: cranePin4,
         size: [7, 60],
-        color: "silver",
+        color: "gold",
         renderer: Crane,
         rotate: 20,
       },
       floor: {
         body: floor,
         size: [Constants.MAX_WIDTH, 50],
-        color: "teal",
+        color: "purple",
         renderer: Wall,
       },
       ceiling: {
         body: ceiling,
         size: [Constants.MAX_WIDTH, 40],
-        color: "teal",
+        color: "purple",
         renderer: Wall,
       },
       shelf: {
         body: shelf,
         size: [45, 97],
-        color: "teal",
+        color: "purple",
         renderer: Shelf,
         rotate: 20,
       },
       basket: {
         body: basket,
         size: [Constants.MAX_WIDTH / 18, Constants.MAX_HEIGHT / 1.2],
-        color: "teal",
+        color: "purple",
         renderer: Wall,
       },
       basket2: {
         body: basket2,
         size: [Constants.MAX_WIDTH / 18, Constants.MAX_HEIGHT / 2],
-        color: "teal",
+        color: "purple",
         renderer: Wall,
       },
       basket3: {
         body: basket3,
         size: [Constants.MAX_WIDTH / 18 + 3, Constants.MAX_HEIGHT / 6],
-        color: "teal",
+        color: "purple",
         renderer: Wall,
       },
       puppet1: {
@@ -273,44 +276,50 @@ export default class Mygame extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <GameEngine
-          ref={(ref) => {
-            this.gameEngine = ref;
-          }}
-          style={styles.gameContainer}
-          running={this.state.running}
-          systems={[Physics]}
-          entities={this.entities}
-          onEvent={(e) => {
-            if (e.type === "resetCrane") {
-              this.setState({ isGrab: false });
-            }
-          }}
+        <ImageBackground
+          style={styles.backgroundImage}
+          source={backgroundImg}
+          resizeMode="stretch"
         >
-          <StatusBar hidden={true} />
-        </GameEngine>
-        <View style={styles.controls}>
-          <View style={styles.controlRow}>
-            <TouchableOpacity
-              disabled={this.state.isGrab}
-              onPress={() => {
-                if (this.state.isMove === false) {
-                  this.gameEngine.dispatch({ type: "craneMove" });
-                  this.setState({ isMove: true });
-                } else {
-                  this.gameEngine.dispatch({ type: "craneStop" });
-                  this.setState({ isMove: false, isGrab: true });
-                }
-              }}
-            >
-              <View style={styles.control}>
-                <Text style={styles.textBox}>
-                  {this.state.isMove ? "Grab" : "Move"}
-                </Text>
-              </View>
-            </TouchableOpacity>
+          <GameEngine
+            ref={(ref) => {
+              this.gameEngine = ref;
+            }}
+            style={styles.gameContainer}
+            running={this.state.running}
+            systems={[Physics]}
+            entities={this.entities}
+            onEvent={(e) => {
+              if (e.type === "resetCrane") {
+                this.setState({ isGrab: false });
+              }
+            }}
+          >
+            <StatusBar hidden={true} />
+          </GameEngine>
+          <View style={styles.controls}>
+            <View style={styles.controlRow}>
+              <TouchableOpacity
+                disabled={this.state.isGrab}
+                onPress={() => {
+                  if (this.state.isMove === false) {
+                    this.gameEngine.dispatch({ type: "craneMove" });
+                    this.setState({ isMove: true });
+                  } else {
+                    this.gameEngine.dispatch({ type: "craneStop" });
+                    this.setState({ isMove: false, isGrab: true });
+                  }
+                }}
+              >
+                <View style={styles.control}>
+                  <Text style={styles.textBox}>
+                    {this.state.isMove ? "Grab" : "Move"}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
+        </ImageBackground>
       </View>
     );
   }
@@ -321,6 +330,11 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     alignItems: "center",
     justifyContent: "center",
+  },
+  backgroundImage: {
+    flex: 1,
+    alignSelf: `stretch`,
+    width: null,
   },
   gameContainer: {
     flex: 2,

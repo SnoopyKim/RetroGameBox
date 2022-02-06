@@ -18,7 +18,7 @@ const Physics = (entities, { touches, time, dispatch, events }) => {
   touches
     .filter((t) => t.type === "press")
     .forEach((t) => {
-      Matter.Body.applyForce(puppet, puppet.position, { x: -0.002, y: -0.03 });
+      Matter.Body.applyForce(puppet, puppet.position, { x: -0.002, y: -0.04 });
     });
 
   Matter.Body.setPosition(cranepin1, {
@@ -107,12 +107,12 @@ const Physics = (entities, { touches, time, dispatch, events }) => {
     ) {
       if (LR !== false) {
         Matter.Body.setPosition(crane, {
-          x: crane.position.x + 2,
+          x: crane.position.x + 1,
           y: crane.position.y,
         });
       } else {
         Matter.Body.setPosition(crane, {
-          x: crane.position.x - 2,
+          x: crane.position.x - 1,
           y: crane.position.y,
         });
         LR = false;
@@ -120,13 +120,13 @@ const Physics = (entities, { touches, time, dispatch, events }) => {
     } else if (crane.position.x > Constants.MAX_WIDTH - 40) {
       LR = false;
       Matter.Body.setPosition(crane, {
-        x: crane.position.x - 2,
+        x: crane.position.x - 1,
         y: crane.position.y,
       });
     } else {
       LR = true;
       Matter.Body.setPosition(crane, {
-        x: crane.position.x + 2,
+        x: crane.position.x + 1,
         y: crane.position.y,
       });
     }
