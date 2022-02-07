@@ -18,6 +18,7 @@ import Physics from "../myGameComponents/Physics";
 import Constants from "../myGameComponents/Constants";
 import { GameEngine } from "react-native-game-engine";
 import { isDisabled } from "react-native/Libraries/LogBox/Data/LogBoxData";
+import AssetLoading from "../components/AssetLoading";
 
 const backgroundImg = require("../assets/images/main_bg.png");
 
@@ -118,7 +119,7 @@ export default class Mygame extends Component {
       Constants.MAX_HEIGHT / 6,
       { isStatic: true }
     );
-    let puppet1 = Matter.Bodies.circle(
+    let puppets = Matter.Bodies.circle(
       Constants.MAX_WIDTH / 2,
       Constants.MAX_HEIGHT / 4,
       25,
@@ -165,11 +166,7 @@ export default class Mygame extends Component {
       basket,
       basket2,
       basket3,
-      puppet1,
-      puppet2,
-      puppet3,
-      puppet4,
-      puppet5,
+      puppets,
     ]);
 
     return {
@@ -245,30 +242,9 @@ export default class Mygame extends Component {
         color: "purple",
         renderer: Wall,
       },
-      puppet1: {
-        body: puppet1,
-        color: "tomato",
-        renderer: Puppet,
-      },
-      puppet2: {
-        body: puppet2,
-        color: "yellow",
-        renderer: Puppet,
-      },
-      puppet3: {
-        body: puppet3,
-        color: "green",
-        renderer: Puppet,
-      },
-      puppet4: {
-        body: puppet4,
-        color: "red",
-        renderer: Puppet,
-      },
-      puppet5: {
-        body: puppet5,
-        color: "blue",
-        renderer: Puppet,
+      puppets: {
+        bodies: [],
+        renderer: <Puppet />,
       },
     };
   };
@@ -281,23 +257,28 @@ export default class Mygame extends Component {
           source={backgroundImg}
           resizeMode="stretch"
         >
-          <GameEngine
-            ref={(ref) => {
-              this.gameEngine = ref;
-            }}
-            style={styles.gameContainer}
-            running={this.state.running}
-            systems={[Physics]}
-            entities={this.entities}
-            onEvent={(e) => {
-              if (e.type === "resetCrane") {
-                this.setState({ isGrab: false });
-              }
-            }}
+          <AssetLoading
+            images={[require("retrogamebox/assets/images/slime.gif")]}
           >
-            <StatusBar hidden={true} />
-          </GameEngine>
+            <GameEngine
+              ref={(ref) => {
+                this.gameEngine = ref;
+              }}
+              style={styles.gameContainer}
+              running={this.state.running}
+              systems={[Physics]}
+              entities={this.entities}
+              onEvent={(e) => {
+                if (e.type === "resetCrane") {
+                  this.setState({ isGrab: false });
+                }
+              }}
+            >
+              <StatusBar hidden={true} />
+            </GameEngine>
+          </AssetLoading>
           <View style={styles.controls}>
+            <Text>score:</Text>
             <View style={styles.controlRow}>
               <TouchableOpacity
                 disabled={this.state.isGrab}
@@ -308,6 +289,7 @@ export default class Mygame extends Component {
                   } else {
                     this.gameEngine.dispatch({ type: "craneStop" });
                     this.setState({ isMove: false, isGrab: true });
+                    this.gameEngine.dispatch({ type: "spawn" });
                   }
                 }}
               >

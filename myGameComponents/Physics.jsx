@@ -7,7 +7,7 @@ let craneGrab = false;
 
 const Physics = (entities, { touches, time, dispatch, events }) => {
   let engine = entities.physics.engine;
-  let puppet = entities.puppet1.body;
+  let puppet = entities.puppets.body;
   let crane = entities.crane.body;
   let cranepin1 = entities.cranePin1.body;
   let cranepin2 = entities.cranePin2.body;
@@ -54,6 +54,9 @@ const Physics = (entities, { touches, time, dispatch, events }) => {
         UD = true;
         craneMove = false;
         craneGrab = false;
+      } else if ((events[i].type = "spawn")) {
+        Matter.World.add(engine.world, puppets);
+        entities.puppets.bodies = [...entities.puppets.bodies, puppets];
       }
     }
   }
@@ -131,6 +134,13 @@ const Physics = (entities, { touches, time, dispatch, events }) => {
       });
     }
   }
+
+  let puppets = Matter.Bodies.circle(
+    Constants.MAX_WIDTH / 2,
+    Constants.MAX_HEIGHT / 2,
+    30,
+    { name: puppet }
+  );
 
   Matter.Engine.update(engine, time.delta);
 
