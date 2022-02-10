@@ -9,7 +9,9 @@ import {
   Alert,
   TouchableOpacity,
 } from "react-native";
-import Puppet from "../myGameComponents/Puppet";
+import RedPuppet from "../myGameComponents/Puppet/RedPuppet";
+import BluePuppet from "../myGameComponents/Puppet/BluePuppet";
+import YellowPuppet from "../myGameComponents/Puppet/YellowPuppet";
 import Wall from "../myGameComponents/Wall";
 import Shelf from "../myGameComponents/Shelf";
 import Crane from "../myGameComponents/Crane";
@@ -119,36 +121,7 @@ export default class Mygame extends Component {
       Constants.MAX_HEIGHT / 6,
       { isStatic: true }
     );
-    let puppets = Matter.Bodies.circle(
-      Constants.MAX_WIDTH / 2,
-      Constants.MAX_HEIGHT / 4,
-      25,
-      { isStatic: false }
-    );
-    let puppet2 = Matter.Bodies.circle(
-      Constants.MAX_WIDTH / 2,
-      Constants.MAX_HEIGHT / 2,
-      25,
-      { isStatic: false }
-    );
-    let puppet3 = Matter.Bodies.circle(
-      Constants.MAX_WIDTH / 1.5,
-      Constants.MAX_HEIGHT / 3,
-      25,
-      { isStatic: false }
-    );
-    let puppet4 = Matter.Bodies.circle(
-      Constants.MAX_WIDTH / 1.5,
-      Constants.MAX_HEIGHT / 5,
-      25,
-      { isStatic: false }
-    );
-    let puppet5 = Matter.Bodies.circle(
-      Constants.MAX_WIDTH / 1.2,
-      Constants.MAX_HEIGHT / 2,
-      25,
-      { isStatic: false }
-    );
+
     Matter.Body.rotate(shelf, 4);
 
     Matter.Events.on(engine, "collisionactive", (event) => {
@@ -166,7 +139,6 @@ export default class Mygame extends Component {
       basket,
       basket2,
       basket3,
-      puppets,
     ]);
 
     return {
@@ -242,9 +214,17 @@ export default class Mygame extends Component {
         color: "purple",
         renderer: Wall,
       },
-      puppets: {
+      redPuppets: {
         bodies: [],
-        renderer: <Puppet />,
+        renderer: <RedPuppet />,
+      },
+      bluePuppets: {
+        bodies: [],
+        renderer: <BluePuppet />,
+      },
+      yellowPuppets: {
+        bodies: [],
+        renderer: <YellowPuppet />,
       },
     };
   };
@@ -259,6 +239,9 @@ export default class Mygame extends Component {
         >
           <AssetLoading
             images={[require("retrogamebox/assets/images/slime.gif")]}
+            images={[require("retrogamebox/assets/images/redSlime.gif")]}
+            images={[require("retrogamebox/assets/images/blueSlime.gif")]}
+            images={[require("retrogamebox/assets/images/yellowSlime.gif")]}
           >
             <GameEngine
               ref={(ref) => {
@@ -289,7 +272,6 @@ export default class Mygame extends Component {
                   } else {
                     this.gameEngine.dispatch({ type: "craneStop" });
                     this.setState({ isMove: false, isGrab: true });
-                    this.gameEngine.dispatch({ type: "spawn" });
                   }
                 }}
               >

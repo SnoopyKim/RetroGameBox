@@ -7,19 +7,15 @@ let craneGrab = false;
 
 const Physics = (entities, { touches, time, dispatch, events }) => {
   let engine = entities.physics.engine;
-  let puppet = entities.puppets.body;
+  let redPuppet = entities.redPuppets.body;
+  let bluePuppet = entities.bluePuppets.body;
+  let yellowPuppet = entities.yellowPuppets.body;
   let crane = entities.crane.body;
   let cranepin1 = entities.cranePin1.body;
   let cranepin2 = entities.cranePin2.body;
   let cranepin3 = entities.cranePin3.body;
   let cranepin4 = entities.cranePin4.body;
   let shelf = entities.shelf.body;
-
-  touches
-    .filter((t) => t.type === "press")
-    .forEach((t) => {
-      Matter.Body.applyForce(puppet, puppet.position, { x: -0.002, y: -0.04 });
-    });
 
   Matter.Body.setPosition(cranepin1, {
     x: crane.position.x - 15,
@@ -54,9 +50,6 @@ const Physics = (entities, { touches, time, dispatch, events }) => {
         UD = true;
         craneMove = false;
         craneGrab = false;
-      } else if ((events[i].type = "spawn")) {
-        Matter.World.add(engine.world, puppets);
-        entities.puppets.bodies = [...entities.puppets.bodies, puppets];
       }
     }
   }
@@ -135,12 +128,53 @@ const Physics = (entities, { touches, time, dispatch, events }) => {
     }
   }
 
-  let puppets = Matter.Bodies.circle(
+  let redPuppets = Matter.Bodies.circle(
     Constants.MAX_WIDTH / 2,
     Constants.MAX_HEIGHT / 2,
     30,
-    { name: puppet }
+    { name: redPuppet }
   );
+  let bluePuppets = Matter.Bodies.circle(
+    Constants.MAX_WIDTH / 3,
+    Constants.MAX_HEIGHT / 2,
+    30,
+    { name: bluePuppet }
+  );
+  let yellowPuppets = Matter.Bodies.circle(
+    Constants.MAX_WIDTH / 2,
+    Constants.MAX_HEIGHT / 2,
+    30,
+    { name: yellowPuppet }
+  );
+
+  const color = ["redPuppets", "bluePuppets", "yellowPuppets"];
+  touches
+    .filter((t) => t.type === "press")
+    .forEach((t) => {
+      switch (Math.floor(Math.random() * color.length)) {
+        case 0:
+          Matter.World.add(engine.world, redPuppets);
+          entities.redPuppets.bodies = [
+            ...entities.redPuppets.bodies,
+            redPuppets,
+          ];
+          break;
+        case 1:
+          Matter.World.add(engine.world, bluePuppets);
+          entities.bluePuppets.bodies = [
+            ...entities.bluePuppets.bodies,
+            bluePuppets,
+          ];
+          break;
+        case 2:
+          Matter.World.add(engine.world, yellowPuppets);
+          entities.yellowPuppets.bodies = [
+            ...entities.yellowPuppets.bodies,
+            yellowPuppets,
+          ];
+          break;
+      }
+    });
 
   Matter.Engine.update(engine, time.delta);
 

@@ -1,12 +1,14 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import { View, Image } from "react-native";
-import Constants from "./Constants";
+import Constants from "../Constants";
+import redslime from "../../assets/images/redSlime.gif";
 
-export default function Puppet({ bodies }) {
-  const puppets = bodies.map((body, idx) => {
+export default function redPuppets({ bodies }) {
+  const redPuppets = bodies.map((body, idx) => {
     const radius = body.circleRadius;
     const x = body.position.x - radius;
     const y = body.position.y - radius;
+
     return (
       <View
         key={idx}
@@ -21,18 +23,18 @@ export default function Puppet({ bodies }) {
         <Image
           style={{
             flex: 1,
-            width: null,
-            height: null,
+            width: 2 * radius,
+            height: 2 * radius,
             resizeMode: "stretch",
           }}
-          source={require("retrogamebox/assets/images/slime.gif")}
+          source={redslime}
         ></Image>
       </View>
     );
   });
   return (
     <View style={{ width: Constants.MAX_WIDTH, height: Constants.MAX_HEIGHT }}>
-      {puppets}
+      {redPuppets}
     </View>
   );
 }
