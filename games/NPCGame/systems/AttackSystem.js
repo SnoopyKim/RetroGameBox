@@ -17,6 +17,7 @@ const AttackSystem = (entities, { events, time, dispatch }) => {
       {
         name: 'rock',
         throw: 'player',
+        ct: Math.random() * 100,
         collisionFilter: { mask: 0x0001 },
       }
     );

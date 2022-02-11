@@ -138,9 +138,13 @@ const NPCGameScreen = () => {
           gameEngine.current.dispatch({ type: 'ERASE', rock: bodyB });
           if (bodyA.name === 'enemy') {
             // 적이 맞음
+            let damageValue = playerStatus.ATTACK_POWER;
+            if (bodyB.throw === 'player' && bodyB.ct <= playerStatus.CRITICAL) {
+              damageValue *= 2;
+            }
             enemyDispatch({
               type: 'DAMAGE',
-              value: playerStatus.ATTACK_POWER,
+              value: damageValue,
             });
           } else if (bodyA.name === 'player') {
             // 플레이어가 맞음
