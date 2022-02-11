@@ -19,7 +19,6 @@ import Matter from "matter-js";
 import Physics from "../myGameComponents/Physics";
 import Constants from "../myGameComponents/Constants";
 import { GameEngine } from "react-native-game-engine";
-import { isDisabled } from "react-native/Libraries/LogBox/Data/LogBoxData";
 import AssetLoading from "../components/AssetLoading";
 
 const backgroundImg = require("../assets/images/main_bg.png");
@@ -216,15 +215,15 @@ export default class Mygame extends Component {
       },
       redPuppets: {
         bodies: [],
-        renderer: <RedPuppet />,
-      },
-      bluePuppets: {
-        bodies: [],
-        renderer: <BluePuppet />,
+        renderer: RedPuppet,
       },
       yellowPuppets: {
         bodies: [],
-        renderer: <YellowPuppet />,
+        renderer: YellowPuppet,
+      },
+      bluePuppets: {
+        bodies: [],
+        renderer: BluePuppet,
       },
     };
   };
@@ -237,29 +236,22 @@ export default class Mygame extends Component {
           source={backgroundImg}
           resizeMode="stretch"
         >
-          <AssetLoading
-            images={[require("retrogamebox/assets/images/slime.gif")]}
-            images={[require("retrogamebox/assets/images/redSlime.gif")]}
-            images={[require("retrogamebox/assets/images/blueSlime.gif")]}
-            images={[require("retrogamebox/assets/images/yellowSlime.gif")]}
+          <GameEngine
+            ref={(ref) => {
+              this.gameEngine = ref;
+            }}
+            style={styles.gameContainer}
+            running={this.state.running}
+            systems={[Physics]}
+            entities={this.entities}
+            onEvent={(e) => {
+              if (e.type === "resetCrane") {
+                this.setState({ isGrab: false });
+              }
+            }}
           >
-            <GameEngine
-              ref={(ref) => {
-                this.gameEngine = ref;
-              }}
-              style={styles.gameContainer}
-              running={this.state.running}
-              systems={[Physics]}
-              entities={this.entities}
-              onEvent={(e) => {
-                if (e.type === "resetCrane") {
-                  this.setState({ isGrab: false });
-                }
-              }}
-            >
-              <StatusBar hidden={true} />
-            </GameEngine>
-          </AssetLoading>
+            <StatusBar hidden={true} />
+          </GameEngine>
           <View style={styles.controls}>
             <Text>score:</Text>
             <View style={styles.controlRow}>
