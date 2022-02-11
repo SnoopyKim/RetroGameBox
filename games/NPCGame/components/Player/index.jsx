@@ -1,6 +1,8 @@
+import React from 'react';
+
 import { Image, View } from 'react-native';
 
-export default function Player({ body }) {
+function Player({ body }) {
   const { x, y } = body.position;
   const { max, min } = body.bounds;
   const width = max.x - min.x;
@@ -28,3 +30,5 @@ export default function Player({ body }) {
     </View>
   );
 }
+
+export default React.memo(Player);

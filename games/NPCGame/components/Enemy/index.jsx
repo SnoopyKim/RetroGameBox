@@ -1,6 +1,7 @@
+import React from 'react';
 import { Image, View } from 'react-native';
 
-export default function Enemy({ body }) {
+function Enemy({ body }) {
   const { x, y } = body.position;
   const { max, min } = body.bounds;
   const width = max.x - min.x;
@@ -28,3 +29,5 @@ export default function Enemy({ body }) {
     </View>
   );
 }
+
+export default React.memo(Enemy);
