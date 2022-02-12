@@ -17,27 +17,7 @@ const Physics = (entities, { touches, time, dispatch, events }) => {
   let cranepin4 = entities.cranePin4.body;
   let shelf = entities.shelf.body;
 
-  Matter.Body.setPosition(cranepin1, {
-    x: crane.position.x - 15,
-    y: crane.position.y + 200,
-  });
-  Matter.Body.setPosition(cranepin2, {
-    x: crane.position.x + 15,
-    y: crane.position.y + 200,
-  });
-  Matter.Body.setPosition(cranepin3, {
-    x: crane.position.x - 20,
-    y: crane.position.y + 240,
-  });
-  Matter.Body.setPosition(cranepin4, {
-    x: crane.position.x + 20,
-    y: crane.position.y + 240,
-  });
-  Matter.Body.rotate(cranepin1, 45);
-  Matter.Body.rotate(cranepin2, -45);
-  Matter.Body.rotate(cranepin3, -20);
-  Matter.Body.rotate(cranepin4, 20);
-
+  //엔진 상태
   if (events.length) {
     for (let i = 0; i < events.length; i++) {
       if (events[i].type === "craneMove") {
@@ -54,6 +34,29 @@ const Physics = (entities, { touches, time, dispatch, events }) => {
     }
   }
 
+  //크레인핀 각 전환
+  Matter.Body.setPosition(cranepin1, {
+    x: crane.position.x - 15,
+    y: crane.position.y + 200,
+  });
+  Matter.Body.setPosition(cranepin2, {
+    x: crane.position.x + 15,
+    y: crane.position.y + 200,
+  });
+  Matter.Body.setPosition(cranepin3, {
+    x: crane.position.x - 25,
+    y: crane.position.y + 240,
+  });
+  Matter.Body.setPosition(cranepin4, {
+    x: crane.position.x + 25,
+    y: crane.position.y + 240,
+  });
+  Matter.Body.rotate(cranepin1, 45);
+  Matter.Body.rotate(cranepin2, -45);
+  Matter.Body.rotate(cranepin3, -20);
+  Matter.Body.rotate(cranepin4, 20);
+
+  //크레인 상하 움직임
   if (craneGrab === true) {
     if (
       crane.position.y >= Constants.MAX_HEIGHT / 6 - Constants.MAX_HEIGHT / 4 &&
@@ -96,6 +99,8 @@ const Physics = (entities, { touches, time, dispatch, events }) => {
       }
     }
   }
+
+  //크레인 좌우 움직임
   if (craneMove === true) {
     if (
       crane.position.x >= Constants.MAX_WIDTH / 8 &&
@@ -103,12 +108,12 @@ const Physics = (entities, { touches, time, dispatch, events }) => {
     ) {
       if (LR !== false) {
         Matter.Body.setPosition(crane, {
-          x: crane.position.x + 1,
+          x: crane.position.x + 1.5,
           y: crane.position.y,
         });
       } else {
         Matter.Body.setPosition(crane, {
-          x: crane.position.x - 1,
+          x: crane.position.x - 1.5,
           y: crane.position.y,
         });
         LR = false;
@@ -116,65 +121,80 @@ const Physics = (entities, { touches, time, dispatch, events }) => {
     } else if (crane.position.x > Constants.MAX_WIDTH - 40) {
       LR = false;
       Matter.Body.setPosition(crane, {
-        x: crane.position.x - 1,
+        x: crane.position.x - 1.5,
         y: crane.position.y,
       });
     } else {
       LR = true;
       Matter.Body.setPosition(crane, {
-        x: crane.position.x + 1,
+        x: crane.position.x + 1.5,
         y: crane.position.y,
       });
     }
   }
 
+  //렌더 슬라임
   let redPuppets = Matter.Bodies.circle(
-    Constants.MAX_WIDTH / 2,
-    Constants.MAX_HEIGHT / 2,
+    Constants.MAX_WIDTH / 1.2,
+    Constants.MAX_HEIGHT / 2 + 100,
     30,
     { name: redPuppet }
   );
   let bluePuppets = Matter.Bodies.circle(
     Constants.MAX_WIDTH / 3,
-    Constants.MAX_HEIGHT / 2,
+    Constants.MAX_HEIGHT / 2 + 100,
     30,
     { name: bluePuppet }
   );
   let yellowPuppets = Matter.Bodies.circle(
-    Constants.MAX_WIDTH / 2,
-    Constants.MAX_HEIGHT / 2,
+    Constants.MAX_WIDTH / 1.5,
+    Constants.MAX_HEIGHT / 2 + 100,
     30,
     { name: yellowPuppet }
   );
 
-  const color = ["redPuppets", "bluePuppets", "yellowPuppets"];
+  //터치시 발동
   touches
     .filter((t) => t.type === "press")
     .forEach((t) => {
-      switch (Math.floor(Math.random() * color.length)) {
-        case 0:
-          Matter.World.add(engine.world, redPuppets);
-          entities.redPuppets.bodies = [
-            ...entities.redPuppets.bodies,
-            redPuppets,
-          ];
-          break;
-        case 1:
-          Matter.World.add(engine.world, bluePuppets);
-          entities.bluePuppets.bodies = [
-            ...entities.bluePuppets.bodies,
-            bluePuppets,
-          ];
-          break;
-        case 2:
-          Matter.World.add(engine.world, yellowPuppets);
-          entities.yellowPuppets.bodies = [
-            ...entities.yellowPuppets.bodies,
-            yellowPuppets,
-          ];
-          break;
-      }
+      Matter.Body.applyForce(redPuppets, redPuppets.position, {
+        x: -0.01,
+        y: -0.1,
+      });
     });
+
+  //7마리 이하일때 7마리까지 소환
+  const color = ["redPuppets", "bluePuppets", "yellowPuppets"];
+  if (
+    entities.redPuppets.bodies.length +
+      entities.bluePuppets.bodies.length +
+      entities.yellowPuppets.bodies.length <
+    7
+  ) {
+    switch (Math.floor(Math.random() * color.length)) {
+      case 0:
+        Matter.World.add(engine.world, redPuppets);
+        entities.redPuppets.bodies = [
+          ...entities.redPuppets.bodies,
+          redPuppets,
+        ];
+        break;
+      case 1:
+        Matter.World.add(engine.world, bluePuppets);
+        entities.bluePuppets.bodies = [
+          ...entities.bluePuppets.bodies,
+          bluePuppets,
+        ];
+        break;
+      case 2:
+        Matter.World.add(engine.world, yellowPuppets);
+        entities.yellowPuppets.bodies = [
+          ...entities.yellowPuppets.bodies,
+          yellowPuppets,
+        ];
+        break;
+    }
+  }
 
   Matter.Engine.update(engine, time.delta);
 

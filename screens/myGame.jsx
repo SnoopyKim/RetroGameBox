@@ -15,7 +15,7 @@ import YellowPuppet from "../myGameComponents/Puppet/YellowPuppet";
 import Wall from "../myGameComponents/Wall";
 import Shelf from "../myGameComponents/Shelf";
 import Crane from "../myGameComponents/Crane";
-import Matter from "matter-js";
+import Matter, { Engine } from "matter-js";
 import Physics from "../myGameComponents/Physics";
 import Constants from "../myGameComponents/Constants";
 import { GameEngine } from "react-native-game-engine";
@@ -81,14 +81,14 @@ export default class Mygame extends Component {
       crane.position.y + 20 + Constants.MAX_HEIGHT / 4,
       7,
       60,
-      { isStatic: true }
+      { isStatic: true, name: cranePin3 }
     );
     let cranePin4 = Matter.Bodies.rectangle(
       Constants.MAX_WIDTH / 6 - 5,
       crane.position.y + 20 + Constants.MAX_HEIGHT / 4,
       7,
       60,
-      { isStatic: true }
+      { isStatic: true, name: cranePin4 }
     );
 
     let shelf = Matter.Bodies.rectangle(
@@ -123,9 +123,15 @@ export default class Mygame extends Component {
 
     Matter.Body.rotate(shelf, 4);
 
-    Matter.Events.on(engine, "collisionactive", (event) => {
-      var pairs = event.pairs;
+    Matter.Events.on(engine, "collisionStart", (event) => {
+      event.pairs.forEach((pair) => {
+        const { bodyA, bodyB } = pair;
+        if (bodyA.name === "cranePin3" || bodyA.name === "cranePin4") {
+          console.log(bodyB);
+        }
+      });
     });
+
     Matter.World.add(world, [
       crane,
       cranePin1,
@@ -167,14 +173,14 @@ export default class Mygame extends Component {
         size: [7, 60],
         color: "gold",
         renderer: Crane,
-        rotate: -20,
+        rotate: -10,
       },
       cranePin4: {
         body: cranePin4,
         size: [7, 60],
         color: "gold",
         renderer: Crane,
-        rotate: 20,
+        rotate: 10,
       },
       floor: {
         body: floor,
@@ -269,7 +275,7 @@ export default class Mygame extends Component {
               >
                 <View style={styles.control}>
                   <Text style={styles.textBox}>
-                    {this.state.isMove ? "Grab" : "Move"}
+                    {this.state.isMove ? "잡기" : "이동"}
                   </Text>
                 </View>
               </TouchableOpacity>
@@ -304,7 +310,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: Constants.MAX_WIDTH,
     height: 100,
-    backgroundColor: "orange",
+    backgroundColor: "teal",
     top: Constants.MAX_HEIGHT / 1.45,
     flexDirection: "column",
   },
@@ -313,12 +319,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     top: 20,
     height: Constants.MAX_HEIGHT / 5,
-    backgroundColor: "orange",
+    backgroundColor: "teal",
     width: Constants.MAX_WIDTH,
     flexDirection: "row",
   },
   textBox: {
     fontSize: 40,
+    fontFamily: "DGM",
   },
   control: {
     width: 120,
@@ -327,6 +334,8 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "teal",
+    backgroundColor: "tomato",
+    borderWidth: 5,
+    borderColor: "gray",
   },
 });
