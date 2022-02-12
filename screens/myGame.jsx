@@ -20,6 +20,8 @@ import Physics from "../myGameComponents/Physics";
 import Constants from "../myGameComponents/Constants";
 import { GameEngine } from "react-native-game-engine";
 import AssetLoading from "../components/AssetLoading";
+import redPuppets from "../myGameComponents/Puppet/RedPuppet";
+import bluePuppets from "../myGameComponents/Puppet/BluePuppet";
 
 const backgroundImg = require("../assets/images/main_bg.png");
 
@@ -62,33 +64,63 @@ export default class Mygame extends Component {
       { isStatic: true }
     );
 
+    let craneBar = Matter.Bodies.rectangle(
+      Constants.MAX_WIDTH / 8,
+      Constants.MAX_HEIGHT / 4,
+      10,
+      100,
+      { isStatic: true, name: "craneBar" }
+    );
+
     let cranePin1 = Matter.Bodies.rectangle(
       Constants.MAX_WIDTH / 6 + 5,
       crane.position.y + 20 + Constants.MAX_HEIGHT / 4,
       7,
       50,
-      { isStatic: true }
+      {
+        isStatic: true,
+        collisionFilter: {
+          category: 0x0002,
+        },
+      }
     );
     let cranePin2 = Matter.Bodies.rectangle(
       Constants.MAX_WIDTH / 6 - 5,
       crane.position.y + 20 + Constants.MAX_HEIGHT / 4,
       7,
       50,
-      { isStatic: true }
+      {
+        isStatic: true,
+        collisionFilter: {
+          category: 0x0002,
+        },
+      }
     );
     let cranePin3 = Matter.Bodies.rectangle(
       Constants.MAX_WIDTH / 6 - 5,
       crane.position.y + 20 + Constants.MAX_HEIGHT / 4,
       7,
       60,
-      { isStatic: true, name: cranePin3 }
+      {
+        isStatic: true,
+        name: "cranePin",
+        collisionFilter: {
+          category: 0x0002,
+        },
+      }
     );
     let cranePin4 = Matter.Bodies.rectangle(
       Constants.MAX_WIDTH / 6 - 5,
       crane.position.y + 20 + Constants.MAX_HEIGHT / 4,
       7,
       60,
-      { isStatic: true, name: cranePin4 }
+      {
+        isStatic: true,
+        name: "cranePin",
+        collisionFilter: {
+          category: 0x0002,
+        },
+      }
     );
 
     let shelf = Matter.Bodies.rectangle(
@@ -123,17 +155,36 @@ export default class Mygame extends Component {
 
     Matter.Body.rotate(shelf, 4);
 
+    //크레인에 잡힘
     Matter.Events.on(engine, "collisionStart", (event) => {
       event.pairs.forEach((pair) => {
         const { bodyA, bodyB } = pair;
-        if (bodyA.name === "cranePin3" || bodyA.name === "cranePin4") {
-          console.log(bodyB);
+        if (bodyA.name === "cranePin") {
+          this.gameEngine.dispatch({ type: "craneGrab", puppet: bodyB });
+          switch (bodyB.name) {
+            case "redPuppet":
+              this.gameEngine.dispatch({ type: "craneGrab", redpuppet: bodyB });
+              break;
+            case "bluePuppet":
+              this.gameEngine.dispatch({
+                type: "craneGrab",
+                bluepuppet: bodyB,
+              });
+              break;
+            case "yellowPuppet":
+              this.gameEngine.dispatch({
+                type: "craneGrab",
+                yellowpuppet: bodyB,
+              });
+              break;
+          }
         }
       });
     });
 
     Matter.World.add(world, [
       crane,
+      craneBar,
       cranePin1,
       cranePin2,
       cranePin3,
@@ -152,6 +203,12 @@ export default class Mygame extends Component {
         body: crane,
         size: [15, Constants.MAX_HEIGHT / 2],
         color: "gold",
+        renderer: Crane,
+      },
+      craneBar: {
+        body: craneBar,
+        size: [10, 100],
+        color: "transparent",
         renderer: Crane,
       },
       cranePin1: {

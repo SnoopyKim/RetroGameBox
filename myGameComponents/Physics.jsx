@@ -11,6 +11,7 @@ const Physics = (entities, { touches, time, dispatch, events }) => {
   let bluePuppet = entities.bluePuppets.body;
   let yellowPuppet = entities.yellowPuppets.body;
   let crane = entities.crane.body;
+  let craneBar = entities.craneBar.body;
   let cranepin1 = entities.cranePin1.body;
   let cranepin2 = entities.cranePin2.body;
   let cranepin3 = entities.cranePin3.body;
@@ -30,11 +31,16 @@ const Physics = (entities, { touches, time, dispatch, events }) => {
         UD = true;
         craneMove = false;
         craneGrab = false;
+      } else if (events[i].type === "craneGrab") {
       }
     }
   }
 
   //크레인핀 각 전환
+  Matter.Body.setPosition(craneBar, {
+    x: crane.position.x,
+    y: crane.position.y + 210,
+  });
   Matter.Body.setPosition(cranepin1, {
     x: crane.position.x - 15,
     y: crane.position.y + 200,
@@ -138,19 +144,34 @@ const Physics = (entities, { touches, time, dispatch, events }) => {
     Constants.MAX_WIDTH / 1.2,
     Constants.MAX_HEIGHT / 2 + 100,
     30,
-    { name: redPuppet }
+    {
+      name: "redPuppet",
+      collisionFilter: {
+        category: 0x0001,
+      },
+    }
   );
   let bluePuppets = Matter.Bodies.circle(
     Constants.MAX_WIDTH / 3,
     Constants.MAX_HEIGHT / 2 + 100,
     30,
-    { name: bluePuppet }
+    {
+      name: "bluePuppet",
+      collisionFilter: {
+        category: 0x0001,
+      },
+    }
   );
   let yellowPuppets = Matter.Bodies.circle(
     Constants.MAX_WIDTH / 1.5,
     Constants.MAX_HEIGHT / 2 + 100,
     30,
-    { name: yellowPuppet }
+    {
+      name: "yellowPuppet",
+      collisionFilter: {
+        category: 0x0001,
+      },
+    }
   );
 
   //터치시 발동
