@@ -4,39 +4,61 @@ let LR = true;
 let UD = true;
 let craneMove = false;
 let craneGrab = false;
+let spawnSlime;
 
 const Physics = (entities, { touches, time, dispatch, events }) => {
   let engine = entities.physics.engine;
-  let redPuppet = entities.redPuppets.body;
-  let bluePuppet = entities.bluePuppets.body;
-  let yellowPuppet = entities.yellowPuppets.body;
   let crane = entities.crane.body;
   let craneBar = entities.craneBar.body;
   let cranepin1 = entities.cranePin1.body;
   let cranepin2 = entities.cranePin2.body;
   let cranepin3 = entities.cranePin3.body;
   let cranepin4 = entities.cranePin4.body;
-  let shelf = entities.shelf.body;
 
   //엔진 상태
   if (events.length) {
-    for (let i = 0; i < events.length; i++) {
-      if (events[i].type === "craneMove") {
-        craneMove = true;
-      } else if (events[i].type === "craneStop") {
-        craneMove = false;
-        craneGrab = true;
-      } else if (events[i].type === "started") {
-        LR = true;
-        UD = true;
-        craneMove = false;
-        craneGrab = false;
-      } else if (events[i].type === "craneGrab") {
+    events.forEach((e) => {
+      console.log(e.type);
+      switch (e.type) {
+        case "craneMove":
+          craneMove = true;
+          break;
+        case "craneStop":
+          craneMove = false;
+          craneGrab = true;
+          break;
+        case "started":
+          LR = true;
+          UD = true;
+          craneMove = false;
+          craneGrab = false;
+          break;
+        case "craneGrabR":
+          entities.redPuppets.bodies = entities.redPuppets.bodies.filter(
+            (puppet) => puppet !== e.redpuppet
+          );
+          Matter.World.remove(engine.world, e.redpuppet);
+          UD = false;
+          break;
+        case "craneGrabB":
+          entities.bluePuppets.bodies = entities.bluePuppets.bodies.filter(
+            (puppet) => puppet !== e.bluepuppet
+          );
+          Matter.World.remove(engine.world, e.bluepuppet);
+          UD = false;
+          break;
+        case "craneGrabY":
+          entities.yellowPuppets.bodies = entities.yellowPuppets.bodies.filter(
+            (puppet) => puppet !== e.yellowpuppet
+          );
+          Matter.World.remove(engine.world, e.yellowpuppet);
+          UD = false;
+          break;
       }
-    }
+    });
   }
 
-  //크레인핀 각 전환
+  //크레인핀 유기적 각도 전환
   Matter.Body.setPosition(craneBar, {
     x: crane.position.x,
     y: crane.position.y + 210,
@@ -66,7 +88,7 @@ const Physics = (entities, { touches, time, dispatch, events }) => {
   if (craneGrab === true) {
     if (
       crane.position.y >= Constants.MAX_HEIGHT / 6 - Constants.MAX_HEIGHT / 4 &&
-      crane.position.y <= Constants.MAX_HEIGHT / 6
+      crane.position.y <= Constants.MAX_HEIGHT / 4
     ) {
       if (UD !== false) {
         Matter.Body.setPosition(crane, {
@@ -79,7 +101,7 @@ const Physics = (entities, { touches, time, dispatch, events }) => {
           y: crane.position.y - 2,
         });
       }
-    } else if (crane.position.y > Constants.MAX_HEIGHT / 6) {
+    } else if (crane.position.y > Constants.MAX_HEIGHT / 4) {
       UD = false;
       Matter.Body.setPosition(crane, {
         x: crane.position.x,
@@ -142,34 +164,34 @@ const Physics = (entities, { touches, time, dispatch, events }) => {
   //렌더 슬라임
   let redPuppets = Matter.Bodies.circle(
     Constants.MAX_WIDTH / 1.2,
-    Constants.MAX_HEIGHT / 2 + 100,
+    Constants.MAX_HEIGHT / 2,
     30,
     {
       name: "redPuppet",
       collisionFilter: {
-        category: 0x0001,
+        mask: 0x0001,
       },
     }
   );
   let bluePuppets = Matter.Bodies.circle(
-    Constants.MAX_WIDTH / 3,
-    Constants.MAX_HEIGHT / 2 + 100,
+    Constants.MAX_WIDTH / 1.8,
+    Constants.MAX_HEIGHT / 2,
     30,
     {
       name: "bluePuppet",
       collisionFilter: {
-        category: 0x0001,
+        mask: 0x0001,
       },
     }
   );
   let yellowPuppets = Matter.Bodies.circle(
     Constants.MAX_WIDTH / 1.5,
-    Constants.MAX_HEIGHT / 2 + 100,
+    Constants.MAX_HEIGHT / 2,
     30,
     {
       name: "yellowPuppet",
       collisionFilter: {
-        category: 0x0001,
+        mask: 0x0001,
       },
     }
   );
@@ -184,14 +206,24 @@ const Physics = (entities, { touches, time, dispatch, events }) => {
       });
     });
 
-  //7마리 이하일때 7마리까지 소환
+  //0마리일때 7마리까지 소환
   const color = ["redPuppets", "bluePuppets", "yellowPuppets"];
   if (
     entities.redPuppets.bodies.length +
       entities.bluePuppets.bodies.length +
-      entities.yellowPuppets.bodies.length <
+      entities.yellowPuppets.bodies.length ===
     7
   ) {
+    spawnSlime = false;
+  }
+  if (
+    entities.redPuppets.bodies.length +
+      entities.bluePuppets.bodies.length +
+      entities.yellowPuppets.bodies.length ===
+      0 ||
+    spawnSlime === true
+  ) {
+    spawnSlime = true;
     switch (Math.floor(Math.random() * color.length)) {
       case 0:
         Matter.World.add(engine.world, redPuppets);
@@ -216,7 +248,6 @@ const Physics = (entities, { touches, time, dispatch, events }) => {
         break;
     }
   }
-
   Matter.Engine.update(engine, time.delta);
 
   return entities;

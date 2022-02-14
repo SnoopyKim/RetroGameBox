@@ -159,21 +159,24 @@ export default class Mygame extends Component {
     Matter.Events.on(engine, "collisionStart", (event) => {
       event.pairs.forEach((pair) => {
         const { bodyA, bodyB } = pair;
-        if (bodyA.name === "cranePin") {
+        if (bodyA.name === "craneBar") {
           this.gameEngine.dispatch({ type: "craneGrab", puppet: bodyB });
           switch (bodyB.name) {
             case "redPuppet":
-              this.gameEngine.dispatch({ type: "craneGrab", redpuppet: bodyB });
+              this.gameEngine.dispatch({
+                type: "craneGrabR",
+                redpuppet: bodyB,
+              });
               break;
             case "bluePuppet":
               this.gameEngine.dispatch({
-                type: "craneGrab",
+                type: "craneGrabB",
                 bluepuppet: bodyB,
               });
               break;
             case "yellowPuppet":
               this.gameEngine.dispatch({
-                type: "craneGrab",
+                type: "craneGrabY",
                 yellowpuppet: bodyB,
               });
               break;
