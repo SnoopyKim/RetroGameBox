@@ -5,6 +5,7 @@ let UD = true;
 let craneMove = false;
 let craneGrab = false;
 let spawnSlime;
+let grabbedPuppet;
 
 const Physics = (entities, { touches, time, dispatch, events }) => {
   let engine = entities.physics.engine;
@@ -33,31 +34,39 @@ const Physics = (entities, { touches, time, dispatch, events }) => {
           craneMove = false;
           craneGrab = false;
           break;
-        case "craneGrabR":
+        case "craneGrab":
+          // entities.redPuppets.bodies = entities.redPuppets.bodies.filter(
+          //   (puppet) => puppet !== e.redpuppet
+          // );
+          // Matter.World.remove(engine.world, e.redpuppet);
+          Matter.Body.setStatic(e.puppet, true);
+          Matter.Body.setPosition(e.puppet, {
+            x: crane.position.x,
+            y: crane.position.y + 230,
+          });
+          grabbedPuppet = e.puppet;
+          UD = false;
+          break;
+        case "scoreUp":
+          Matter.World.remove(engine.world, e.rPuppet);
           entities.redPuppets.bodies = entities.redPuppets.bodies.filter(
-            (puppet) => puppet !== e.redpuppet
+            (puppet) => puppet !== e.rPuppet
           );
-          Matter.World.remove(engine.world, e.redpuppet);
-          UD = false;
-          break;
-        case "craneGrabB":
           entities.bluePuppets.bodies = entities.bluePuppets.bodies.filter(
-            (puppet) => puppet !== e.bluepuppet
+            (puppet) => puppet !== e.rPuppet
           );
-          Matter.World.remove(engine.world, e.bluepuppet);
-          UD = false;
-          break;
-        case "craneGrabY":
           entities.yellowPuppets.bodies = entities.yellowPuppets.bodies.filter(
-            (puppet) => puppet !== e.yellowpuppet
+            (puppet) => puppet !== e.rPuppet
           );
-          Matter.World.remove(engine.world, e.yellowpuppet);
-          UD = false;
-          break;
       }
     });
   }
-
+  if (grabbedPuppet !== undefined) {
+    Matter.Body.setPosition(grabbedPuppet, {
+      x: crane.position.x,
+      y: crane.position.y + 240,
+    });
+  }
   //크레인핀 유기적 각도 전환
   Matter.Body.setPosition(craneBar, {
     x: crane.position.x,
@@ -116,6 +125,14 @@ const Physics = (entities, { touches, time, dispatch, events }) => {
         UD = true;
         craneMove = false;
         craneGrab = false;
+        if (grabbedPuppet !== undefined) {
+          Matter.Body.setPosition(grabbedPuppet, {
+            x: crane.position.x,
+            y: crane.position.y + 290,
+          });
+          Matter.Body.setStatic(grabbedPuppet, false);
+          grabbedPuppet = undefined;
+        }
         Matter.Body.setPosition(crane, {
           x: Constants.MAX_WIDTH / 8,
           y: Constants.MAX_HEIGHT / 6 - Constants.MAX_HEIGHT / 4,

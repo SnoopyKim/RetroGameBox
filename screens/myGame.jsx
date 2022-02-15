@@ -20,8 +20,8 @@ import Physics from "../myGameComponents/Physics";
 import Constants from "../myGameComponents/Constants";
 import { GameEngine } from "react-native-game-engine";
 import AssetLoading from "../components/AssetLoading";
-import redPuppets from "../myGameComponents/Puppet/RedPuppet";
-import bluePuppets from "../myGameComponents/Puppet/BluePuppet";
+import RedPuppets from "../myGameComponents/Puppet/RedPuppet";
+import BluePuppets from "../myGameComponents/Puppet/BluePuppet";
 
 const backgroundImg = require("../assets/images/main_bg.png");
 
@@ -152,6 +152,13 @@ export default class Mygame extends Component {
       Constants.MAX_HEIGHT / 6,
       { isStatic: true }
     );
+    let scoreBar = Matter.Bodies.rectangle(
+      -30,
+      Constants.MAX_HEIGHT / 1.6,
+      30,
+      20,
+      { isStatic: true, name: "scoreBar" }
+    );
 
     Matter.Body.rotate(shelf, 4);
 
@@ -159,28 +166,17 @@ export default class Mygame extends Component {
     Matter.Events.on(engine, "collisionStart", (event) => {
       event.pairs.forEach((pair) => {
         const { bodyA, bodyB } = pair;
-        if (bodyA.name === "craneBar") {
+        if (bodyA.name === "craneBar" && this.state.isGrab === true) {
           this.gameEngine.dispatch({ type: "craneGrab", puppet: bodyB });
-          switch (bodyB.name) {
-            case "redPuppet":
-              this.gameEngine.dispatch({
-                type: "craneGrabR",
-                redpuppet: bodyB,
-              });
-              break;
-            case "bluePuppet":
-              this.gameEngine.dispatch({
-                type: "craneGrabB",
-                bluepuppet: bodyB,
-              });
-              break;
-            case "yellowPuppet":
-              this.gameEngine.dispatch({
-                type: "craneGrabY",
-                yellowpuppet: bodyB,
-              });
-              break;
-          }
+        }
+      });
+    });
+    // 스코어 1up
+    Matter.Events.on(engine, "collisionStart", (event) => {
+      event.pairs.forEach((pair) => {
+        const { bodyA, bodyB } = pair;
+        if (bodyA.name === "scoreBar") {
+          this.gameEngine.dispatch({ type: "scoreUp", rPuppet: bodyB });
         }
       });
     });
@@ -198,6 +194,7 @@ export default class Mygame extends Component {
       basket,
       basket2,
       basket3,
+      scoreBar,
     ]);
 
     return {
