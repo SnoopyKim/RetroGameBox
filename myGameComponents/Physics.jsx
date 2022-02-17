@@ -6,6 +6,7 @@ let craneMove = false;
 let craneGrab = false;
 let spawnSlime;
 let grabbedPuppet;
+let speed = 2;
 
 const Physics = (entities, { touches, time, dispatch, events }) => {
   let engine = entities.physics.engine;
@@ -33,12 +34,10 @@ const Physics = (entities, { touches, time, dispatch, events }) => {
           UD = true;
           craneMove = false;
           craneGrab = false;
+          speed = 2;
+          time = 60;
           break;
         case "craneGrab":
-          // entities.redPuppets.bodies = entities.redPuppets.bodies.filter(
-          //   (puppet) => puppet !== e.redpuppet
-          // );
-          // Matter.World.remove(engine.world, e.redpuppet);
           Matter.Body.setStatic(e.puppet, true);
           Matter.Body.setPosition(e.puppet, {
             x: crane.position.x,
@@ -58,6 +57,24 @@ const Physics = (entities, { touches, time, dispatch, events }) => {
           entities.yellowPuppets.bodies = entities.yellowPuppets.bodies.filter(
             (puppet) => puppet !== e.rPuppet
           );
+          break;
+        case "resetGame":
+          Matter.Body.setPosition(crane, {
+            x: Constants.MAX_WIDTH / 8,
+            y: Constants.MAX_HEIGHT / 6 - Constants.MAX_HEIGHT / 4,
+          });
+          speed = 2;
+          break;
+        case "speedUp":
+          speed = speed + 0.3;
+          break;
+
+        // LR = true;
+        // UD = true;
+        // craneMove = false;
+        // craneGrab = false;
+        // spawnSlime = false;
+        // grabbedPuppet = undefined;
       }
     });
   }
@@ -70,7 +87,7 @@ const Physics = (entities, { touches, time, dispatch, events }) => {
   //크레인핀 유기적 각도 전환
   Matter.Body.setPosition(craneBar, {
     x: crane.position.x,
-    y: crane.position.y + 210,
+    y: crane.position.y + 207,
   });
   Matter.Body.setPosition(cranepin1, {
     x: crane.position.x - 15,
@@ -88,10 +105,6 @@ const Physics = (entities, { touches, time, dispatch, events }) => {
     x: crane.position.x + 25,
     y: crane.position.y + 240,
   });
-  Matter.Body.rotate(cranepin1, 45);
-  Matter.Body.rotate(cranepin2, -45);
-  Matter.Body.rotate(cranepin3, -20);
-  Matter.Body.rotate(cranepin4, 20);
 
   //크레인 상하 움직임
   if (craneGrab === true) {
@@ -102,19 +115,19 @@ const Physics = (entities, { touches, time, dispatch, events }) => {
       if (UD !== false) {
         Matter.Body.setPosition(crane, {
           x: crane.position.x,
-          y: crane.position.y + 2,
+          y: crane.position.y + speed,
         });
       } else {
         Matter.Body.setPosition(crane, {
           x: crane.position.x,
-          y: crane.position.y - 2,
+          y: crane.position.y - speed,
         });
       }
     } else if (crane.position.y > Constants.MAX_HEIGHT / 4) {
       UD = false;
       Matter.Body.setPosition(crane, {
         x: crane.position.x,
-        y: crane.position.y - 2,
+        y: crane.position.y - speed,
       });
     } else if (
       crane.position.y <
@@ -153,12 +166,12 @@ const Physics = (entities, { touches, time, dispatch, events }) => {
     ) {
       if (LR !== false) {
         Matter.Body.setPosition(crane, {
-          x: crane.position.x + 1.5,
+          x: crane.position.x + speed,
           y: crane.position.y,
         });
       } else {
         Matter.Body.setPosition(crane, {
-          x: crane.position.x - 1.5,
+          x: crane.position.x - speed,
           y: crane.position.y,
         });
         LR = false;
@@ -166,13 +179,13 @@ const Physics = (entities, { touches, time, dispatch, events }) => {
     } else if (crane.position.x > Constants.MAX_WIDTH - 40) {
       LR = false;
       Matter.Body.setPosition(crane, {
-        x: crane.position.x - 1.5,
+        x: crane.position.x - speed,
         y: crane.position.y,
       });
     } else {
       LR = true;
       Matter.Body.setPosition(crane, {
-        x: crane.position.x + 1.5,
+        x: crane.position.x + speed,
         y: crane.position.y,
       });
     }
@@ -214,14 +227,7 @@ const Physics = (entities, { touches, time, dispatch, events }) => {
   );
 
   //터치시 발동
-  touches
-    .filter((t) => t.type === "press")
-    .forEach((t) => {
-      Matter.Body.applyForce(redPuppets, redPuppets.position, {
-        x: -0.01,
-        y: -0.1,
-      });
-    });
+  touches.filter((t) => t.type === "press").forEach((t) => {});
 
   //0마리일때 7마리까지 소환
   const color = ["redPuppets", "bluePuppets", "yellowPuppets"];

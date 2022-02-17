@@ -14,7 +14,7 @@ export default class Shelf extends Component {
           position: "absolute",
           left: x,
           top: y,
-          rotation: 58,
+          rotation: this.props.rotate,
           width: width,
           height: height,
           backgroundColor: this.props.color,

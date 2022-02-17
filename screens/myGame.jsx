@@ -20,27 +20,50 @@ import Physics from "../myGameComponents/Physics";
 import Constants from "../myGameComponents/Constants";
 import { GameEngine } from "react-native-game-engine";
 import AssetLoading from "../components/AssetLoading";
-import RedPuppets from "../myGameComponents/Puppet/RedPuppet";
-import BluePuppets from "../myGameComponents/Puppet/BluePuppet";
 
 const backgroundImg = require("../assets/images/main_bg.png");
 
 export default class Mygame extends Component {
   constructor(props) {
     super(props);
+    this.timeInterval = null;
+    const defaultTime = 60;
     this.state = {
       running: true,
       isMove: false,
       isGrab: false,
+      score: 0,
+      time: defaultTime,
     };
     this.gameEngine = null;
     this.entities = this.setupWorld();
   }
+  setupTicks = () => {
+    this.timeInterval = setInterval(this.timerTick, 1000);
+  };
+  timerTick = () => {
+    if (this.state.time === 0) {
+      this.setState({ running: false });
+    } else {
+      this.setState({
+        time: this.state.time - 1,
+      });
+    }
+  };
+  reset = () => {
+    this.setState({
+      time: 60,
+      score: 0,
+      isGrab: false,
+      isMove: false,
+      running: true,
+    });
+    this.setState(this.setupTicks);
+  };
 
   setupWorld = () => {
     let engine = Matter.Engine.create({ enableSleeping: false });
     let world = engine.world;
-
     let floor = Matter.Bodies.rectangle(
       Constants.MAX_WIDTH / 2,
       Constants.MAX_HEIGHT / 1.5,
@@ -80,8 +103,9 @@ export default class Mygame extends Component {
       {
         isStatic: true,
         collisionFilter: {
-          category: 0x0002,
+          category: 0x0010,
         },
+        angle: 45,
       }
     );
     let cranePin2 = Matter.Bodies.rectangle(
@@ -92,8 +116,9 @@ export default class Mygame extends Component {
       {
         isStatic: true,
         collisionFilter: {
-          category: 0x0002,
+          category: 0x0010,
         },
+        angle: -45,
       }
     );
     let cranePin3 = Matter.Bodies.rectangle(
@@ -105,8 +130,9 @@ export default class Mygame extends Component {
         isStatic: true,
         name: "cranePin",
         collisionFilter: {
-          category: 0x0002,
+          category: 0x0010,
         },
+        angle: -20,
       }
     );
     let cranePin4 = Matter.Bodies.rectangle(
@@ -118,8 +144,9 @@ export default class Mygame extends Component {
         isStatic: true,
         name: "cranePin",
         collisionFilter: {
-          category: 0x0002,
+          category: 0x00010,
         },
+        angle: 20,
       }
     );
 
@@ -128,7 +155,7 @@ export default class Mygame extends Component {
       Constants.MAX_HEIGHT / 1.5 - 29,
       45,
       97,
-      { isStatic: true }
+      { isStatic: true, angle: 70 }
     );
 
     let basket = Matter.Bodies.rectangle(
@@ -160,8 +187,6 @@ export default class Mygame extends Component {
       { isStatic: true, name: "scoreBar" }
     );
 
-    Matter.Body.rotate(shelf, 4);
-
     //크레인에 잡힘
     Matter.Events.on(engine, "collisionStart", (event) => {
       event.pairs.forEach((pair) => {
@@ -177,6 +202,13 @@ export default class Mygame extends Component {
         const { bodyA, bodyB } = pair;
         if (bodyA.name === "scoreBar") {
           this.gameEngine.dispatch({ type: "scoreUp", rPuppet: bodyB });
+          this.setState({
+            score: this.state.score + 5,
+            time: this.state.time + 2,
+          });
+          if (this.state.score % 10 === 0) {
+            this.gameEngine.dispatch({ type: "speedUp" });
+          }
         }
       });
     });
@@ -256,7 +288,7 @@ export default class Mygame extends Component {
         size: [45, 97],
         color: "purple",
         renderer: Shelf,
-        rotate: 20,
+        rotate: 58,
       },
       basket: {
         body: basket,
@@ -316,7 +348,16 @@ export default class Mygame extends Component {
             <StatusBar hidden={true} />
           </GameEngine>
           <View style={styles.controls}>
-            <Text>score:</Text>
+            <View
+              style={{ flexDirection: "row", justifyContent: "space-between" }}
+            >
+              <Text style={{ fontSize: 20, fontFamily: "DGM" }}>
+                score:{this.state.score} Time:{this.state.time}
+              </Text>
+              <TouchableOpacity style={styles.resetBtn}>
+                <Text style={{ fontFamily: "DGM" }}>리셋</Text>
+              </TouchableOpacity>
+            </View>
             <View style={styles.controlRow}>
               <TouchableOpacity
                 disabled={this.state.isGrab}
@@ -324,6 +365,9 @@ export default class Mygame extends Component {
                   if (this.state.isMove === false) {
                     this.gameEngine.dispatch({ type: "craneMove" });
                     this.setState({ isMove: true });
+                    if (this.state.time === 60) {
+                      this.setState(this.setupTicks);
+                    }
                   } else {
                     this.gameEngine.dispatch({ type: "craneStop" });
                     this.setState({ isMove: false, isGrab: true });
@@ -375,13 +419,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     top: 20,
-    height: Constants.MAX_HEIGHT / 5,
+    height: Constants.MAX_HEIGHT / 9,
     backgroundColor: "teal",
     width: Constants.MAX_WIDTH,
     flexDirection: "row",
   },
   textBox: {
-    fontSize: 40,
+    fontSize: 35,
     fontFamily: "DGM",
   },
   control: {
@@ -391,8 +435,20 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "tomato",
+    backgroundColor: "red",
     borderWidth: 5,
-    borderColor: "gray",
+    borderColor: "black",
+    borderStyle: "dotted",
+  },
+  resetBtn: {
+    width: 40,
+    height: 40,
+    margin: 5,
+    borderRadius: 70,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "red",
+    borderWidth: 3,
+    borderColor: "black",
   },
 });
