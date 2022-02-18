@@ -51,6 +51,7 @@ export default class Mygame extends Component {
     }
   };
   reset = () => {
+    if (this.timeInterval) clearInterval(this.timeInterval);
     this.setState({
       time: 60,
       score: 0,
@@ -58,7 +59,6 @@ export default class Mygame extends Component {
       isMove: false,
       running: true,
     });
-    this.setState(this.setupTicks);
   };
 
   setupWorld = () => {
@@ -354,7 +354,13 @@ export default class Mygame extends Component {
               <Text style={{ fontSize: 20, fontFamily: "DGM" }}>
                 score:{this.state.score} Time:{this.state.time}
               </Text>
-              <TouchableOpacity style={styles.resetBtn}>
+              <TouchableOpacity
+                style={styles.resetBtn}
+                onPress={() => {
+                  this.gameEngine.dispatch({ type: "resetGame" }),
+                    this.setState(this.reset);
+                }}
+              >
                 <Text style={{ fontFamily: "DGM" }}>리셋</Text>
               </TouchableOpacity>
             </View>
@@ -362,21 +368,25 @@ export default class Mygame extends Component {
               <TouchableOpacity
                 disabled={this.state.isGrab}
                 onPress={() => {
-                  if (this.state.isMove === false) {
-                    this.gameEngine.dispatch({ type: "craneMove" });
-                    this.setState({ isMove: true });
-                    if (this.state.time === 60) {
-                      this.setState(this.setupTicks);
-                    }
+                  if (this.state.running === false) {
+                    this.setState({ running: true });
                   } else {
-                    this.gameEngine.dispatch({ type: "craneStop" });
-                    this.setState({ isMove: false, isGrab: true });
+                    if (this.state.isMove === false) {
+                      this.setState({ isMove: true });
+                      this.gameEngine.dispatch({ type: "craneMove" });
+                      if (this.state.time === 60) {
+                        this.setState(this.setupTicks);
+                      }
+                    } else {
+                      this.gameEngine.dispatch({ type: "craneStop" });
+                      this.setState({ isMove: false, isGrab: true });
+                    }
                   }
                 }}
               >
                 <View style={styles.control}>
                   <Text style={styles.textBox}>
-                    {this.state.isMove ? "잡기" : "이동"}
+                    {this.state.isGrab ? "뽑기" : "이동"}
                   </Text>
                 </View>
               </TouchableOpacity>

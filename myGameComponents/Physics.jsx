@@ -16,6 +16,9 @@ const Physics = (entities, { touches, time, dispatch, events }) => {
   let cranepin2 = entities.cranePin2.body;
   let cranepin3 = entities.cranePin3.body;
   let cranepin4 = entities.cranePin4.body;
+  let redPuppet = entities.redPuppets.bodies;
+  let bluePuppet = entities.bluePuppets.bodies;
+  let yellowPuppet = entities.yellowPuppets.bodies;
 
   //엔진 상태
   if (events.length) {
@@ -64,6 +67,13 @@ const Physics = (entities, { touches, time, dispatch, events }) => {
             y: Constants.MAX_HEIGHT / 6 - Constants.MAX_HEIGHT / 4,
           });
           speed = 2;
+          Matter.World.remove(engine.world, redPuppet);
+          entities.redPuppets.bodies = [];
+          Matter.World.remove(engine.world, bluePuppet);
+          entities.bluePuppets.bodies = [];
+          Matter.World.remove(engine.world, yellowPuppet);
+          entities.yellowPuppets.bodies = [];
+
           break;
         case "speedUp":
           speed = speed + 0.3;
