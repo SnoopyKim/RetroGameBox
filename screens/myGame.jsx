@@ -3,6 +3,7 @@ import {
   Dimensions,
   StyleSheet,
   Text,
+  Image,
   View,
   StatusBar,
   ImageBackground,
@@ -22,6 +23,9 @@ import { GameEngine } from "react-native-game-engine";
 import AssetLoading from "../components/AssetLoading";
 
 const backgroundImg = require("../assets/images/main_bg.png");
+const redBtn = require("../assets/images/redBtn.png");
+
+let deepPurple = "#6b5892";
 
 export default class Mygame extends Component {
   constructor(props) {
@@ -51,7 +55,9 @@ export default class Mygame extends Component {
     }
   };
   reset = () => {
-    if (this.timeInterval) clearInterval(this.timeInterval);
+    if (this.timeInterval) {
+      clearInterval(this.timeInterval);
+    }
     this.setState({
       time: 60,
       score: 0,
@@ -274,38 +280,38 @@ export default class Mygame extends Component {
       floor: {
         body: floor,
         size: [Constants.MAX_WIDTH, 50],
-        color: "purple",
+        color: deepPurple,
         renderer: Wall,
       },
       ceiling: {
         body: ceiling,
         size: [Constants.MAX_WIDTH, 40],
-        color: "purple",
+        color: deepPurple,
         renderer: Wall,
       },
       shelf: {
         body: shelf,
         size: [45, 97],
-        color: "purple",
+        color: deepPurple,
         renderer: Shelf,
         rotate: 58,
       },
       basket: {
         body: basket,
         size: [Constants.MAX_WIDTH / 18, Constants.MAX_HEIGHT / 1.2],
-        color: "purple",
+        color: deepPurple,
         renderer: Wall,
       },
       basket2: {
         body: basket2,
         size: [Constants.MAX_WIDTH / 18, Constants.MAX_HEIGHT / 2],
-        color: "purple",
+        color: deepPurple,
         renderer: Wall,
       },
       basket3: {
         body: basket3,
         size: [Constants.MAX_WIDTH / 18 + 3, Constants.MAX_HEIGHT / 6],
-        color: "purple",
+        color: deepPurple,
         renderer: Wall,
       },
       redPuppets: {
@@ -364,8 +370,9 @@ export default class Mygame extends Component {
                 <Text style={{ fontFamily: "DGM" }}>리셋</Text>
               </TouchableOpacity>
             </View>
-            <View style={styles.controlRow}>
+            <View style={{ alignItems: "center" }}>
               <TouchableOpacity
+                style={styles.craneBtn}
                 disabled={this.state.isGrab}
                 onPress={() => {
                   if (this.state.running === false) {
@@ -385,6 +392,11 @@ export default class Mygame extends Component {
                 }}
               >
                 <View style={styles.control}>
+                  <Image
+                    source={redBtn}
+                    resizeMode="contain"
+                    style={{ width: 140, height: 140 }}
+                  ></Image>
                   <Text style={styles.textBox}>
                     {this.state.isGrab ? "뽑기" : "이동"}
                   </Text>
@@ -421,34 +433,39 @@ const styles = StyleSheet.create({
     flex: 1,
     width: Constants.MAX_WIDTH,
     height: 100,
-    backgroundColor: "teal",
+    backgroundColor: "#8b00ff",
     top: Constants.MAX_HEIGHT / 1.45,
     flexDirection: "column",
   },
   controlRow: {
     justifyContent: "center",
     alignItems: "center",
-    top: 20,
-    height: Constants.MAX_HEIGHT / 9,
-    backgroundColor: "teal",
+    height: Constants.MAX_HEIGHT / 12,
+    backgroundColor: "blue",
     width: Constants.MAX_WIDTH,
     flexDirection: "row",
   },
   textBox: {
     fontSize: 35,
     fontFamily: "DGM",
+    position: "absolute",
   },
   control: {
     width: 120,
     height: 120,
-    margin: 15,
+    position: "absolute",
     borderRadius: 100,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "red",
-    borderWidth: 5,
-    borderColor: "black",
-    borderStyle: "dotted",
+    backgroundColor: "white",
+  },
+  craneBtn: {
+    width: 120,
+    height: 120,
+    alignItems: "flex-end",
+    backgroundColor: "white",
+    borderRadius: 140,
+    justifyContent: "center",
   },
   resetBtn: {
     width: 40,
@@ -460,5 +477,6 @@ const styles = StyleSheet.create({
     backgroundColor: "red",
     borderWidth: 3,
     borderColor: "black",
+    borderStyle: "dotted",
   },
 });
