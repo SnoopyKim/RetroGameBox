@@ -16,6 +16,7 @@ import {
 import Constants from "./Constants";
 import Floor from "./components/Floor";
 import Player from "./components/Player";
+import MoveSystem from "./MoveSystem";
 import { GameEngine } from "react-native-game-engine";
 import AssetLoading from "../../components/AssetLoading";
 
@@ -30,7 +31,8 @@ const JumpGameScreen = () => {
   const timer = useRef(null);
 
   const initEntities = () => {
-    matterEngine.current = Matter.Engine.create({ enableSleeping: false });
+    let engine = Matter.Engine.create({ enableSleeping: false });
+    let world = engine.world;
 
     let floor = Matter.Bodies.rectangle(
       Constants.MAX_WIDTH / 2,
@@ -57,13 +59,9 @@ const JumpGameScreen = () => {
       isStatic: true,
     });
 
-    Matter.World.add(matterEngine.current.world, [
-      floor,
-      floor2,
-      floor3,
-      player,
-    ]);
+    Matter.World.add(world, [floor, floor2, floor3, player]);
     return {
+      moveSystem: { engine: engine, world: world },
       floor: {
         body: floor,
         size: [Constants.MAX_WIDTH, 50],
@@ -104,38 +102,58 @@ const JumpGameScreen = () => {
             ref={gameEngine}
             style={styles.gameContainer}
             entities={initEntities()}
+            systems={[MoveSystem]}
             running={gameState.running}
           ></GameEngine>
         </AssetLoading>
         <View style={styles.controls}>
-          <View
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
-          >
-            <TouchableOpacity>
-              <View>
+          <View style={styles.btnContainer}>
+            <TouchableOpacity
+              style={styles.btns}
+              onPressIn={() => {
+                console.log("PressIn");
+              }}
+              onPressOut={() => {
+                console.log("PressOut");
+              }}
+            >
+              <View style={styles.btnSlot}>
                 <Image
                   source={require("../../assets/images/redBtn.png")}
                   resizeMode="contain"
                   style={{ width: 120, height: 120 }}
                 ></Image>
+                <Text style={styles.textBox}>◀</Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity>
-              <View>
+            <TouchableOpacity
+              style={styles.btns}
+              onPress={() => {
+                console.log("leftBtn");
+              }}
+            >
+              <View style={styles.btnSlot}>
                 <Image
                   source={require("../../assets/images/redBtn.png")}
                   resizeMode="contain"
                   style={{ width: 120, height: 120 }}
                 ></Image>
+                <Text style={styles.textBox}>▶</Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity>
-              <View>
+            <TouchableOpacity
+              style={styles.btns}
+              onPress={() => {
+                console.log("leftBtn");
+              }}
+            >
+              <View style={styles.btnSlot}>
                 <Image
                   source={require("../../assets/images/redBtn.png")}
                   resizeMode="contain"
                   style={{ width: 120, height: 120 }}
                 ></Image>
+                <Text style={styles.textBox}>Jump</Text>
               </View>
             </TouchableOpacity>
           </View>
@@ -158,10 +176,6 @@ const styles = StyleSheet.create({
   gameContainer: {
     width: Constants.MAX_WIDTH,
     height: Constants.MAX_HEIGHT,
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
     overflow: "hidden",
   },
   controls: {
@@ -170,8 +184,41 @@ const styles = StyleSheet.create({
     height: Constants.MAX_HEIGHT / 4,
     position: "absolute",
     backgroundColor: "black",
+    justifyContent: "center",
+    alignContent: "center",
     top: Constants.MAX_HEIGHT / 1.45,
     flexDirection: "column",
+  },
+  btnContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignContent: "center",
+    width: Constants.MAX_WIDTH,
+  },
+  btnSlot: {
+    width: 100,
+    height: 100,
+    position: "absolute",
+    borderRadius: 100,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "white",
+  },
+  btns: {
+    width: 100,
+    height: 100,
+    margin: 5,
+    alignItems: "flex-end",
+    backgroundColor: "white",
+    borderRadius: 140,
+    justifyContent: "center",
+  },
+  textBox: {
+    fontSize: 35,
+    fontFamily: "DGM",
+    position: "absolute",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 
