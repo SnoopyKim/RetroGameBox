@@ -2,7 +2,7 @@ import React from "react";
 
 import { Image, View } from "react-native";
 
-function Player({ body }) {
+function Player({ body, direction }) {
   const { x, y } = body.position;
   const { max, min } = body.bounds;
   const width = max.x - min.x;
@@ -23,7 +23,7 @@ function Player({ body }) {
           flex: 1,
           width: null,
           height: null,
-          transform: [{ scaleX: -1 }],
+          transform: direction ? [{ scaleX: -1 }] : [{ scaleX: 1 }],
           resizeMode: "stretch",
         }}
         source={require("../../../assets/images/redSlime.gif")}

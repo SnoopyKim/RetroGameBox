@@ -7,9 +7,9 @@ import {
   SafeAreaView,
   ScrollView,
   StyleSheet,
+  TouchableOpacity,
   Text,
   ImageBackground,
-  TouchableOpacity,
   Image,
   View,
 } from "react-native";
@@ -20,7 +20,9 @@ import MoveSystem from "./MoveSystem";
 import { GameEngine } from "react-native-game-engine";
 import AssetLoading from "../../components/AssetLoading";
 
-const initState = {};
+const initState = {
+  running: true,
+};
 const backgroundImg = require("../../assets/images/main_bg.png");
 
 const JumpGameScreen = () => {
@@ -28,12 +30,15 @@ const JumpGameScreen = () => {
   const matterEngine = useRef(null);
 
   const [gameState, setGameState] = useState(initState);
+  //나중에 initstate에 통합할것. 시간과 방향임.
   const timer = useRef(null);
+  let directionLR;
 
   const initEntities = () => {
     let engine = Matter.Engine.create({ enableSleeping: false });
     let world = engine.world;
 
+    //1 2 3층
     let floor = Matter.Bodies.rectangle(
       Constants.MAX_WIDTH / 2,
       Constants.MAX_HEIGHT / 1.45 - 25,
@@ -55,11 +60,18 @@ const JumpGameScreen = () => {
       20,
       { isStatic: true }
     );
-    let player = Matter.Bodies.rectangle(40, floor.position.y - 50, 40, 40, {
-      isStatic: true,
+    // 플레이어 캐릭터
+    let player = Matter.Bodies.rectangle(90, floor.position.y - 100, 50, 50, {
+      isStatic: false,
     });
 
     Matter.World.add(world, [floor, floor2, floor3, player]);
+
+    Matter.Events.on(engine, "collisionStart", (event) => {
+      event.pairs.forEach((pair) => {
+        const { bodyA, bodyB } = pair;
+      });
+    });
     return {
       moveSystem: { engine: engine, world: world },
       floor: {
@@ -84,7 +96,8 @@ const JumpGameScreen = () => {
         body: player,
         size: [50, 50],
         color: "red",
-        renderer: Player,
+        renderer: <Player />,
+        direction: directionLR ? true : false,
       },
     };
   };
@@ -111,10 +124,11 @@ const JumpGameScreen = () => {
             <TouchableOpacity
               style={styles.btns}
               onPressIn={() => {
-                console.log("PressIn");
+                directionLR = true;
+                gameEngine.current.dispatch({ type: "MoveStartL" });
               }}
               onPressOut={() => {
-                console.log("PressOut");
+                gameEngine.current.dispatch({ type: "MoveEndL" });
               }}
             >
               <View style={styles.btnSlot}>
@@ -128,8 +142,12 @@ const JumpGameScreen = () => {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.btns}
-              onPress={() => {
-                console.log("leftBtn");
+              onPressIn={() => {
+                directionLR = false;
+                gameEngine.current.dispatch({ type: "MoveStartR" });
+              }}
+              onPressOut={() => {
+                gameEngine.current.dispatch({ type: "MoveEndR" });
               }}
             >
               <View style={styles.btnSlot}>
@@ -143,8 +161,11 @@ const JumpGameScreen = () => {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.btns}
-              onPress={() => {
-                console.log("leftBtn");
+              onPressIn={() => {
+                gameEngine.current.dispatch({ type: "JumpStart" });
+              }}
+              onPressOut={() => {
+                gameEngine.current.dispatch({ type: "JumpEnd" });
               }}
             >
               <View style={styles.btnSlot}>
