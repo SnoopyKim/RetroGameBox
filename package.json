@@ -30,10 +30,13 @@
     "react-native-game-engine": "1.2.0",
     "react-native-safe-area-context": "3.3.2",
     "react-native-screens": "~3.10.1",
-    "react-native-web": "0.17.1"
+    "react-native-svg": "12.1.1",
+    "react-native-web": "0.17.1",
+    "rn-sprite-sheet": "^1.1.12"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.9"
+    "@babel/core": "^7.12.9",
+    "react-native-svg-transformer": "1.0.0"
   },
   "private": true
 }

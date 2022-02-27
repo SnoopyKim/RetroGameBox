@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native';
 import Constants from '../../Constants';
 import { initStats } from '../../hooks/PlayerStatus';
+import AttackSVG from 'retrogamebox/assets/images/attack_power.svg';
 
 export default function StatusBoard({ player, enemy, round }) {
   return (
@@ -42,7 +43,13 @@ const Stats = ({ name, stats, align = 'flex-start' || 'flex-end' }) => {
     >
       <Text style={{ ...styles.title, marginBottom: 10 }}>{name}</Text>
       <Text style={styles.title}>{HP_CURRENT + ' / ' + HP_MAX}</Text>
-      <Text style={styles.title}>{ATTACK_POWER}</Text>
+
+      <StatRow
+        SVG={AttackSVG}
+        title={ATTACK_POWER}
+        reverse={align !== 'flex-start'}
+      />
+
       <Text style={styles.title}>{DEFENCE_POWER}</Text>
       <Text style={styles.title}>{SPEED}</Text>
       <Text style={styles.title}>{CRITICAL}</Text>
@@ -50,6 +57,13 @@ const Stats = ({ name, stats, align = 'flex-start' || 'flex-end' }) => {
     </View>
   );
 };
+
+const StatRow = ({ SVG, title, reverse }) => (
+  <View style={{ flexDirection: reverse ? 'row-reverse' : 'row' }}>
+    <SVG width={20} height={20} />
+    <Text style={styles.title}>{title}</Text>
+  </View>
+);
 
 const styles = StyleSheet.create({
   board: {

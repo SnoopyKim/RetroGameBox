@@ -35,10 +35,15 @@ function playerReducer(state, action) {
     case 'INIT':
       return initStats;
     case 'DAMAGE':
-      return {
-        ...state,
-        HP_CURRENT: setHP(state.HP_CURRENT - action.value),
-      };
+      const damage = action.value - state.DEFENCE_POWER;
+      if (damage > 0) {
+        return {
+          ...state,
+          HP_CURRENT: setHP(state.HP_CURRENT - action.value),
+        };
+      } else {
+        return state;
+      }
     case 'CHANGE':
       const { hp, ap, dp, sp, ct } = action.value;
       return {

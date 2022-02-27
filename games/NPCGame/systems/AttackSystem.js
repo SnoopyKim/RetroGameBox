@@ -17,6 +17,7 @@ const AttackSystem = (entities, { events, time, dispatch }) => {
       {
         name: 'rock',
         throw: 'player',
+        ct: Math.random() * 100,
         collisionFilter: { mask: 0x0001 },
       }
     );
@@ -53,6 +54,11 @@ const AttackSystem = (entities, { events, time, dispatch }) => {
           break;
         case 'WIN':
         case 'LOSE':
+          const allRocks = Matter.Composite.allBodies(engine.world).filter(
+            (body) => body.name === 'rock'
+          );
+          entities.rocks.bodies = [];
+          Matter.Composite.remove(engine.world, allRocks);
           entities.gameStatus = 'STOP';
           break;
         case 'START':
