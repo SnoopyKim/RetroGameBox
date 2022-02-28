@@ -31,3 +31,5 @@ function Player({ body, direction }) {
     </View>
   );
 }
+
+export default Player;

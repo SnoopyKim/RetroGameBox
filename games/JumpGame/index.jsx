@@ -15,6 +15,7 @@ import {
 } from "react-native";
 import Constants from "./Constants";
 import Floor from "./components/Floor";
+import Spike from "./components/Spike";
 import Player from "./components/Player";
 import MoveSystem from "./MoveSystem";
 import { GameEngine } from "react-native-game-engine";
@@ -41,7 +42,7 @@ const JumpGameScreen = () => {
     //1 2 3층
     let floor = Matter.Bodies.rectangle(
       Constants.MAX_WIDTH / 2,
-      Constants.MAX_HEIGHT / 1.45 - 25,
+      Constants.MAX_HEIGHT / 1.2 - 25,
       Constants.MAX_WIDTH,
       50,
       { isStatic: true }
@@ -60,12 +61,50 @@ const JumpGameScreen = () => {
       20,
       { isStatic: true }
     );
-    // 플레이어 캐릭터
-    let player = Matter.Bodies.rectangle(90, floor.position.y - 100, 50, 50, {
-      isStatic: false,
+    let wallLeft = Matter.Bodies.rectangle(
+      -25,
+      Constants.MAX_HEIGHT / 2,
+      50,
+      Constants.MAX_HEIGHT,
+      { isStatic: true }
+    );
+    let wallRight = Matter.Bodies.rectangle(
+      Constants.MAX_WIDTH + 25,
+      Constants.MAX_HEIGHT / 2,
+      50,
+      Constants.MAX_HEIGHT,
+      { isStatic: true }
+    );
+    let spike1 = Matter.Bodies.rectangle(150, floor.position.y - 30, 30, 20, {
+      isStatic: true,
+    });
+    let spike2 = Matter.Bodies.rectangle(300, floor.position.y - 30, 30, 20, {
+      isStatic: true,
     });
 
-    Matter.World.add(world, [floor, floor2, floor3, player]);
+    // 플레이어 캐릭터
+    let player = Matter.Bodies.circle(50, floor.position.y - 100, 25, {
+      isStatic: false,
+    });
+    let jumpBar = Matter.Bodies.rectangle(
+      player.position.x,
+      player.position.y,
+      0,
+      0,
+      { isStatic: true }
+    );
+
+    Matter.World.add(world, [
+      floor,
+      floor2,
+      floor3,
+      wallLeft,
+      wallRight,
+      spike1,
+      spike2,
+      player,
+      jumpBar,
+    ]);
 
     Matter.Events.on(engine, "collisionStart", (event) => {
       event.pairs.forEach((pair) => {
@@ -99,6 +138,22 @@ const JumpGameScreen = () => {
         renderer: <Player />,
         direction: directionLR ? true : false,
       },
+      jumpBar: {
+        body: jumpBar,
+        size: [50, 10],
+        color: "red",
+        renderer: Floor,
+      },
+      spike1: {
+        body: spike1,
+        size: [100, 40],
+        renderer: Spike,
+      },
+      spike2: {
+        body: spike2,
+        size: [100, 40],
+        renderer: Spike,
+      },
     };
   };
 
@@ -119,67 +174,69 @@ const JumpGameScreen = () => {
             running={gameState.running}
           ></GameEngine>
         </AssetLoading>
-        <View style={styles.controls}>
-          <View style={styles.btnContainer}>
-            <TouchableOpacity
-              style={styles.btns}
-              onPressIn={() => {
-                directionLR = true;
-                gameEngine.current.dispatch({ type: "MoveStartL" });
-              }}
-              onPressOut={() => {
-                gameEngine.current.dispatch({ type: "MoveEndL" });
-              }}
-            >
-              <View style={styles.btnSlot}>
-                <Image
-                  source={require("../../assets/images/redBtn.png")}
-                  resizeMode="contain"
-                  style={{ width: 120, height: 120 }}
-                ></Image>
-                <Text style={styles.textBox}>◀</Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.btns}
-              onPressIn={() => {
-                directionLR = false;
-                gameEngine.current.dispatch({ type: "MoveStartR" });
-              }}
-              onPressOut={() => {
-                gameEngine.current.dispatch({ type: "MoveEndR" });
-              }}
-            >
-              <View style={styles.btnSlot}>
-                <Image
-                  source={require("../../assets/images/redBtn.png")}
-                  resizeMode="contain"
-                  style={{ width: 120, height: 120 }}
-                ></Image>
-                <Text style={styles.textBox}>▶</Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.btns}
-              onPressIn={() => {
-                gameEngine.current.dispatch({ type: "JumpStart" });
-              }}
-              onPressOut={() => {
-                gameEngine.current.dispatch({ type: "JumpEnd" });
-              }}
-            >
-              <View style={styles.btnSlot}>
-                <Image
-                  source={require("../../assets/images/redBtn.png")}
-                  resizeMode="contain"
-                  style={{ width: 120, height: 120 }}
-                ></Image>
-                <Text style={styles.textBox}>Jump</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-        </View>
       </ImageBackground>
+      <View style={styles.controls}>
+        <View style={styles.btnContainer}>
+          <TouchableOpacity
+            style={styles.btns}
+            onPressIn={() => {
+              directionLR = true;
+              console.log(directionLR);
+              gameEngine.current.dispatch({ type: "MoveStartL" });
+            }}
+            onPressOut={() => {
+              gameEngine.current.dispatch({ type: "MoveEndL" });
+            }}
+          >
+            <View style={styles.btnSlot}>
+              <Image
+                source={require("../../assets/images/redBtn.png")}
+                resizeMode="contain"
+                style={{ width: 120, height: 120 }}
+              ></Image>
+              <Text style={styles.textBox}>◀</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.btns}
+            onPressIn={() => {
+              directionLR = false;
+              console.log(directionLR);
+              gameEngine.current.dispatch({ type: "MoveStartR" });
+            }}
+            onPressOut={() => {
+              gameEngine.current.dispatch({ type: "MoveEndR" });
+            }}
+          >
+            <View style={styles.btnSlot}>
+              <Image
+                source={require("../../assets/images/redBtn.png")}
+                resizeMode="contain"
+                style={{ width: 120, height: 120 }}
+              ></Image>
+              <Text style={styles.textBox}>▶</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.btns}
+            onPressIn={() => {
+              gameEngine.current.dispatch({ type: "JumpStart" });
+            }}
+            onPressOut={() => {
+              gameEngine.current.dispatch({ type: "JumpEnd" });
+            }}
+          >
+            <View style={styles.btnSlot}>
+              <Image
+                source={require("../../assets/images/redBtn.png")}
+                resizeMode="contain"
+                style={{ width: 120, height: 120 }}
+              ></Image>
+              <Text style={styles.textBox}>Jump</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      </View>
     </SafeAreaView>
   );
 };
@@ -187,12 +244,13 @@ const JumpGameScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "teal",
+    backgroundColor: "#964b00",
   },
   backgroundImage: {
     flex: 1,
     alignSelf: `stretch`,
     width: null,
+    marginBottom: 200,
   },
   gameContainer: {
     width: Constants.MAX_WIDTH,
@@ -207,7 +265,7 @@ const styles = StyleSheet.create({
     backgroundColor: "black",
     justifyContent: "center",
     alignContent: "center",
-    top: Constants.MAX_HEIGHT / 1.45,
+    top: Constants.MAX_HEIGHT / 1.2,
     flexDirection: "column",
   },
   btnContainer: {
