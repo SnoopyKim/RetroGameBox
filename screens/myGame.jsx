@@ -3,6 +3,7 @@ import {
   Dimensions,
   StyleSheet,
   Text,
+  Image,
   View,
   StatusBar,
   ImageBackground,
@@ -15,31 +16,60 @@ import YellowPuppet from "../myGameComponents/Puppet/YellowPuppet";
 import Wall from "../myGameComponents/Wall";
 import Shelf from "../myGameComponents/Shelf";
 import Crane from "../myGameComponents/Crane";
-import Matter from "matter-js";
+import Matter, { Engine } from "matter-js";
 import Physics from "../myGameComponents/Physics";
 import Constants from "../myGameComponents/Constants";
 import { GameEngine } from "react-native-game-engine";
-import { isDisabled } from "react-native/Libraries/LogBox/Data/LogBoxData";
 import AssetLoading from "../components/AssetLoading";
 
 const backgroundImg = require("../assets/images/main_bg.png");
+const redBtn = require("../assets/images/redBtn.png");
+
+let deepPurple = "#6b5892";
 
 export default class Mygame extends Component {
   constructor(props) {
     super(props);
+    this.timeInterval = null;
+    const defaultTime = 60;
     this.state = {
       running: true,
       isMove: false,
       isGrab: false,
+      score: 0,
+      time: defaultTime,
     };
     this.gameEngine = null;
     this.entities = this.setupWorld();
   }
+  setupTicks = () => {
+    this.timeInterval = setInterval(this.timerTick, 1000);
+  };
+  timerTick = () => {
+    if (this.state.time === 0) {
+      this.setState({ running: false });
+    } else {
+      this.setState({
+        time: this.state.time - 1,
+      });
+    }
+  };
+  reset = () => {
+    if (this.timeInterval) {
+      clearInterval(this.timeInterval);
+    }
+    this.setState({
+      time: 60,
+      score: 0,
+      isGrab: false,
+      isMove: false,
+      running: true,
+    });
+  };
 
   setupWorld = () => {
     let engine = Matter.Engine.create({ enableSleeping: false });
     let world = engine.world;
-
     let floor = Matter.Bodies.rectangle(
       Constants.MAX_WIDTH / 2,
       Constants.MAX_HEIGHT / 1.5,
@@ -63,33 +93,67 @@ export default class Mygame extends Component {
       { isStatic: true }
     );
 
+    let craneBar = Matter.Bodies.rectangle(
+      Constants.MAX_WIDTH / 8,
+      Constants.MAX_HEIGHT / 4,
+      10,
+      100,
+      { isStatic: true, name: "craneBar" }
+    );
+
     let cranePin1 = Matter.Bodies.rectangle(
       Constants.MAX_WIDTH / 6 + 5,
       crane.position.y + 20 + Constants.MAX_HEIGHT / 4,
       7,
       50,
-      { isStatic: true }
+      {
+        isStatic: true,
+        collisionFilter: {
+          category: 0x0010,
+        },
+        angle: 45,
+      }
     );
     let cranePin2 = Matter.Bodies.rectangle(
       Constants.MAX_WIDTH / 6 - 5,
       crane.position.y + 20 + Constants.MAX_HEIGHT / 4,
       7,
       50,
-      { isStatic: true }
+      {
+        isStatic: true,
+        collisionFilter: {
+          category: 0x0010,
+        },
+        angle: -45,
+      }
     );
     let cranePin3 = Matter.Bodies.rectangle(
       Constants.MAX_WIDTH / 6 - 5,
       crane.position.y + 20 + Constants.MAX_HEIGHT / 4,
       7,
       60,
-      { isStatic: true }
+      {
+        isStatic: true,
+        name: "cranePin",
+        collisionFilter: {
+          category: 0x0010,
+        },
+        angle: -20,
+      }
     );
     let cranePin4 = Matter.Bodies.rectangle(
       Constants.MAX_WIDTH / 6 - 5,
       crane.position.y + 20 + Constants.MAX_HEIGHT / 4,
       7,
       60,
-      { isStatic: true }
+      {
+        isStatic: true,
+        name: "cranePin",
+        collisionFilter: {
+          category: 0x00010,
+        },
+        angle: 20,
+      }
     );
 
     let shelf = Matter.Bodies.rectangle(
@@ -97,7 +161,7 @@ export default class Mygame extends Component {
       Constants.MAX_HEIGHT / 1.5 - 29,
       45,
       97,
-      { isStatic: true }
+      { isStatic: true, angle: 70 }
     );
 
     let basket = Matter.Bodies.rectangle(
@@ -121,14 +185,43 @@ export default class Mygame extends Component {
       Constants.MAX_HEIGHT / 6,
       { isStatic: true }
     );
+    let scoreBar = Matter.Bodies.rectangle(
+      -30,
+      Constants.MAX_HEIGHT / 1.6,
+      30,
+      20,
+      { isStatic: true, name: "scoreBar" }
+    );
 
-    Matter.Body.rotate(shelf, 4);
-
-    Matter.Events.on(engine, "collisionactive", (event) => {
-      var pairs = event.pairs;
+    //크레인에 잡힘
+    Matter.Events.on(engine, "collisionStart", (event) => {
+      event.pairs.forEach((pair) => {
+        const { bodyA, bodyB } = pair;
+        if (bodyA.name === "craneBar" && this.state.isGrab === true) {
+          this.gameEngine.dispatch({ type: "craneGrab", puppet: bodyB });
+        }
+      });
     });
+    // 스코어 1up
+    Matter.Events.on(engine, "collisionStart", (event) => {
+      event.pairs.forEach((pair) => {
+        const { bodyA, bodyB } = pair;
+        if (bodyA.name === "scoreBar") {
+          this.gameEngine.dispatch({ type: "scoreUp", rPuppet: bodyB });
+          this.setState({
+            score: this.state.score + 5,
+            time: this.state.time + 2,
+          });
+          if (this.state.score % 10 === 0) {
+            this.gameEngine.dispatch({ type: "speedUp" });
+          }
+        }
+      });
+    });
+
     Matter.World.add(world, [
       crane,
+      craneBar,
       cranePin1,
       cranePin2,
       cranePin3,
@@ -139,6 +232,7 @@ export default class Mygame extends Component {
       basket,
       basket2,
       basket3,
+      scoreBar,
     ]);
 
     return {
@@ -147,6 +241,12 @@ export default class Mygame extends Component {
         body: crane,
         size: [15, Constants.MAX_HEIGHT / 2],
         color: "gold",
+        renderer: Crane,
+      },
+      craneBar: {
+        body: craneBar,
+        size: [10, 100],
+        color: "transparent",
         renderer: Crane,
       },
       cranePin1: {
@@ -168,63 +268,63 @@ export default class Mygame extends Component {
         size: [7, 60],
         color: "gold",
         renderer: Crane,
-        rotate: -20,
+        rotate: -10,
       },
       cranePin4: {
         body: cranePin4,
         size: [7, 60],
         color: "gold",
         renderer: Crane,
-        rotate: 20,
+        rotate: 10,
       },
       floor: {
         body: floor,
         size: [Constants.MAX_WIDTH, 50],
-        color: "purple",
+        color: deepPurple,
         renderer: Wall,
       },
       ceiling: {
         body: ceiling,
         size: [Constants.MAX_WIDTH, 40],
-        color: "purple",
+        color: deepPurple,
         renderer: Wall,
       },
       shelf: {
         body: shelf,
         size: [45, 97],
-        color: "purple",
+        color: deepPurple,
         renderer: Shelf,
-        rotate: 20,
+        rotate: 58,
       },
       basket: {
         body: basket,
         size: [Constants.MAX_WIDTH / 18, Constants.MAX_HEIGHT / 1.2],
-        color: "purple",
+        color: deepPurple,
         renderer: Wall,
       },
       basket2: {
         body: basket2,
         size: [Constants.MAX_WIDTH / 18, Constants.MAX_HEIGHT / 2],
-        color: "purple",
+        color: deepPurple,
         renderer: Wall,
       },
       basket3: {
         body: basket3,
         size: [Constants.MAX_WIDTH / 18 + 3, Constants.MAX_HEIGHT / 6],
-        color: "purple",
+        color: deepPurple,
         renderer: Wall,
       },
       redPuppets: {
         bodies: [],
-        renderer: <RedPuppet />,
-      },
-      bluePuppets: {
-        bodies: [],
-        renderer: <BluePuppet />,
+        renderer: RedPuppet,
       },
       yellowPuppets: {
         bodies: [],
-        renderer: <YellowPuppet />,
+        renderer: YellowPuppet,
+      },
+      bluePuppets: {
+        bodies: [],
+        renderer: BluePuppet,
       },
     };
   };
@@ -237,47 +337,68 @@ export default class Mygame extends Component {
           source={backgroundImg}
           resizeMode="stretch"
         >
-          <AssetLoading
-            images={[require("retrogamebox/assets/images/slime.gif")]}
-            images={[require("retrogamebox/assets/images/redSlime.gif")]}
-            images={[require("retrogamebox/assets/images/blueSlime.gif")]}
-            images={[require("retrogamebox/assets/images/yellowSlime.gif")]}
+          <GameEngine
+            ref={(ref) => {
+              this.gameEngine = ref;
+            }}
+            style={styles.gameContainer}
+            running={this.state.running}
+            systems={[Physics]}
+            entities={this.entities}
+            onEvent={(e) => {
+              if (e.type === "resetCrane") {
+                this.setState({ isGrab: false });
+              }
+            }}
           >
-            <GameEngine
-              ref={(ref) => {
-                this.gameEngine = ref;
-              }}
-              style={styles.gameContainer}
-              running={this.state.running}
-              systems={[Physics]}
-              entities={this.entities}
-              onEvent={(e) => {
-                if (e.type === "resetCrane") {
-                  this.setState({ isGrab: false });
-                }
-              }}
-            >
-              <StatusBar hidden={true} />
-            </GameEngine>
-          </AssetLoading>
+            <StatusBar hidden={true} />
+          </GameEngine>
           <View style={styles.controls}>
-            <Text>score:</Text>
-            <View style={styles.controlRow}>
+            <View
+              style={{ flexDirection: "row", justifyContent: "space-between" }}
+            >
+              <Text style={{ fontSize: 20, fontFamily: "DGM" }}>
+                score:{this.state.score} Time:{this.state.time}
+              </Text>
               <TouchableOpacity
+                style={styles.resetBtn}
+                onPress={() => {
+                  this.gameEngine.dispatch({ type: "resetGame" }),
+                    this.setState(this.reset);
+                }}
+              >
+                <Text style={{ fontFamily: "DGM" }}>리셋</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={{ alignItems: "center" }}>
+              <TouchableOpacity
+                style={styles.craneBtn}
                 disabled={this.state.isGrab}
                 onPress={() => {
-                  if (this.state.isMove === false) {
-                    this.gameEngine.dispatch({ type: "craneMove" });
-                    this.setState({ isMove: true });
+                  if (this.state.running === false) {
+                    this.setState({ running: true });
                   } else {
-                    this.gameEngine.dispatch({ type: "craneStop" });
-                    this.setState({ isMove: false, isGrab: true });
+                    if (this.state.isMove === false) {
+                      this.setState({ isMove: true });
+                      this.gameEngine.dispatch({ type: "craneMove" });
+                      if (this.state.time === 60) {
+                        this.setState(this.setupTicks);
+                      }
+                    } else {
+                      this.gameEngine.dispatch({ type: "craneStop" });
+                      this.setState({ isMove: false, isGrab: true });
+                    }
                   }
                 }}
               >
                 <View style={styles.control}>
+                  <Image
+                    source={redBtn}
+                    resizeMode="contain"
+                    style={{ width: 140, height: 140 }}
+                  ></Image>
                   <Text style={styles.textBox}>
-                    {this.state.isMove ? "Grab" : "Move"}
+                    {this.state.isGrab ? "뽑기" : "이동"}
                   </Text>
                 </View>
               </TouchableOpacity>
@@ -312,29 +433,50 @@ const styles = StyleSheet.create({
     flex: 1,
     width: Constants.MAX_WIDTH,
     height: 100,
-    backgroundColor: "orange",
+    backgroundColor: "#8b00ff",
     top: Constants.MAX_HEIGHT / 1.45,
     flexDirection: "column",
   },
   controlRow: {
     justifyContent: "center",
     alignItems: "center",
-    top: 20,
-    height: Constants.MAX_HEIGHT / 5,
-    backgroundColor: "orange",
+    height: Constants.MAX_HEIGHT / 12,
+    backgroundColor: "blue",
     width: Constants.MAX_WIDTH,
     flexDirection: "row",
   },
   textBox: {
-    fontSize: 40,
+    fontSize: 35,
+    fontFamily: "DGM",
+    position: "absolute",
   },
   control: {
     width: 120,
     height: 120,
-    margin: 15,
+    position: "absolute",
     borderRadius: 100,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "teal",
+    backgroundColor: "white",
+  },
+  craneBtn: {
+    width: 120,
+    height: 120,
+    alignItems: "flex-end",
+    backgroundColor: "white",
+    borderRadius: 140,
+    justifyContent: "center",
+  },
+  resetBtn: {
+    width: 40,
+    height: 40,
+    margin: 5,
+    borderRadius: 70,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "red",
+    borderWidth: 3,
+    borderColor: "black",
+    borderStyle: "dotted",
   },
 });

@@ -45,8 +45,8 @@ const HomeScreen = ({ navigation }) => {
           <View style={styles.boxContainer}>
             <ImageButton
               src={gameselectImg}
-              onPressed={() => navigation.navigate('BirdGame')}
-              title={'BirdGame'}
+              onPressed={() => navigation.navigate('JumpGame')}
+              title={'JumpGame'}
               titleColor={'white'}
               titleSize={30}
               width={200}

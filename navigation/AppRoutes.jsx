@@ -3,12 +3,12 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from '../screens/Home';
 import LoginScreen from '../screens/Login';
 import GameMy from '../screens/myGame';
-import BirdGameScreen from '../games/BirdGame';
 import NPCGameScreen from '../games/NPCGame';
 import { useContext } from 'react';
 import { AuthContext } from '../context/auth/auth-context';
 import NetworkLoading from '../components/NetworkLoading';
 import { DatabaseContext } from '../context/database/database-context';
+import JumpGameScreen from '../games/JumpGame';
 
 const Stack = createNativeStackNavigator();
 
@@ -18,7 +18,7 @@ const AppNavigator = () => {
       <Stack.Screen name='Login' component={LoginScreen} />
       <Stack.Screen name='Home' component={HomeScreen} />
       <Stack.Screen name='GameMy' component={GameMy} />
-      <Stack.Screen name='BirdGame' component={BirdGameScreen} />
+      <Stack.Screen name='JumpGame' component={JumpGameScreen} />
       <Stack.Screen name='NPCGame' component={NPCGameScreen} />
     </Stack.Navigator>
   );

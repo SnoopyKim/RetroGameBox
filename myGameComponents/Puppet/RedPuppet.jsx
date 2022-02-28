@@ -33,7 +33,13 @@ export default function redPuppets({ bodies }) {
     );
   });
   return (
-    <View style={{ width: Constants.MAX_WIDTH, height: Constants.MAX_HEIGHT }}>
+    <View
+      style={{
+        position: "absolute",
+        width: Constants.MAX_WIDTH,
+        height: Constants.MAX_HEIGHT,
+      }}
+    >
       {redPuppets}
     </View>
   );
