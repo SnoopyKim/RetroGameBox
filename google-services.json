@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1098186261651",
+    "project_id": "retrogamebox-6cff8",
+    "storage_bucket": "retrogamebox-6cff8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1098186261651:android:51d8260f616a13b6013966",
+        "android_client_info": {
+          "package_name": "com.project.retrogamebox"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1098186261651-ccpcc185q79h0df5af0bg2fd3663plug.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.project.retrogamebox",
+            "certificate_hash": "8a37ce12f31a982a5d5d3ce0e800c71267ff8b7b"
+          }
+        },
+        {
+          "client_id": "1098186261651-om8u9l8jhaotppn0ili7aaaupt89huj3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBFQm9AlCGCCiV9V0jh8Ft_aIFLupTyWxM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1098186261651-om8u9l8jhaotppn0ili7aaaupt89huj3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

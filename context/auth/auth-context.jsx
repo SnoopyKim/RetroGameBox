@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import * as authModule from '../../api/auth';
 
 export const AuthContext = React.createContext({
@@ -7,7 +7,8 @@ export const AuthContext = React.createContext({
   uid: '',
   name: '',
   guestLogin: () => {},
-  googleLogin: () => {},
+  emailLogin: (email, password) => {},
+  register: (email, password) => {},
   logout: () => {},
 });
 
@@ -24,14 +25,23 @@ export const AuthContextProvider = ({ children }) => {
     await authModule.loginForGuest();
     setIsLoading(false);
   };
-  const googleLoginHandler = async () => {};
+  const emailLoginHandler = async (email, password) => {
+    setIsLoading(true);
+    await authModule.loginForEmail(email, password);
+    setIsLoading(false);
+  };
+  const emailRegisterHandler = async (email, password) => {
+    setIsLoading(true);
+    await authModule.registerForEmail(email, password);
+    setIsLoading(false);
+  };
   const logoutHandler = async () => {
     setIsLoading(true);
     await authModule.logout();
     setIsLoading(false);
   };
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const onAuthChanged = (user) => {
       setIsLoading(false);
       if (user) {
@@ -55,7 +65,7 @@ export const AuthContextProvider = ({ children }) => {
     return () => {
       authModule.initAuthListener();
     };
-  }, [setAuthListener, initAuthListener]);
+  }, [authModule.setAuthListener, authModule.initAuthListener]);
 
   return (
     <AuthContext.Provider
@@ -64,7 +74,8 @@ export const AuthContextProvider = ({ children }) => {
         isAuthenticated,
         ...authState,
         guestLogin: guestLoginHandler,
-        googleLogin: googleLoginHandler,
+        emailLogin: emailLoginHandler,
+        register: emailRegisterHandler,
         logout: logoutHandler,
       }}
     >

@@ -27,6 +27,7 @@ const AppNavigator = () => {
 const AppRoutes = () => {
   const { isLoading: authLoading } = useContext(AuthContext);
   const { isLoading: dbLoading } = useContext(DatabaseContext);
+
   return (
     <NavigationContainer>
       <AppNavigator />
