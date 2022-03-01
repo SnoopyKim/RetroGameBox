@@ -23,6 +23,7 @@
     "expo-asset": "~8.4.6",
     "expo-font": "~10.0.4",
     "expo-status-bar": "~1.2.0",
+    "firebase": "9.6.7",
     "matter-js": "0.18.0",
     "react": "17.0.1",
     "react-dom": "17.0.1",

@@ -31,5 +31,3 @@ function Player({ body, direction }) {
     </View>
   );
 }
-
-export default React.memo(Player);
