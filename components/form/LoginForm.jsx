@@ -34,7 +34,6 @@ const LoginForm = ({ isRegister, onLogin, onRegister }) => {
 
   const validatePwConfirm = (text) => {
     const { value: password } = passwordRef.current.check();
-    console.log('From confirm', text, password, (text !== password).toString());
     if (text !== password) {
       return '비밀번호와 일치하지 않습니다';
     } else {
@@ -85,6 +84,7 @@ const LoginForm = ({ isRegister, onLogin, onRegister }) => {
       <Input
         ref={emailRef}
         layoutStyle={styles.input}
+        contentStyle={styles.purple}
         placeholder={'이메일을 입력하세요'}
         keyboardType={'email-address'}
         returnKeyType={'next'}
@@ -93,11 +93,12 @@ const LoginForm = ({ isRegister, onLogin, onRegister }) => {
           passwordRef.current.focus();
         }}
       >
-        <EmailIcon style={{ color: '#333' }} />
+        <EmailIcon style={styles.purple} />
       </Input>
       <Input
         ref={passwordRef}
         layoutStyle={styles.input}
+        contentStyle={styles.purple}
         placeholder={'비밀번호를 입력하세요'}
         secureTextEntry={true}
         returnKeyType={isRegister ? 'next' : 'done'}
@@ -106,38 +107,50 @@ const LoginForm = ({ isRegister, onLogin, onRegister }) => {
           isRegister ? pwconfirmRef.current.focus() : loginHandler();
         }}
       >
-        <PasswordIcon style={{ color: '#333' }} />
+        <PasswordIcon style={styles.purple} />
       </Input>
       {isRegister && (
         <>
           <Input
             ref={pwconfirmRef}
             layoutStyle={styles.input}
+            contentStyle={styles.purple}
             placeholder={'비밀번호를 다시 입력해주세요'}
             secureTextEntry={true}
             returnKeyType={'next'}
             validate={validatePwConfirm}
             onSubmitEditing={() => nameRef.current.focus()}
           >
-            <PasswordIcon style={{ color: '#333' }} />
+            <PasswordIcon style={styles.purple} />
           </Input>
           <Input
             ref={nameRef}
             layoutStyle={styles.input}
+            contentStyle={styles.purple}
             placeholder={'닉네임을 입력하세요'}
             returnKeyType={'done'}
             validate={validateName}
             onSubmitEditing={registerHandler}
           >
-            <NameIcon style={{ color: '#333' }} />
+            <NameIcon style={styles.purple} />
           </Input>
         </>
       )}
       <View style={styles.button}>
         {!isRegister ? (
-          <TextButton onPressed={loginHandler} title={'이메일 로그인'} />
+          <TextButton
+            borderColor={'white'}
+            color={'purple'}
+            onPressed={loginHandler}
+            title={'이메일 로그인'}
+          />
         ) : (
-          <TextButton onPressed={registerHandler} title={'회원가입'} />
+          <TextButton
+            borderColor={'white'}
+            color={'purple'}
+            onPressed={registerHandler}
+            title={'회원가입'}
+          />
         )}
       </View>
     </>
@@ -153,6 +166,9 @@ const styles = StyleSheet.create({
   },
   input: {
     marginVertical: 8,
+  },
+  purple: {
+    color: 'purple',
   },
   button: {
     marginTop: 16,

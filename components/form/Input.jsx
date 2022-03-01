@@ -1,4 +1,9 @@
-import React, { useState, useRef, useImperativeHandle, useEffect } from 'react';
+import React, {
+  useState,
+  useRef,
+  useImperativeHandle,
+  useCallback,
+} from 'react';
 import { TextInput, StyleSheet, View, Text } from 'react-native';
 
 const Input = (props, ref) => {
@@ -12,23 +17,24 @@ const Input = (props, ref) => {
 
   const [value, setValue] = useState('');
   const [validResult, setValidResult] = useState('');
-  const [isUserChecked, setIsUserChecked] = useState(false);
 
-  useEffect(() => {
-    if (isUserChecked && validate) {
-      console.log('input', validate(value));
-      setValidResult(validate(value));
-    } else {
-      setValidResult('');
-    }
-  }, [value, validate, isUserChecked]);
+  const checkInputValue = useCallback(
+    (isUserChecked) => {
+      if (isUserChecked && validate) {
+        setValidResult(validate(value));
+      } else {
+        setValidResult('');
+      }
+    },
+    [value, validate]
+  );
 
   const inputRef = useRef();
   useImperativeHandle(
     ref,
     () => ({
       check: () => {
-        setIsUserChecked(true);
+        checkInputValue(true);
         return {
           value,
           isValid: validate ? validate(value) == '' : true,
@@ -42,10 +48,10 @@ const Input = (props, ref) => {
       },
       clear: () => {
         inputRef.current.clear();
-        setIsUserChecked(false);
+        setValidResult('');
       },
     }),
-    [value, validate, validResult, isUserChecked]
+    [value, validate, validResult]
   );
 
   return (
@@ -63,8 +69,8 @@ const Input = (props, ref) => {
           value={value}
           placeholderTextColor={'#888'}
           onChangeText={(text) => setValue(text)}
-          onFocus={() => setIsUserChecked(false)}
-          onBlur={() => setIsUserChecked(true)}
+          onFocus={() => checkInputValue(false)}
+          onBlur={() => checkInputValue(true)}
         />
       </View>
       {validResult !== '' && <Text style={styles.invalid}>{validResult}</Text>}

@@ -19,14 +19,20 @@ const backgroundImg = require('../assets/images/main_bg.png');
 const gameselectImg = require('../assets/images/selectBox.png');
 
 const HomeScreen = ({ navigation }) => {
-  const { name, logout } = useContext(AuthContext);
+  const { isAuthenticated, name, logout } = useContext(AuthContext);
+
+  if (!isAuthenticated) {
+    navigation.replace('Login');
+    return <></>;
+  }
+
   return (
     <SafeAreaView style={styles.center}>
-      <StatusBar style='light' />
+      <StatusBar style="light" />
       <ImageBackground
         style={styles.backgroundImage}
         source={backgroundImg}
-        resizeMode='cover'
+        resizeMode="cover"
       >
         <TextButton title={`${name}님 로그아웃`} onPressed={() => logout()} />
         <Text style={styles.titleText}>레트로 게임 모음</Text>

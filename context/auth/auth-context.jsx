@@ -8,17 +8,17 @@ export const AuthContext = React.createContext({
   name: '',
   guestLogin: () => {},
   emailLogin: (email, password) => {},
-  register: (email, password) => {},
+  register: (email, password, name) => {},
   logout: () => {},
 });
 
 export const AuthContextProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [authState, setAuthState] = useState({
-    uid: '',
-    name: '',
+    uid: null,
+    name: null,
   });
-  const isAuthenticated = authState.uid != '';
+  const isAuthenticated = authState.uid !== null && authState.name !== null;
 
   const guestLoginHandler = async () => {
     setIsLoading(true);
@@ -27,12 +27,21 @@ export const AuthContextProvider = ({ children }) => {
   };
   const emailLoginHandler = async (email, password) => {
     setIsLoading(true);
-    await authModule.loginForEmail(email, password);
+    const result = await authModule.loginForEmail(email, password);
+    if (!result.success) {
+      console.log(result.message);
+    }
     setIsLoading(false);
   };
-  const emailRegisterHandler = async (email, password) => {
+  const emailRegisterHandler = async (email, password, name) => {
     setIsLoading(true);
-    await authModule.registerForEmail(email, password);
+    const result = await authModule.registerForEmail(email, password, name);
+    if (result.success) {
+      setAuthState((prev) => ({
+        ...prev,
+        name,
+      }));
+    }
     setIsLoading(false);
   };
   const logoutHandler = async () => {
@@ -51,8 +60,8 @@ export const AuthContextProvider = ({ children }) => {
         });
       } else {
         setAuthState({
-          uid: '',
-          name: '',
+          uid: null,
+          name: null,
         });
       }
     };
