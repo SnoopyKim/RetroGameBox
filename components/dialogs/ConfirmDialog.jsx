@@ -4,9 +4,9 @@ import DialogWrapper from './DialogWrapper';
 import { DialogContext } from '../../context/dialog/dialog-context';
 import TextButton from '../buttons/TextButton';
 
-const AlertDialog = () => {
+const ConfirmDialog = () => {
   const { data, dismiss } = useContext(DialogContext);
-  const { title, content, onConfirm } = data;
+  const { title, content, onConfirm, onCancel } = data;
   return (
     <DialogWrapper>
       <View style={styles.titleWrapper}>
@@ -29,12 +29,25 @@ const AlertDialog = () => {
             }}
           />
         </View>
+        <View style={styles.action}>
+          <TextButton
+            title={'취소'}
+            fontSize={18}
+            color={'whitesmoke'}
+            borderColor={'#333'}
+            backgroundColor={'#333'}
+            onPressed={() => {
+              onCancel();
+              dismiss();
+            }}
+          />
+        </View>
       </View>
     </DialogWrapper>
   );
 };
 
-export default AlertDialog;
+export default ConfirmDialog;
 
 const styles = StyleSheet.create({
   titleWrapper: {

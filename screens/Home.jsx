@@ -22,7 +22,7 @@ const gameselectImg = require('../assets/images/selectBox.png');
 
 const HomeScreen = ({ navigation }) => {
   const { isAuthenticated, name, logout } = useContext(AuthContext);
-  const { showAlertDialog } = useContext(DialogContext);
+  const { showSettingDialog } = useContext(DialogContext);
 
   if (!isAuthenticated) {
     navigation.replace('Login');
@@ -39,9 +39,7 @@ const HomeScreen = ({ navigation }) => {
       >
         <TouchableOpacity
           style={styles.setting}
-          onPress={() =>
-            showAlertDialog('TITLE', 'CONTENTfskjdfksbdfkbsdkjfsfsdfsdfsdf')
-          }
+          onPress={() => showSettingDialog()}
         >
           <SettingIcon width={30} height={30} style={{ color: 'white' }} />
         </TouchableOpacity>

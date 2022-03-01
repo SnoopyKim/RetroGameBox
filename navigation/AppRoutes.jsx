@@ -11,6 +11,8 @@ import { DatabaseContext } from '../context/database/database-context';
 import JumpGameScreen from '../games/JumpGame';
 import { DialogContext } from './../context/dialog/dialog-context';
 import AlertDialog from './../components/dialogs/AlertDialog';
+import ConfirmDialog from '../components/dialogs/ConfirmDialog';
+import SettingDialog from '../components/dialogs/SettingDialog';
 
 const Stack = createNativeStackNavigator();
 
@@ -36,8 +38,8 @@ const AppRoutes = () => {
       <AppNavigator />
       {(authLoading || dbLoading) && <NetworkLoading />}
       {dialogType === 'alert' && <AlertDialog />}
-      {/* {dialogType === 'confirm' && <ConfirmDialog />}
-      {dialogType === 'setting' && <SettingDialog />} */}
+      {dialogType === 'confirm' && <ConfirmDialog />}
+      {dialogType === 'setting' && <SettingDialog />}
     </NavigationContainer>
   );
 };
