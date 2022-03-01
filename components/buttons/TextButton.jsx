@@ -18,8 +18,8 @@ const TextButton = ({
     borderWidth: 2,
     borderRadius: 10,
     borderColor: borderColor || '#333',
-    paddingHorizontal: 10,
-    paddingVertical: 10,
+    paddingHorizontal: 6,
+    paddingVertical: 6,
     backgroundColor: backgroundColor || '#FFF',
     elevation: 5,
   };

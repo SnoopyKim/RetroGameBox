@@ -6,6 +6,8 @@ import {
   signInAnonymously,
   updateProfile,
   signOut,
+  EmailAuthProvider,
+  linkWithCredential,
 } from 'firebase/auth';
 import app from './firebase';
 import { addUser } from './database';
@@ -89,6 +91,46 @@ export const registerForEmail = async (email, password, name) => {
       errorMessage = '등록 불가능한 이메일입니다';
     } else if (code === 'weak-password') {
       errorMessage = '비밀번호가 너무 단순합니다';
+    }
+    return {
+      success: false,
+      message: errorMessage,
+    };
+  }
+};
+
+export const changeAccount = async (email, password, name) => {
+  if (!auth.currentUser.isAnonymous) return;
+
+  const credential = EmailAuthProvider.credential(email, password);
+  try {
+    const newCredential = await linkWithCredential(
+      auth.currentUser,
+      credential
+    );
+    const user = newCredential.user;
+    await Promise.all([
+      updateProfile(user, { displayName: name }),
+      addUser(user.uid, name),
+    ]);
+    return {
+      success: true,
+    };
+  } catch (error) {
+    let { code } = error;
+    code = code.split('/')[1];
+    console.log(code);
+    let errorMessage = '계정전환 오류';
+    if (code === 'provider-already-linked') {
+      errorMessage = '이미 가입한 이메일입니다';
+    } else if (code === 'invalid-credential') {
+      errorMessage = '이메일 형식을 확인해주세요';
+    } else if (code === 'credential-already-in-use') {
+      errorMessage = '등록 불가능한 이메일입니다';
+    } else if (code === 'email-already-in-use') {
+      errorMessage = '비밀번호가 너무 단순합니다';
+    } else if (code === 'invalid-email') {
+      errorMessage = '';
     }
     return {
       success: false,

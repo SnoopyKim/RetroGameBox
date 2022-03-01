@@ -16,12 +16,14 @@ import TextButton from '../components/buttons/TextButton';
 import LoginForm from '../components/form/LoginForm';
 import { AuthContext } from '../context/auth/auth-context';
 import SwitchTab from './../components/tabs/SwitchTab';
+import { DialogContext } from './../context/dialog/dialog-context';
 
 const backgroundImg = require('../assets/images/main_bg.png');
 
 const LoginScreen = ({ navigation }) => {
   const { isAuthenticated, guestLogin, emailLogin, register } =
     useContext(AuthContext);
+  const { showAlertDialog } = useContext(DialogContext);
 
   const [option, setOption] = useState('login');
   const isOptionLogin = option === 'login';
@@ -68,7 +70,12 @@ const LoginScreen = ({ navigation }) => {
             color={'purple'}
             leading={require('../assets/images/guest.png')}
             leadingTint={'purple'}
-            onPressed={() => guestLogin()}
+            onPressed={() =>
+              showAlertDialog(
+                '게스트 로그인',
+                '게스트 계정은 로그아웃 시 다시 로그인할 수 없고, 플레이 기록이 남지 않습니다'
+              )
+            }
             title={'게스트 로그인'}
           />
         </View>

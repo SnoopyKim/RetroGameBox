@@ -12,7 +12,7 @@ const Dot = ({ delay }) => {
           Animated.timing(bottom, {
             toValue: 1,
             duration: 300,
-            useNativeDriver: false,
+            useNativeDriver: true,
           }),
           Animated.delay(900),
         ])
@@ -22,12 +22,12 @@ const Dot = ({ delay }) => {
 
   const dotInterpolate = bottom.interpolate({
     inputRange: [0, 0.5, 1],
-    outputRange: [0, 20, 0],
+    outputRange: [0, -20, 0],
   });
 
   return (
     <Animated.View
-      style={[styles.dot, { marginBottom: dotInterpolate }]}
+      style={[styles.dot, { transform: [{ translateY: dotInterpolate }] }]}
     ></Animated.View>
   );
 };

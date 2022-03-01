@@ -9,6 +9,7 @@ export const AuthContext = React.createContext({
   guestLogin: () => {},
   emailLogin: (email, password) => {},
   register: (email, password, name) => {},
+  changeAccount: (email, password, name) => {},
   logout: () => {},
 });
 
@@ -18,7 +19,7 @@ export const AuthContextProvider = ({ children }) => {
     uid: null,
     name: null,
   });
-  const isAuthenticated = authState.uid !== null && authState.name !== null;
+  const isAuthenticated = authState.uid !== null;
 
   const guestLoginHandler = async () => {
     setIsLoading(true);
@@ -36,6 +37,17 @@ export const AuthContextProvider = ({ children }) => {
   const emailRegisterHandler = async (email, password, name) => {
     setIsLoading(true);
     const result = await authModule.registerForEmail(email, password, name);
+    if (result.success) {
+      setAuthState((prev) => ({
+        ...prev,
+        name,
+      }));
+    }
+    setIsLoading(false);
+  };
+  const changeAccountHandler = async (email, password, name) => {
+    setIsLoading(true);
+    const result = await authModule.changeAccount(email, password, name);
     if (result.success) {
       setAuthState((prev) => ({
         ...prev,
@@ -85,6 +97,7 @@ export const AuthContextProvider = ({ children }) => {
         guestLogin: guestLoginHandler,
         emailLogin: emailLoginHandler,
         register: emailRegisterHandler,
+        changeAccount: changeAccountHandler,
         logout: logoutHandler,
       }}
     >

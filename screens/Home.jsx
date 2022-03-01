@@ -12,14 +12,17 @@ import {
   View,
 } from 'react-native';
 import ImageButton from '../components/buttons/ImageButton';
-import TextButton from '../components/buttons/TextButton';
 import { AuthContext } from '../context/auth/auth-context';
+
+import SettingIcon from '../assets/images/icon_setting.svg';
+import { DialogContext } from './../context/dialog/dialog-context';
 
 const backgroundImg = require('../assets/images/main_bg.png');
 const gameselectImg = require('../assets/images/selectBox.png');
 
 const HomeScreen = ({ navigation }) => {
   const { isAuthenticated, name, logout } = useContext(AuthContext);
+  const { showAlertDialog } = useContext(DialogContext);
 
   if (!isAuthenticated) {
     navigation.replace('Login');
@@ -34,7 +37,14 @@ const HomeScreen = ({ navigation }) => {
         source={backgroundImg}
         resizeMode="cover"
       >
-        <TextButton title={`${name}님 로그아웃`} onPressed={() => logout()} />
+        <TouchableOpacity
+          style={styles.setting}
+          onPress={() =>
+            showAlertDialog('TITLE', 'CONTENTfskjdfksbdfkbsdkjfsfsdfsdfsdf')
+          }
+        >
+          <SettingIcon width={30} height={30} style={{ color: 'white' }} />
+        </TouchableOpacity>
         <Text style={styles.titleText}>레트로 게임 모음</Text>
         <ScrollView>
           <View style={styles.boxContainer}>
@@ -86,6 +96,11 @@ const styles = StyleSheet.create({
     flex: 1,
     alignSelf: `stretch`,
     width: null,
+  },
+  setting: {
+    position: 'absolute',
+    right: 20,
+    top: 30,
   },
   titleText: {
     marginTop: 90,
