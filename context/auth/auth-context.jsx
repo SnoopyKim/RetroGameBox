@@ -72,6 +72,7 @@ export const AuthContextProvider = ({ children }) => {
       if (result.success) {
         setAuthState((prev) => ({
           ...prev,
+          anonymous: result.newUser.isAnonymous,
           name,
         }));
       }

@@ -6,11 +6,13 @@ import EmailIcon from '../../assets/images/icon_email.svg';
 import PasswordIcon from '../../assets/images/icon_password.svg';
 import NameIcon from '../../assets/images/icon_name.svg';
 
-const LoginForm = ({ isRegister, onLogin, onRegister }) => {
+const LoginForm = ({ isRegister, onLogin, onRegister, color = '#333' }) => {
   const emailRef = useRef();
   const passwordRef = useRef();
   const pwconfirmRef = useRef();
   const nameRef = useRef();
+
+  const colorStyle = { color };
 
   const validateEmail = (text) => {
     if (text.trim().length === 0) {
@@ -84,7 +86,7 @@ const LoginForm = ({ isRegister, onLogin, onRegister }) => {
       <Input
         ref={emailRef}
         layoutStyle={styles.input}
-        contentStyle={styles.purple}
+        contentStyle={colorStyle}
         placeholder={'이메일을 입력하세요'}
         keyboardType={'email-address'}
         returnKeyType={'next'}
@@ -93,12 +95,12 @@ const LoginForm = ({ isRegister, onLogin, onRegister }) => {
           passwordRef.current.focus();
         }}
       >
-        <EmailIcon style={styles.purple} />
+        <EmailIcon style={colorStyle} />
       </Input>
       <Input
         ref={passwordRef}
         layoutStyle={styles.input}
-        contentStyle={styles.purple}
+        contentStyle={colorStyle}
         placeholder={'비밀번호를 입력하세요'}
         secureTextEntry={true}
         returnKeyType={isRegister ? 'next' : 'done'}
@@ -107,32 +109,32 @@ const LoginForm = ({ isRegister, onLogin, onRegister }) => {
           isRegister ? pwconfirmRef.current.focus() : loginHandler();
         }}
       >
-        <PasswordIcon style={styles.purple} />
+        <PasswordIcon style={colorStyle} />
       </Input>
       {isRegister && (
         <>
           <Input
             ref={pwconfirmRef}
             layoutStyle={styles.input}
-            contentStyle={styles.purple}
+            contentStyle={colorStyle}
             placeholder={'비밀번호를 다시 입력해주세요'}
             secureTextEntry={true}
             returnKeyType={'next'}
             validate={validatePwConfirm}
             onSubmitEditing={() => nameRef.current.focus()}
           >
-            <PasswordIcon style={styles.purple} />
+            <PasswordIcon style={colorStyle} />
           </Input>
           <Input
             ref={nameRef}
             layoutStyle={styles.input}
-            contentStyle={styles.purple}
+            contentStyle={colorStyle}
             placeholder={'닉네임을 입력하세요'}
             returnKeyType={'done'}
             validate={validateName}
             onSubmitEditing={registerHandler}
           >
-            <NameIcon style={styles.purple} />
+            <NameIcon style={colorStyle} />
           </Input>
         </>
       )}
@@ -140,14 +142,14 @@ const LoginForm = ({ isRegister, onLogin, onRegister }) => {
         {!isRegister ? (
           <TextButton
             borderColor={'white'}
-            color={'purple'}
+            color={color}
             onPressed={loginHandler}
             title={'이메일 로그인'}
           />
         ) : (
           <TextButton
             borderColor={'white'}
-            color={'purple'}
+            color={color}
             onPressed={registerHandler}
             title={'회원가입'}
           />
@@ -166,9 +168,6 @@ const styles = StyleSheet.create({
   },
   input: {
     marginVertical: 8,
-  },
-  purple: {
-    color: 'purple',
   },
   button: {
     marginTop: 16,

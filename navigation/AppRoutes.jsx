@@ -14,6 +14,7 @@ import AlertDialog from './../components/dialogs/AlertDialog';
 import ConfirmDialog from '../components/dialogs/ConfirmDialog';
 import SettingDialog from '../components/dialogs/SettingDialog';
 import RankDialog from '../components/dialogs/RankDialog';
+import RegisterDialog from '../components/dialogs/RegisterDialog';
 
 const Stack = createNativeStackNavigator();
 
@@ -41,6 +42,7 @@ const AppRoutes = () => {
       {dialogType === 'confirm' && <ConfirmDialog />}
       {dialogType === 'setting' && <SettingDialog />}
       {dialogType === 'rank' && <RankDialog />}
+      {dialogType === 'register' && <RegisterDialog />}
       {(authLoading || dbLoading) && <NetworkLoading />}
     </NavigationContainer>
   );

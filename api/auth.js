@@ -118,6 +118,7 @@ export const changeAccount = async (email, password, name) => {
     ]);
     return {
       success: true,
+      newUser: user,
     };
   } catch (error) {
     let { code } = error;

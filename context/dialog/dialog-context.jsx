@@ -9,6 +9,7 @@ export const DialogContext = React.createContext({
   showConfirmDialog: (title, content, onConfirm, onCancel) => {},
   showSettingDialog: () => {},
   showRankDialog: () => {},
+  showRegisterDialog: () => {},
   dismiss: () => {},
 });
 
@@ -68,6 +69,14 @@ export const DialogContextProvider = ({ children }) => {
     });
   }, [initialData]);
 
+  const showRegisterDialog = useCallback(() => {
+    setData({
+      ...initialData,
+      type: 'register',
+      show: true,
+    });
+  }, [initialData]);
+
   const dismiss = useCallback(() => {
     setData((prev) => ({ ...prev, show: false }));
     setTimeout(() => setData(initialData), 300);
@@ -83,6 +92,7 @@ export const DialogContextProvider = ({ children }) => {
         showConfirmDialog,
         showSettingDialog,
         showRankDialog,
+        showRegisterDialog,
         dismiss,
       }}
     >

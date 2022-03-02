@@ -65,6 +65,7 @@ const LoginScreen = ({ navigation }) => {
             isRegister={!isOptionLogin}
             onLogin={onLogin}
             onRegister={onRegister}
+            color={'purple'}
           />
         </View>
         <View style={styles.elevationHelper} />

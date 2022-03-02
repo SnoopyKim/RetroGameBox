@@ -9,10 +9,11 @@ import { AuthContext } from '../../context/auth/auth-context';
 import { DatabaseContext } from '../../context/database/database-context';
 
 const SettingDialog = () => {
-  const { changeAccount, changeName, logout } = useContext(AuthContext);
+  const { isAnonymous, changeAccount, changeName, logout } =
+    useContext(AuthContext);
   const { profile, unsubscribeProfile, recordRank } =
     useContext(DatabaseContext);
-  const { dismiss } = useContext(DialogContext);
+  const { showRegisterDialog, dismiss } = useContext(DialogContext);
 
   return (
     <DialogWrapper>
@@ -24,29 +25,36 @@ const SettingDialog = () => {
       </View>
       <View style={[styles.nameWrapper]}>
         <NameIcon style={{ color: '#333' }} />
-        <Text style={styles.name}>{profile.name || '게스트 계정'}</Text>
+        <Text style={styles.name}>{profile?.name || '게스트 계정'}</Text>
       </View>
       <View style={styles.row}>
         <Text style={styles.gameName}>뽑기게임</Text>
-        <Text style={styles.gameScore}>{profile.CRANE || 'NONE'}</Text>
+        <Text style={styles.gameScore}>{profile?.CRANE || 'NONE'}</Text>
       </View>
       <View style={styles.row}>
         <Text style={styles.gameName}>점프게임</Text>
-        <Text style={styles.gameScore}>{profile.JUMP || 'NONE'}</Text>
+        <Text style={styles.gameScore}>{profile?.JUMP || 'NONE'}</Text>
       </View>
       <View style={styles.row}>
         <Text style={styles.gameName}>NPC게임</Text>
 
-        <Text style={styles.gameScore}>{profile.NPC || 'NONE'}</Text>
+        <Text style={styles.gameScore}>{profile?.NPC || 'NONE'}</Text>
       </View>
       <View style={{ height: 14 }} />
-      <TextButton
-        backgroundColor={'#333'}
-        color={'whitesmoke'}
-        title={'계정 전환'}
-        onPressed={() => {}}
-      />
-      <View style={{ height: 10 }} />
+      {isAnonymous && (
+        <>
+          <TextButton
+            backgroundColor={'#333'}
+            color={'whitesmoke'}
+            title={'계정 전환'}
+            onPressed={() => {
+              showRegisterDialog();
+            }}
+          />
+          <View style={{ height: 10 }} />
+        </>
+      )}
+
       <TextButton
         backgroundColor={'#333'}
         color={'whitesmoke'}

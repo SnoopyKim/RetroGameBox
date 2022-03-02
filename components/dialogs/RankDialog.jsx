@@ -56,6 +56,13 @@ const RankDialog = () => {
             score={rank.score}
           />
         ))}
+        {rankList.length === 0 && (
+          <View style={styles.empty}>
+            <Text style={styles.emptyText}>
+              네트워크 오류 혹은{'\n'}저장된 기록이 없습니다
+            </Text>
+          </View>
+        )}
       </View>
     </DialogWrapper>
   );
@@ -108,11 +115,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     marginVertical: 6,
+    alignItems: 'center',
   },
   rowText: {
     fontFamily: 'DGM',
     color: '#333',
-    alignItems: 'center',
   },
   rank: {
     fontSize: 16,
@@ -122,5 +129,17 @@ const styles = StyleSheet.create({
   },
   score: {
     fontSize: 16,
+  },
+  empty: {
+    height: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyText: {
+    fontFamily: 'DGM',
+    color: '#333',
+    textAlign: 'center',
+    fontSize: 15,
+    lineHeight: 20,
   },
 });
