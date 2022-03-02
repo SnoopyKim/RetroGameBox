@@ -172,7 +172,7 @@ const JumpGameScreen = () => {
     let spike4 = Matter.Bodies.rectangle(
       wallMid.position.x,
       wallMid.position.y - Constants.MAX_HEIGHT / 16 - 5,
-      40,
+      30,
       10,
       {
         isStatic: true,
@@ -220,11 +220,11 @@ const JumpGameScreen = () => {
         name: "spike",
       }
     );
-    let reward1 = Matter.Bodies.rectangle(20, floor4.position.y - 35, 50, 50, {
+    let reward1 = Matter.Bodies.rectangle(20, floor4.position.y - 35, 0, 0, {
       isStatic: true,
       name: "reward",
     });
-    let reward2 = Matter.Bodies.rectangle(110, floor4.position.y - 35, 50, 50, {
+    let reward2 = Matter.Bodies.rectangle(110, floor4.position.y - 35, 0, 0, {
       isStatic: true,
       name: "reward",
     });
@@ -408,7 +408,7 @@ const JumpGameScreen = () => {
       jumpBar: {
         body: jumpBar,
         size: [100, 10],
-        color: "red",
+        color: "yellow",
         renderer: JumpBar,
       },
       spike1: {
@@ -428,7 +428,7 @@ const JumpGameScreen = () => {
       },
       spike4: {
         body: spike4,
-        size: [100, 40],
+        size: [80, 30],
         renderer: Spike,
       },
       spike5: {
@@ -525,7 +525,7 @@ const JumpGameScreen = () => {
           >
             <View style={styles.btnSlot}>
               <Image
-                source={require("../../assets/images/redBtn.png")}
+                source={require("../../assets/images/purpleBtn.png")}
                 resizeMode="contain"
                 style={{ width: 120, height: 120 }}
               ></Image>
