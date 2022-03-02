@@ -15,6 +15,7 @@ import ImageButton from '../components/buttons/ImageButton';
 import TextButton from '../components/buttons/TextButton';
 import LoginForm from '../components/form/LoginForm';
 import { AuthContext } from '../context/auth/auth-context';
+import { DatabaseContext } from '../context/database/database-context';
 import SwitchTab from './../components/tabs/SwitchTab';
 import { DialogContext } from './../context/dialog/dialog-context';
 
@@ -23,13 +24,15 @@ const backgroundImg = require('../assets/images/main_bg.png');
 const LoginScreen = ({ navigation }) => {
   const { isAuthenticated, guestLogin, emailLogin, register } =
     useContext(AuthContext);
+  const { subscribeProfile } = useContext(DatabaseContext);
   const { showConfirmDialog } = useContext(DialogContext);
 
-  const [option, setOption] = useState('login');
-  const isOptionLogin = option === 'login';
+  const [option, setOption] = useState(0);
+  const isOptionLogin = option === 0;
 
   useLayoutEffect(() => {
     if (isAuthenticated) {
+      subscribeProfile();
       navigation.replace('Home');
     }
   }, [isAuthenticated]);
@@ -47,13 +50,14 @@ const LoginScreen = ({ navigation }) => {
       <ImageBackground
         style={styles.background}
         source={backgroundImg}
-        resizeMode="cover"
+        resizeMode='cover'
       >
         <SwitchTab
-          currentOptionName={option}
-          firstOptionName={'login'}
-          secondOptionName={'register'}
-          onSwitch={setOption}
+          options={['로그인', '회원가입']}
+          initialIndex={0}
+          selectedColor={'mediumorchid'}
+          elevationColor={'purple'}
+          onSwitched={(prev, curr) => setOption(curr)}
         />
 
         <View style={styles.formWrapper}>

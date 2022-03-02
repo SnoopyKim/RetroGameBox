@@ -10,13 +10,16 @@ import {
   linkWithCredential,
 } from 'firebase/auth';
 import app from './firebase';
-import { addUser } from './database';
+import { addUser, setUserName } from './database';
 
 // Get a reference to the database service
 const auth = getAuth(app);
 auth.languageCode = 'ko';
 
 let authListener = null;
+
+export const getCurrentUserUID = () =>
+  auth.currentUser ? auth.currentUser.uid : null;
 
 export const setAuthListener = (onChanged, onError) => {
   authListener = onAuthStateChanged(auth, onChanged, onError);
@@ -141,9 +144,12 @@ export const changeAccount = async (email, password, name) => {
 
 export const setDisplayName = async (displayName) => {
   try {
-    await updateProfile(auth.currentUser, {
-      displayName,
-    });
+    await Promise.all([
+      updateProfile(auth.currentUser, {
+        displayName,
+      }),
+      setUserName(auth.currentUser.uid, displayName),
+    ]);
   } catch (error) {
     const { code, message } = error;
     console.log(code);

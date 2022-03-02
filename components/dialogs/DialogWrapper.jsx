@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    zIndex: 1,
+    zIndex: 5,
   },
   touchable: {
     width: '100%',
@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
     borderWidth: 4,
     borderRadius: 16,
     alignItems: 'stretch',
-    zIndex: 2,
+    zIndex: 6,
     elevation: 10,
   },
 });

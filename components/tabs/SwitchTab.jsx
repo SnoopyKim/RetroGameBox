@@ -1,86 +1,94 @@
 import { Animated, StyleSheet, View, TouchableOpacity } from 'react-native';
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 
 const SwitchTab = ({
-  onSwitch,
-  currentOptionName,
-  firstOptionName,
-  secondOptionName,
+  onSwitched = (prevIdx, currIdx) => {
+    console.log(`Switched to ${currIdx} from ${prevIdx}`);
+  },
+  initialIndex = 0,
+  options = ['TAB1', 'TAB2'],
+  selectedColor = '#333',
+  defaultColor = 'white',
+  elevationColor,
 }) => {
-  const colorAnim = useRef(new Animated.Value(0)).current;
+  const [currentIndex, setCurrentIndex] = useState(initialIndex);
+  const colorAnims = useRef(
+    options.map((opt, i) => new Animated.Value(i === initialIndex ? 0 : 1))
+  ).current;
 
-  const onPressTab = (selectedOption) => {
-    if (currentOptionName === selectedOption) return;
-    Animated.timing(colorAnim, {
-      toValue: currentOptionName === firstOptionName ? 1 : 0,
-      duration: 300,
-      useNativeDriver: false,
-    }).start(() => onSwitch(selectedOption));
+  const onPressTab = (selectedIndex) => {
+    if (currentIndex === selectedIndex) return;
+
+    Animated.parallel([
+      Animated.timing(colorAnims[selectedIndex], {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: false,
+      }),
+      Animated.timing(colorAnims[currentIndex], {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: false,
+      }),
+    ]).start(() => {
+      onSwitched(currentIndex, selectedIndex);
+      setCurrentIndex(selectedIndex);
+    });
   };
 
-  const loginColor = {
+  const colors = colorAnims.map((colorAnim) => ({
     tab: colorAnim.interpolate({
       inputRange: [0, 1],
-      outputRange: ['mediumorchid', 'white'],
+      outputRange: [selectedColor, defaultColor],
     }),
     text: colorAnim.interpolate({
       inputRange: [0, 1],
-      outputRange: ['white', 'mediumorchid'],
+      outputRange: [defaultColor, selectedColor],
     }),
-  };
+  }));
 
-  const registerColor = {
-    tab: colorAnim.interpolate({
-      inputRange: [0, 1],
-      outputRange: ['white', 'mediumorchid'],
-    }),
-    text: colorAnim.interpolate({
-      inputRange: [0, 1],
-      outputRange: ['mediumorchid', 'white'],
-    }),
-  };
   return (
-    <>
+    <View style={styles.container}>
       <View style={styles.tab}>
-        <AnimatedTouchable
-          disabled={currentOptionName === firstOptionName}
-          activeOpacity={0.7}
-          style={[styles.tabItem, { backgroundColor: loginColor.tab }]}
-          onPress={() => onPressTab(firstOptionName)}
-        >
-          <Animated.Text style={[styles.tabText, { color: loginColor.text }]}>
-            로그인
-          </Animated.Text>
-        </AnimatedTouchable>
-        <AnimatedTouchable
-          disabled={currentOptionName === secondOptionName}
-          activeOpacity={0.7}
-          style={[styles.tabItem, { backgroundColor: registerColor.tab }]}
-          onPress={() => onPressTab(secondOptionName)}
-        >
-          <Animated.Text
-            style={[styles.tabText, { color: registerColor.text }]}
-          >
-            회원가입
-          </Animated.Text>
-        </AnimatedTouchable>
+        {options.map((option, idx) => {
+          return (
+            <AnimatedTouchable
+              key={idx}
+              disabled={currentIndex === idx}
+              activeOpacity={0.7}
+              style={[styles.tabItem, { backgroundColor: colors[idx].tab }]}
+              onPress={() => onPressTab(idx)}
+            >
+              <Animated.Text
+                style={[styles.tabText, { color: colors[idx].text }]}
+              >
+                {option}
+              </Animated.Text>
+            </AnimatedTouchable>
+          );
+        })}
       </View>
-      <View style={styles.elevationHelper} />
-    </>
+      {elevationColor && (
+        <View
+          style={[styles.elevationHelper, { backgroundColor: elevationColor }]}
+        />
+      )}
+    </View>
   );
 };
 
 export default SwitchTab;
 
 const styles = StyleSheet.create({
+  container: {
+    alignItems: 'stretch',
+    elevation: 5,
+  },
   tab: {
-    width: 300,
     flexDirection: 'row',
     borderRadius: 10,
-    // borderColor: 'mediumorchid',
-    // borderWidth: 2,
     overflow: 'hidden',
     zIndex: 1,
   },
@@ -89,18 +97,15 @@ const styles = StyleSheet.create({
     height: 44,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'white',
   },
   tabText: {
     fontFamily: 'DGM',
     fontSize: 14,
-    color: 'mediumorchid',
   },
   elevationHelper: {
     width: 300,
     height: 20,
     marginTop: -13,
-    backgroundColor: 'purple',
     borderBottomStartRadius: 20,
     borderBottomEndRadius: 20,
   },

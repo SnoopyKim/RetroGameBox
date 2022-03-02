@@ -13,17 +13,18 @@ import { DialogContext } from './../context/dialog/dialog-context';
 import AlertDialog from './../components/dialogs/AlertDialog';
 import ConfirmDialog from '../components/dialogs/ConfirmDialog';
 import SettingDialog from '../components/dialogs/SettingDialog';
+import RankDialog from '../components/dialogs/RankDialog';
 
 const Stack = createNativeStackNavigator();
 
 const AppNavigator = () => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Login" component={LoginScreen} />
-      <Stack.Screen name="Home" component={HomeScreen} />
-      <Stack.Screen name="GameMy" component={GameMy} />
-      <Stack.Screen name="JumpGame" component={JumpGameScreen} />
-      <Stack.Screen name="NPCGame" component={NPCGameScreen} />
+      <Stack.Screen name='Login' component={LoginScreen} />
+      <Stack.Screen name='Home' component={HomeScreen} />
+      <Stack.Screen name='GameMy' component={GameMy} />
+      <Stack.Screen name='JumpGame' component={JumpGameScreen} />
+      <Stack.Screen name='NPCGame' component={NPCGameScreen} />
     </Stack.Navigator>
   );
 };
@@ -36,10 +37,11 @@ const AppRoutes = () => {
   return (
     <NavigationContainer>
       <AppNavigator />
-      {(authLoading || dbLoading) && <NetworkLoading />}
       {dialogType === 'alert' && <AlertDialog />}
       {dialogType === 'confirm' && <ConfirmDialog />}
       {dialogType === 'setting' && <SettingDialog />}
+      {dialogType === 'rank' && <RankDialog />}
+      {(authLoading || dbLoading) && <NetworkLoading />}
     </NavigationContainer>
   );
 };

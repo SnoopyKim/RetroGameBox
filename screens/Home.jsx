@@ -13,16 +13,16 @@ import {
 } from 'react-native';
 import ImageButton from '../components/buttons/ImageButton';
 import { AuthContext } from '../context/auth/auth-context';
-
-import SettingIcon from '../assets/images/icon_setting.svg';
 import { DialogContext } from './../context/dialog/dialog-context';
+import SettingIcon from '../assets/images/icon_setting.svg';
+import RankIcon from '../assets/images/icon_rank.svg';
 
 const backgroundImg = require('../assets/images/main_bg.png');
 const gameselectImg = require('../assets/images/selectBox.png');
 
 const HomeScreen = ({ navigation }) => {
-  const { isAuthenticated, name, logout } = useContext(AuthContext);
-  const { showSettingDialog } = useContext(DialogContext);
+  const { isAuthenticated } = useContext(AuthContext);
+  const { showSettingDialog, showRankDialog } = useContext(DialogContext);
 
   if (!isAuthenticated) {
     navigation.replace('Login');
@@ -31,18 +31,25 @@ const HomeScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.center}>
-      <StatusBar style="light" />
+      <StatusBar style='light' />
       <ImageBackground
         style={styles.backgroundImage}
         source={backgroundImg}
-        resizeMode="cover"
+        resizeMode='cover'
       >
-        <TouchableOpacity
-          style={styles.setting}
-          onPress={() => showSettingDialog()}
-        >
-          <SettingIcon width={30} height={30} style={{ color: 'white' }} />
-        </TouchableOpacity>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => showRankDialog()}>
+            <RankIcon width={30} height={30} style={{ color: 'whitesmoke' }} />
+          </TouchableOpacity>
+          <View style={{ width: 10 }} />
+          <TouchableOpacity onPress={() => showSettingDialog()}>
+            <SettingIcon
+              width={30}
+              height={30}
+              style={{ color: 'whitesmoke' }}
+            />
+          </TouchableOpacity>
+        </View>
         <Text style={styles.titleText}>레트로 게임 모음</Text>
         <ScrollView>
           <View style={styles.boxContainer}>
@@ -95,10 +102,11 @@ const styles = StyleSheet.create({
     alignSelf: `stretch`,
     width: null,
   },
-  setting: {
+  header: {
     position: 'absolute',
     right: 20,
     top: 30,
+    flexDirection: 'row',
   },
   titleText: {
     marginTop: 90,

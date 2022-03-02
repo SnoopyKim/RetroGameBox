@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useCallback, useLayoutEffect, useState } from 'react';
 import * as databaseModule from '../../api/database';
 
 export const DialogContext = React.createContext({
@@ -8,6 +8,7 @@ export const DialogContext = React.createContext({
   showAlertDialog: (title, content, onConfirm) => {},
   showConfirmDialog: (title, content, onConfirm, onCancel) => {},
   showSettingDialog: () => {},
+  showRankDialog: () => {},
   dismiss: () => {},
 });
 
@@ -24,41 +25,53 @@ export const DialogContextProvider = ({ children }) => {
   const [data, setData] = useState(initialData);
   const { type, show, ...restData } = data;
 
-  const showAlertDialog = (title, content, onConfirm = () => {}) => {
-    setData({
-      type: 'alert',
-      show: true,
-      title,
-      content,
-      onConfirm,
-    });
-  };
-  const showConfirmDialog = (
-    title,
-    content,
-    onConfirm = () => {},
-    onCancel = () => {}
-  ) => {
-    setData({
-      type: 'confirm',
-      show: true,
-      title,
-      content,
-      onConfirm,
-      onCancel,
-    });
-  };
-  const showSettingDialog = () => {
+  const showAlertDialog = useCallback(
+    (title, content, onConfirm = () => {}) => {
+      setData({
+        type: 'alert',
+        show: true,
+        title,
+        content,
+        onConfirm,
+      });
+    },
+    []
+  );
+
+  const showConfirmDialog = useCallback(
+    (title, content, onConfirm = () => {}, onCancel = () => {}) => {
+      setData({
+        type: 'confirm',
+        show: true,
+        title,
+        content,
+        onConfirm,
+        onCancel,
+      });
+    },
+    []
+  );
+
+  const showSettingDialog = useCallback(() => {
     setData({
       ...initialData,
       type: 'setting',
       show: true,
     });
-  };
-  const dismiss = () => {
+  }, [initialData]);
+
+  const showRankDialog = useCallback(() => {
+    setData({
+      ...initialData,
+      type: 'rank',
+      show: true,
+    });
+  }, [initialData]);
+
+  const dismiss = useCallback(() => {
     setData((prev) => ({ ...prev, show: false }));
     setTimeout(() => setData(initialData), 300);
-  };
+  }, [initialData]);
 
   return (
     <DialogContext.Provider
@@ -69,6 +82,7 @@ export const DialogContextProvider = ({ children }) => {
         showAlertDialog,
         showConfirmDialog,
         showSettingDialog,
+        showRankDialog,
         dismiss,
       }}
     >
