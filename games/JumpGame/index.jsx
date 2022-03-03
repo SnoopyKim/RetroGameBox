@@ -81,9 +81,9 @@ const JumpGameScreen = () => {
     );
     let stair1 = Matter.Bodies.rectangle(
       Constants.MAX_WIDTH - 25,
-      Constants.MAX_HEIGHT / 1.2 - 85,
+      Constants.MAX_HEIGHT / 1.2 - 80,
       50,
-      50,
+      60,
       { isStatic: true, name: "floor" }
     );
     let stair2 = Matter.Bodies.rectangle(20, floor2.position.y - 60, 40, 20, {
@@ -220,11 +220,11 @@ const JumpGameScreen = () => {
         name: "spike",
       }
     );
-    let reward1 = Matter.Bodies.rectangle(20, floor4.position.y - 35, 0, 0, {
+    let reward1 = Matter.Bodies.rectangle(20, floor4.position.y - 35, 50, 50, {
       isStatic: true,
       name: "reward",
     });
-    let reward2 = Matter.Bodies.rectangle(110, floor4.position.y - 35, 0, 0, {
+    let reward2 = Matter.Bodies.rectangle(110, floor4.position.y - 35, 50, 50, {
       isStatic: true,
       name: "reward",
     });
@@ -326,7 +326,7 @@ const JumpGameScreen = () => {
       },
       stair1: {
         body: stair1,
-        size: [50, 70],
+        size: [50, 60],
         color: "green",
         renderer: Floor,
       },
