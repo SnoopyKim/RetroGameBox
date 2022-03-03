@@ -12,14 +12,23 @@ import {
   View,
 } from 'react-native';
 import ImageButton from '../components/buttons/ImageButton';
-import TextButton from '../components/buttons/TextButton';
 import { AuthContext } from '../context/auth/auth-context';
+import { DialogContext } from './../context/dialog/dialog-context';
+import SettingIcon from '../assets/images/icon_setting.svg';
+import RankIcon from '../assets/images/icon_rank.svg';
 
 const backgroundImg = require('../assets/images/main_bg.png');
 const gameselectImg = require('../assets/images/selectBox.png');
 
 const HomeScreen = ({ navigation }) => {
-  const { name, logout } = useContext(AuthContext);
+  const { isAuthenticated } = useContext(AuthContext);
+  const { showSettingDialog, showRankDialog } = useContext(DialogContext);
+
+  if (!isAuthenticated) {
+    navigation.replace('Login');
+    return <></>;
+  }
+
   return (
     <SafeAreaView style={styles.center}>
       <StatusBar style='light' />
@@ -28,7 +37,19 @@ const HomeScreen = ({ navigation }) => {
         source={backgroundImg}
         resizeMode='cover'
       >
-        <TextButton title={`${name}님 로그아웃`} onPressed={() => logout()} />
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => showRankDialog()}>
+            <RankIcon width={30} height={30} style={{ color: 'whitesmoke' }} />
+          </TouchableOpacity>
+          <View style={{ width: 10 }} />
+          <TouchableOpacity onPress={() => showSettingDialog()}>
+            <SettingIcon
+              width={30}
+              height={30}
+              style={{ color: 'whitesmoke' }}
+            />
+          </TouchableOpacity>
+        </View>
         <Text style={styles.titleText}>레트로 게임 모음</Text>
         <ScrollView>
           <View style={styles.boxContainer}>
@@ -80,6 +101,12 @@ const styles = StyleSheet.create({
     flex: 1,
     alignSelf: `stretch`,
     width: null,
+  },
+  header: {
+    position: 'absolute',
+    right: 20,
+    top: 30,
+    flexDirection: 'row',
   },
   titleText: {
     marginTop: 90,

@@ -39,38 +39,37 @@ export default function (entities, { events, dispatch }) {
   head.nextMove -= 1;
   if (head.nextMove === 0) {
     head.nextMove = head.updateFrequency;
+
+    tail.elements = [[head.position[0], head.position[1]], ...tail.elements];
+    tail.elements.pop();
+
+    head.position[0] += head.xspeed;
+    head.position[1] += head.yspeed;
+
     if (
-      head.position[0] + head.xspeed < 0 ||
-      head.position[0] + head.xspeed >= Constants.GRID_SIZE ||
-      head.position[1] + head.yspeed < 0 ||
-      head.position[1] + head.yspeed >= Constants.GRID_SIZE
+      head.position[0] < 0 ||
+      head.position[0] >= Constants.GRID_SIZE ||
+      head.position[1] < 0 ||
+      head.position[1] >= Constants.GRID_SIZE
     ) {
       dispatch('game-over');
-    } else {
+      return;
+    }
+
+    tail.elements.forEach((el, idx) => {
+      if (head.position[0] === el[0] && head.position[1] === el[1])
+        dispatch('game-over');
+    });
+
+    if (
+      head.position[0] == food.position[0] &&
+      head.position[1] == food.position[1]
+    ) {
       tail.elements = [[head.position[0], head.position[1]], ...tail.elements];
-      tail.elements.pop();
-
-      head.position[0] += head.xspeed;
-      head.position[1] += head.yspeed;
-
-      tail.elements.forEach((el, idx) => {
-        if (head.position[0] === el[0] && head.position[1] === el[1])
-          dispatch('game-over');
-      });
-
-      if (
-        head.position[0] == food.position[0] &&
-        head.position[1] == food.position[1]
-      ) {
-        tail.elements = [
-          [head.position[0], head.position[1]],
-          ...tail.elements,
-        ];
-        food.position = [
-          randomPositions(0, Constants.GRID_SIZE - 1),
-          randomPositions(0, Constants.GRID_SIZE - 1),
-        ];
-      }
+      food.position = [
+        randomPositions(0, Constants.GRID_SIZE - 1),
+        randomPositions(0, Constants.GRID_SIZE - 1),
+      ];
     }
   }
   return entities;

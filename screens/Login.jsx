@@ -9,143 +9,110 @@ import {
   TouchableOpacity,
   Animated,
   View,
+  ImageBackground,
 } from 'react-native';
 import ImageButton from '../components/buttons/ImageButton';
 import TextButton from '../components/buttons/TextButton';
-import Input from '../components/form/Input';
 import LoginForm from '../components/form/LoginForm';
 import { AuthContext } from '../context/auth/auth-context';
+import { DatabaseContext } from '../context/database/database-context';
+import SwitchTab from './../components/tabs/SwitchTab';
+import { DialogContext } from './../context/dialog/dialog-context';
 
-const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
+const backgroundImg = require('../assets/images/main_bg.png');
 
 const LoginScreen = ({ navigation }) => {
   const { isAuthenticated, guestLogin, emailLogin, register } =
     useContext(AuthContext);
+  const { subscribeProfile } = useContext(DatabaseContext);
+  const { showConfirmDialog } = useContext(DialogContext);
 
-  const [option, setOption] = useState('login');
-  const isOptionLogin = option === 'login';
-
-  const colorAnim = useRef(new Animated.Value(0)).current;
-
-  const onPressTab = (selectedOption) => {
-    if (option === selectedOption) return;
-    Animated.timing(colorAnim, {
-      toValue: isOptionLogin ? 1 : 0,
-      duration: 300,
-      useNativeDriver: false,
-    }).start(() => setOption(selectedOption));
-  };
-
-  const loginColor = {
-    tab: colorAnim.interpolate({
-      inputRange: [0, 1],
-      outputRange: ['purple', 'transparent'],
-    }),
-    text: colorAnim.interpolate({
-      inputRange: [0, 1],
-      outputRange: ['white', 'purple'],
-    }),
-  };
-
-  const registerColor = {
-    tab: colorAnim.interpolate({
-      inputRange: [0, 1],
-      outputRange: ['transparent', 'purple'],
-    }),
-    text: colorAnim.interpolate({
-      inputRange: [0, 1],
-      outputRange: ['purple', 'white'],
-    }),
-  };
+  const [option, setOption] = useState(0);
+  const isOptionLogin = option === 0;
 
   useLayoutEffect(() => {
     if (isAuthenticated) {
+      subscribeProfile();
       navigation.replace('Home');
     }
   }, [isAuthenticated]);
 
   const onLogin = (email, password) => {
-    console.log('Login', email, password);
+    emailLogin(email, password);
   };
   const onRegister = (email, password, name) => {
-    console.log('Register', email, password, name);
+    register(email, password, name);
   };
 
   return (
-    <SafeAreaView style={styles.center}>
+    <SafeAreaView style={{ flex: 1 }}>
       <StatusBar />
-      <View style={styles.tab}>
-        <AnimatedTouchable
-          style={[styles.tabItem, { backgroundColor: loginColor.tab }]}
-          onPress={() => onPressTab('login')}
-        >
-          <Animated.Text style={[styles.tabText, { color: loginColor.text }]}>
-            로그인
-          </Animated.Text>
-        </AnimatedTouchable>
-        <AnimatedTouchable
-          style={[styles.tabItem, { backgroundColor: registerColor.tab }]}
-          onPress={() => onPressTab('register')}
-        >
-          <Animated.Text
-            style={[styles.tabText, { color: registerColor.text }]}
-          >
-            회원가입
-          </Animated.Text>
-        </AnimatedTouchable>
-      </View>
-
-      <View style={styles.formWrapper}>
-        <LoginForm
-          isRegister={!isOptionLogin}
-          onLogin={onLogin}
-          onRegister={onRegister}
+      <ImageBackground
+        style={styles.background}
+        source={backgroundImg}
+        resizeMode='cover'
+      >
+        <SwitchTab
+          options={['로그인', '회원가입']}
+          initialIndex={0}
+          selectedColor={'mediumorchid'}
+          elevationColor={'purple'}
+          onSwitched={(prev, curr) => setOption(curr)}
         />
-      </View>
-      <View style={{ width: 280, marginTop: 20 }}>
-        <TextButton onPressed={() => guestLogin()} title={'게스트 로그인'} />
-      </View>
+
+        <View style={styles.formWrapper}>
+          <LoginForm
+            isRegister={!isOptionLogin}
+            onLogin={onLogin}
+            onRegister={onRegister}
+            color={'purple'}
+          />
+        </View>
+        <View style={styles.elevationHelper} />
+        <View style={{ width: 300, marginTop: 20 }}>
+          <TextButton
+            borderColor={'purple'}
+            color={'purple'}
+            leading={require('../assets/images/guest.png')}
+            leadingTint={'purple'}
+            onPressed={() =>
+              showConfirmDialog(
+                '게스트 로그인',
+                '게스트 계정은 로그아웃 시 다시 로그인할 수 없고, 플레이 기록이 남지 않습니다',
+                () => guestLogin()
+              )
+            }
+            title={'게스트 로그인'}
+          />
+        </View>
+      </ImageBackground>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  center: {
+  background: {
     flex: 1,
+    alignSelf: `stretch`,
+    width: null,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  tab: {
-    width: 300,
-    flexDirection: 'row',
-    borderRadius: 10,
-    borderColor: 'purple',
-    borderWidth: 2,
-    overflow: 'hidden',
-  },
-  tabItem: {
-    flex: 1,
-    height: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'white',
-  },
-  tabItemEnabled: {
-    backgroundColor: 'purple',
-  },
-  tabText: {
-    fontFamily: 'DGM',
-    fontSize: 14,
-    color: 'purple',
-  },
-  tabTextEnabled: {
-    color: 'white',
   },
   formWrapper: {
     width: 300,
     padding: 10,
     marginTop: 20,
+    backgroundColor: 'mediumorchid',
+    borderRadius: 10,
+    zIndex: 1,
+  },
+  elevationHelper: {
+    width: 300,
+    height: 20,
+    marginTop: -13,
     backgroundColor: 'purple',
+    borderBottomStartRadius: 20,
+    borderBottomEndRadius: 20,
   },
 });
 
