@@ -23,7 +23,7 @@ import { GameEngine } from "react-native-game-engine";
 import AssetLoading from "../components/AssetLoading";
 
 const backgroundImg = require("../assets/images/main_bg.png");
-const redBtn = require("../assets/images/redBtn.png");
+const redBtn = require("../assets/images/rainbowBtn.gif");
 
 let deepPurple = "#6b5892";
 

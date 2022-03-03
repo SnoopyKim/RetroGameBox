@@ -2,7 +2,7 @@ import React from "react";
 
 import { Image, View } from "react-native";
 
-function Player({ body, direction }) {
+function Reward({ body, direction, srce }) {
   const { x, y } = body.position;
   const { max, min } = body.bounds;
   const width = max.x - min.x;
@@ -26,10 +26,14 @@ function Player({ body, direction }) {
           transform: direction ? [{ scaleX: -1 }] : [{ scaleX: 1 }],
           resizeMode: "stretch",
         }}
-        source={require("../../../assets/images/redSlime.gif")}
+        source={
+          srce
+            ? require("../../../assets/images/yellowSlime.gif")
+            : require("../../../assets/images/blueSlime.gif")
+        }
       />
     </View>
   );
 }
 
-export default Player;
+export default Reward;
