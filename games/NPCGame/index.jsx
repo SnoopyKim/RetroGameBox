@@ -25,6 +25,7 @@ import TextButton from '../../components/buttons/TextButton';
 import Cards from './components/Cards';
 import ExitIcon from '../../assets/images/icon_exit.svg';
 import { DialogContext } from '../../context/dialog/dialog-context';
+import GameResult from '../../components/GameResult';
 
 const initState = {
   running: true,
@@ -75,7 +76,6 @@ const NPCGameScreen = ({ navigation }) => {
       gameEngine.current &&
       matterEngine.current
     ) {
-      console.log('RESTART MATTER');
       Matter.Engine.clear(matterEngine.current);
       gameEngine.current.swap(initEntities());
     }
@@ -196,21 +196,18 @@ const NPCGameScreen = ({ navigation }) => {
   const onEvent = (event) => {
     switch (event.type) {
       case 'WIN':
-        console.log('WIN!');
         setGameState({
           ...gameState,
           status: 'WIN',
         });
         break;
       case 'LOSE':
-        console.log('LOSE!');
         setGameState({
           ...gameState,
           status: 'LOSE',
         });
         break;
       case 'START':
-        console.log('START ROUND', gameState.round);
         setGameState({ ...gameState, status: 'FIGHT' });
         break;
     }
@@ -255,26 +252,12 @@ const NPCGameScreen = ({ navigation }) => {
         </View>
       </AssetLoading>
       {!gameState.running && (
-        <View style={styles.dialogContainer}>
-          <Text
-            style={{
-              color: 'white',
-              fontFamily: 'DGM',
-              fontSize: 48,
-              textShadowColor: 'white',
-              textShadowRadius: 5,
-              marginBottom: 80,
-            }}
-          >
-            GAME OVER
-          </Text>
-          <TextButton
-            title={'RESTART'}
-            onPressed={resetGame}
-            borderColor={'white'}
-            fontSize={20}
-          />
-        </View>
+        <GameResult
+          gameID={'NPC'}
+          score={gameState.round}
+          resetGame={resetGame}
+          exitGame={() => navigation.goBack()}
+        />
       )}
     </SafeAreaView>
   );
@@ -317,14 +300,6 @@ const styles = StyleSheet.create({
     height: Constants.MAX_HEIGHT - Constants.GAME_HEIGHT,
     // top: Constants.GAME_HEIGHT,
   },
-  dialogContainer: {
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#000000CC',
-  },
   resultWrapper: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -335,7 +310,6 @@ const styles = StyleSheet.create({
     fontFamily: 'DGM',
     fontSize: 48,
   },
-  selectText: {},
 });
 
 export default NPCGameScreen;

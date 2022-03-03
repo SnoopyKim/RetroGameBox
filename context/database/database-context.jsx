@@ -69,7 +69,7 @@ export const DatabaseContextProvider = ({ children }) => {
     async (gameId, score) => {
       if (profile) {
         setIsLoading(true);
-        await databaseModule.recordRank(gameId, user.uid, profile.name, score);
+        await databaseModule.recordRank(gameId, profile.name, score);
         setIsLoading(false);
       } else {
         showAlertDialog('권한 오류', '게스트 계정은 기록할 수 없습니다!');

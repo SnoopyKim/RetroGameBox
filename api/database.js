@@ -18,6 +18,9 @@ export const addUser = async (uid, name) => {
     const docRef = doc(firestore, 'users', uid);
     await setDoc(docRef, {
       name,
+      NPC: 0,
+      JUMP: 0,
+      CRANE: 0,
     });
     return true;
   } catch (err) {

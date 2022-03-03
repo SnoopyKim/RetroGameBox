@@ -19,7 +19,7 @@ const TextButton = ({
     borderRadius: 10,
     borderColor: borderColor || '#333',
     paddingHorizontal: 6,
-    paddingVertical: 6,
+    paddingVertical: 8,
     backgroundColor: backgroundColor || '#FFF',
     elevation: 5,
   };
@@ -29,6 +29,7 @@ const TextButton = ({
     fontSize: fontSize || 20,
     color: color || '#333',
     marginHorizontal: 10,
+    letterSpacing: 2,
   };
 
   return (

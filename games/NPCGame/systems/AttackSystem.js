@@ -44,7 +44,6 @@ const AttackSystem = (entities, { events, time, dispatch }) => {
 
   if (events.length) {
     events.forEach((e) => {
-      console.log(e.type);
       switch (e.type) {
         case 'ERASE':
           entities.rocks.bodies = entities.rocks.bodies.filter(
