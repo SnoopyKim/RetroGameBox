@@ -45,7 +45,7 @@ const RankDialog = () => {
       <View style={styles.rankingBoard}>
         <View style={styles.rankingHeader}>
           <Text style={styles.headerText}>순위</Text>
-          <Text style={styles.headerText}>닉네임</Text>
+          <Text style={[styles.headerText, { flex: 2 }]}>닉네임</Text>
           <Text style={styles.headerText}>점수</Text>
         </View>
         {rankList.map((rank, i) => (
@@ -100,31 +100,34 @@ const styles = StyleSheet.create({
   },
   rankingHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
     borderBottomColor: '#333',
     borderBottomWidth: 2,
     marginBottom: 6,
     paddingBottom: 6,
   },
   headerText: {
+    flex: 1,
     fontFamily: 'DGM',
     color: '#333',
     fontSize: 16,
+    textAlign: 'center',
   },
   rankRow: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
     marginVertical: 6,
     alignItems: 'center',
   },
   rowText: {
+    flex: 1,
     fontFamily: 'DGM',
     color: '#333',
+    textAlign: 'center',
   },
   rank: {
     fontSize: 16,
   },
   name: {
+    flex: 2,
     fontSize: 14,
   },
   score: {

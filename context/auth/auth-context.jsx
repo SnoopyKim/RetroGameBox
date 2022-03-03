@@ -1,11 +1,13 @@
 import React, {
   useCallback,
+  useContext,
   useEffect,
   useLayoutEffect,
   useMemo,
   useState,
 } from 'react';
 import * as authModule from '../../api/auth';
+import { DialogContext } from '../dialog/dialog-context';
 
 export const AuthContext = React.createContext({
   isLoading: true,
@@ -20,6 +22,7 @@ export const AuthContext = React.createContext({
 });
 
 export const AuthContextProvider = ({ children }) => {
+  const { showAlertDialog } = useContext(DialogContext);
   const [isLoading, setIsLoading] = useState(true);
   const [authState, setAuthState] = useState({
     anonymous: false,
@@ -43,11 +46,11 @@ export const AuthContextProvider = ({ children }) => {
       setIsLoading(true);
       const result = await authModule.loginForEmail(email, password);
       if (!result.success) {
-        console.log(result.message);
+        showAlertDialog('로그인 오류', result.message);
       }
       setIsLoading(false);
     },
-    [authModule.loginForEmail]
+    [authModule.loginForEmail, showAlertDialog]
   );
 
   const emailRegisterHandler = useCallback(
@@ -59,10 +62,12 @@ export const AuthContextProvider = ({ children }) => {
           ...prev,
           name,
         }));
+      } else {
+        showAlertDialog('회원가입 오류', result.message);
       }
       setIsLoading(false);
     },
-    [authModule.registerForEmail]
+    [authModule.registerForEmail, showAlertDialog]
   );
 
   const changeAccountHandler = useCallback(
@@ -75,10 +80,12 @@ export const AuthContextProvider = ({ children }) => {
           anonymous: result.newUser.isAnonymous,
           name,
         }));
+      } else {
+        showAlertDialog('계정 전환 오류', result.message);
       }
       setIsLoading(false);
     },
-    [authModule.changeAccount]
+    [authModule.changeAccount, showAlertDialog]
   );
 
   const changeNameHandler = useCallback(

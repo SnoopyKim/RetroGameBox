@@ -8,7 +8,7 @@ import {
   onSnapshot,
   updateDoc,
 } from 'firebase/firestore';
-import { getCurrentUserUID } from './auth';
+import { getCurrentUser } from './auth';
 import app from './firebase';
 
 const firestore = getFirestore(app);
@@ -51,11 +51,11 @@ export const setUserInfoListener = (
     console.log(doc.data());
   }
 ) => {
-  return onSnapshot(doc(firestore, 'users', getCurrentUserUID()), listener);
+  return onSnapshot(doc(firestore, 'users', getCurrentUser().uid), listener);
 };
 
 export const recordRank = async (gameId, name, score) => {
-  const uid = getCurrentUserUID();
+  const uid = getCurrentUser()?.uid;
   const userRef = doc(firestore, 'users', uid);
   const rankRef = doc(firestore, 'rank', gameId);
 

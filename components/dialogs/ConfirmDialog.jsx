@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
   title: {
     color: '#333',
     fontFamily: 'DGM',
-    fontSize: 24,
+    fontSize: 22,
   },
   contentWrapper: {
     marginVertical: 20,
@@ -64,7 +64,8 @@ const styles = StyleSheet.create({
   content: {
     color: '#333',
     fontFamily: 'DGM',
-    fontSize: 18,
+    fontSize: 16,
+    textAlign: 'center',
   },
   actionWrapper: {
     flexDirection: 'row',

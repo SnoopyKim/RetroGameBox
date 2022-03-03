@@ -10,13 +10,13 @@ LogBox.ignoreLogs(['Setting a timer']);
 
 export default () => {
   return (
-    <AuthContextProvider>
-      <DatabaseContextProvider>
-        <DialogContextProvider>
+    <DialogContextProvider>
+      <AuthContextProvider>
+        <DatabaseContextProvider>
           <App />
-        </DialogContextProvider>
-      </DatabaseContextProvider>
-    </AuthContextProvider>
+        </DatabaseContextProvider>
+      </AuthContextProvider>
+    </DialogContextProvider>
   );
 };
 

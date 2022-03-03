@@ -18,8 +18,7 @@ auth.languageCode = 'ko';
 
 let authListener = null;
 
-export const getCurrentUserUID = () =>
-  auth.currentUser ? auth.currentUser.uid : null;
+export const getCurrentUser = () => auth.currentUser;
 
 export const setAuthListener = (onChanged, onError) => {
   authListener = onAuthStateChanged(auth, onChanged, onError);
@@ -90,8 +89,6 @@ export const registerForEmail = async (email, password, name) => {
       errorMessage = '이미 가입한 이메일입니다';
     } else if (code === 'invalid-email') {
       errorMessage = '이메일 형식을 확인해주세요';
-    } else if (code === 'operation-not-allowed') {
-      errorMessage = '등록 불가능한 이메일입니다';
     } else if (code === 'weak-password') {
       errorMessage = '비밀번호가 너무 단순합니다';
     }
@@ -125,16 +122,16 @@ export const changeAccount = async (email, password, name) => {
     code = code.split('/')[1];
     console.log(code);
     let errorMessage = '계정전환 오류';
-    if (code === 'provider-already-linked') {
-      errorMessage = '이미 가입한 이메일입니다';
-    } else if (code === 'invalid-credential') {
-      errorMessage = '이메일 형식을 확인해주세요';
+    if (code === 'invalid-credential') {
+      errorMessage = '등록 불가능한 이메일입니다';
     } else if (code === 'credential-already-in-use') {
       errorMessage = '등록 불가능한 이메일입니다';
     } else if (code === 'email-already-in-use') {
-      errorMessage = '비밀번호가 너무 단순합니다';
+      errorMessage = '이미 가입한 이메일입니다';
     } else if (code === 'invalid-email') {
-      errorMessage = '';
+      errorMessage = '이메일 형식을 확인해주세요';
+    } else if (code === 'wrong-password') {
+      errorMessage = '비밀번호가 너무 단순합니다';
     }
     return {
       success: false,

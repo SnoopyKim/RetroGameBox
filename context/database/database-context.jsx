@@ -1,10 +1,12 @@
 import React, {
   useCallback,
+  useContext,
   useEffect,
   useLayoutEffect,
   useState,
 } from 'react';
 import * as databaseModule from '../../api/database';
+import { DialogContext } from '../dialog/dialog-context';
 
 export const DatabaseContext = React.createContext({
   isLoading: false,
@@ -18,6 +20,7 @@ export const DatabaseContext = React.createContext({
 });
 
 export const DatabaseContextProvider = ({ children }) => {
+  const { showAlertDialog } = useContext(DialogContext);
   const [isLoading, setIsLoading] = useState(false);
   const [profile, setProfile] = useState();
   const [isListening, setIsListening] = useState(false);
@@ -65,11 +68,15 @@ export const DatabaseContextProvider = ({ children }) => {
 
   const recordRank = useCallback(
     async (gameId, score) => {
-      setIsLoading(true);
-      await databaseModule.recordRank(gameId, profile.name, score);
-      setIsLoading(false);
+      if (profile) {
+        setIsLoading(true);
+        await databaseModule.recordRank(gameId, user.uid, profile.name, score);
+        setIsLoading(false);
+      } else {
+        showAlertDialog('권한 오류', '게스트 계정은 기록할 수 없습니다!');
+      }
     },
-    [databaseModule.recordRank, profile]
+    [databaseModule.recordRank, showAlertDialog, profile]
   );
 
   const getRankList = useCallback(
