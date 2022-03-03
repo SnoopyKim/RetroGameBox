@@ -5,15 +5,15 @@ import { DialogContext } from '../../context/dialog/dialog-context';
 import TextButton from '../buttons/TextButton';
 import CloseIcon from '../../assets/images/icon_close.svg';
 import NameIcon from '../../assets/images/icon_name.svg';
+import EditIcon from '../../assets/images/icon_edit.svg';
 import { AuthContext } from '../../context/auth/auth-context';
 import { DatabaseContext } from '../../context/database/database-context';
 
 const SettingDialog = () => {
-  const { isAnonymous, changeAccount, changeName, logout } =
-    useContext(AuthContext);
-  const { profile, unsubscribeProfile, recordRank } =
-    useContext(DatabaseContext);
-  const { showRegisterDialog, dismiss } = useContext(DialogContext);
+  const { isAnonymous, logout } = useContext(AuthContext);
+  const { profile, unsubscribeProfile } = useContext(DatabaseContext);
+  const { showNameDialog, showRegisterDialog, dismiss } =
+    useContext(DialogContext);
 
   return (
     <DialogWrapper>
@@ -26,6 +26,16 @@ const SettingDialog = () => {
       <View style={[styles.nameWrapper]}>
         <NameIcon style={{ color: '#333' }} />
         <Text style={styles.name}>{profile?.name || '게스트 계정'}</Text>
+        {!isAnonymous && (
+          <TouchableOpacity
+            style={styles.edit}
+            onPress={() => {
+              showNameDialog();
+            }}
+          >
+            <EditIcon width={18} height={18} style={{ color: 'whitesmoke' }} />
+          </TouchableOpacity>
+        )}
       </View>
       <View style={styles.row}>
         <Text style={styles.gameName}>뽑기게임</Text>
@@ -100,6 +110,15 @@ const styles = StyleSheet.create({
     fontFamily: 'DGM',
     fontSize: 20,
     marginHorizontal: 10,
+  },
+  edit: {
+    width: 24,
+    height: 24,
+    backgroundColor: '#333',
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 3,
   },
   row: {
     width: 160,

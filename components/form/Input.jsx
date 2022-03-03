@@ -12,10 +12,11 @@ const Input = (props, ref) => {
     validate,
     layoutStyle,
     contentStyle,
+    initValue,
     ...restProps
   } = props;
 
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState(initValue || '');
   const [validResult, setValidResult] = useState('');
 
   const checkInputValue = useCallback(
