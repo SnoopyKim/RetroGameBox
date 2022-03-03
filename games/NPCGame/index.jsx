@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import Matter from 'matter-js';
-import { useReducer, useRef, useState, useEffect } from 'react';
+import { useReducer, useRef, useState, useEffect, useContext } from 'react';
 import {
   Button,
   SafeAreaView,
@@ -15,7 +15,7 @@ import Enemy from './components/Enemy';
 import Floor from './components/Floor';
 import Player from './components/Player';
 import StatusBoard from './components/StatusBoard';
-import Constants from './Constants';
+import Constants, { IMAGES } from './Constants';
 import AttackSystem from './systems/AttackSystem';
 import Rocks from './components/Rocks';
 import AssetLoading from '../../components/AssetLoading';
@@ -23,6 +23,8 @@ import { usePlayerStatus } from './hooks/PlayerStatus';
 import { useEnemyStatus } from './hooks/EnemyStatus';
 import TextButton from '../../components/buttons/TextButton';
 import Cards from './components/Cards';
+import ExitIcon from '../../assets/images/icon_exit.svg';
+import { DialogContext } from '../../context/dialog/dialog-context';
 
 const initState = {
   running: true,
@@ -30,7 +32,8 @@ const initState = {
   status: 'SELECT',
 };
 
-const NPCGameScreen = () => {
+const NPCGameScreen = ({ navigation }) => {
+  const { showConfirmDialog } = useContext(DialogContext);
   const gameEngine = useRef(null);
   const matterEngine = useRef(null);
 
@@ -130,7 +133,6 @@ const NPCGameScreen = () => {
     );
 
     Matter.World.add(matterEngine.current.world, [floor, player, enemy]);
-
     Matter.Events.on(matterEngine.current, 'collisionStart', (event) => {
       event.pairs.forEach((pair) => {
         const { bodyA, bodyB } = pair;
@@ -179,6 +181,12 @@ const NPCGameScreen = () => {
     };
   };
 
+  const exitGame = () => {
+    showConfirmDialog('게임 종료', '게임을 나가시겠습니까?', () => {
+      navigation.goBack();
+    });
+  };
+
   const resetGame = () => {
     playerDispatch({ type: 'INIT' });
     enemyDispatch({ type: 'INIT' });
@@ -210,15 +218,13 @@ const NPCGameScreen = () => {
 
   return (
     <SafeAreaView style={styles.canvas}>
-      <AssetLoading
-        images={[
-          require('retrogamebox/assets/images/player.png'),
-          require('retrogamebox/assets/images/enemy.png'),
-          require('retrogamebox/assets/images/rock.png'),
-          require('retrogamebox/assets/images/muscle.png'),
-        ]}
-      >
+      <AssetLoading images={Object.values(IMAGES)}>
         <StatusBar style='light' />
+        <View style={styles.header}>
+          <TouchableOpacity onPress={exitGame}>
+            <ExitIcon width={26} height={26} style={{ color: '#333' }} />
+          </TouchableOpacity>
+        </View>
         <GameEngine
           ref={gameEngine}
           style={styles.gameContainer}
@@ -287,20 +293,28 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
   },
+  header: {
+    height: 56,
+    paddingTop: 30,
+    paddingHorizontal: 20,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
   gameContainer: {
     // position: 'absolute',
     width: Constants.GAME_WIDTH,
     height: Constants.GAME_HEIGHT,
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
+    // top: 0,
+    // bottom: 0,
+    // left: 0,
+    // right: 0,
     overflow: 'hidden',
   },
   boardContainer: {
     // position: 'absolute',
+    flex: 0.5,
     width: Constants.MAX_WIDTH,
-    height: Constants.BOARD_HEIGHT,
+    height: Constants.MAX_HEIGHT - Constants.GAME_HEIGHT,
     // top: Constants.GAME_HEIGHT,
   },
   dialogContainer: {

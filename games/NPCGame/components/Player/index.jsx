@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { Image, View } from 'react-native';
+import { IMAGES } from '../../Constants';
 
 function Player({ body }) {
   const { x, y } = body.position;
@@ -25,7 +26,7 @@ function Player({ body }) {
           height: null,
           resizeMode: 'stretch',
         }}
-        source={require('../../../../assets/images/player.png')}
+        source={IMAGES.PLAYER}
       />
     </View>
   );

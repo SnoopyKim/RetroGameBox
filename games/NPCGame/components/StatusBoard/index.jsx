@@ -1,23 +1,23 @@
-import { StyleSheet, Text, View } from 'react-native';
-import Constants from '../../Constants';
-import { initStats } from '../../hooks/PlayerStatus';
-import AttackSVG from 'retrogamebox/assets/images/attack_power.svg';
+import { Image, StyleSheet, Text, View } from 'react-native';
+import { IMAGES } from '../../Constants';
 
 export default function StatusBoard({ player, enemy, round }) {
   return (
     <View style={styles.board}>
       <View style={styles.row}>
-        <Stats name={'나'} stats={player} align='flex-start' />
+        <Stats name={'NPC'} stats={player} align='flex-start' />
         <View
           style={{
-            justifyContent: 'center',
+            justifyContent: 'flex-end',
             alignItems: 'center',
           }}
         >
-          <Text style={styles.title}>ROUND</Text>
-          <Text style={{ ...styles.title, fontSize: 30 }}>{round}</Text>
+          <Text style={{ ...styles.title, fontSize: 30, marginBottom: 10 }}>
+            {round}
+          </Text>
+          <Text style={{ ...styles.title, fontSize: 24 }}>ROUND</Text>
         </View>
-        <Stats name={'적'} stats={enemy} align='flex-end' />
+        <Stats name={'PLAYER'} stats={enemy} align='flex-end' />
       </View>
     </View>
   );
@@ -33,35 +33,61 @@ const Stats = ({ name, stats, align = 'flex-start' || 'flex-end' }) => {
     CRITICAL,
     SPECIAL,
   } = stats;
+
+  const reverse = align !== 'flex-start';
+
   return (
     <View
       style={{
+        flex: 1,
         height: '100%',
-        justifyContent: 'space-evenly',
+        justifyContent: 'space-between',
         alignItems: align,
       }}
     >
-      <Text style={{ ...styles.title, marginBottom: 10 }}>{name}</Text>
-      <Text style={styles.title}>{HP_CURRENT + ' / ' + HP_MAX}</Text>
+      <View
+        style={[
+          styles.nameWrapper,
+          {
+            marginStart: reverse ? 0 : -20,
+            marginEnd: reverse ? -20 : 0,
+            borderTopEndRadius: reverse ? 0 : 20,
+            borderBottomEndRadius: reverse ? 0 : 20,
+            borderTopStartRadius: reverse ? 20 : 0,
+            borderBottomStartRadius: reverse ? 20 : 0,
+          },
+        ]}
+      >
+        <Text style={styles.name}>{name}</Text>
+      </View>
 
       <StatRow
-        SVG={AttackSVG}
-        title={ATTACK_POWER}
-        reverse={align !== 'flex-start'}
+        image={IMAGES.HEALTH}
+        title={HP_CURRENT + ' / ' + HP_MAX}
+        reverse={reverse}
       />
-
-      <Text style={styles.title}>{DEFENCE_POWER}</Text>
-      <Text style={styles.title}>{SPEED}</Text>
-      <Text style={styles.title}>{CRITICAL}</Text>
-      <Text style={styles.title}>{SPECIAL}</Text>
+      <StatRow image={IMAGES.ATTACK} title={ATTACK_POWER} reverse={reverse} />
+      <StatRow image={IMAGES.SHIELD} title={DEFENCE_POWER} reverse={reverse} />
+      <StatRow image={IMAGES.SPEED} title={SPEED} reverse={reverse} />
+      <StatRow image={IMAGES.CRITICAL} title={CRITICAL} reverse={reverse} />
     </View>
   );
 };
 
-const StatRow = ({ SVG, title, reverse }) => (
-  <View style={{ flexDirection: reverse ? 'row-reverse' : 'row' }}>
-    <SVG width={20} height={20} />
-    <Text style={styles.title}>{title}</Text>
+const StatRow = ({ image, title, reverse }) => (
+  <View
+    style={{
+      alignItems: 'center',
+      flexDirection: reverse ? 'row-reverse' : 'row',
+    }}
+  >
+    <Image
+      style={[styles.image, { transform: [{ scaleX: reverse ? -1 : 1 }] }]}
+      source={image}
+      fadeDuration={0}
+      resizeMode='contain'
+    />
+    <Text style={styles.title}>{title || 0}</Text>
   </View>
 );
 
@@ -75,11 +101,27 @@ const styles = StyleSheet.create({
   row: {
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+  },
+  image: {
+    width: 30,
+    height: 30,
+  },
+  nameWrapper: {
+    width: 140,
+    alignItems: 'center',
+    backgroundColor: '#333',
+    paddingVertical: 5,
+    marginBottom: 5,
+  },
+  name: {
+    fontFamily: 'DGM',
+    fontSize: 22,
+    color: 'whitesmoke',
   },
   title: {
     fontFamily: 'DGM',
     fontSize: 20,
-    color: 'black',
+    color: '#333',
+    marginHorizontal: 5,
   },
 });

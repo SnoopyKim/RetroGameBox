@@ -1,5 +1,5 @@
 import { Image, View } from 'react-native';
-import Constants from '../../Constants';
+import Constants, { IMAGES } from '../../Constants';
 
 export default function Rocks({ bodies }) {
   const rocks = bodies.map((body, idx) => {
@@ -24,7 +24,7 @@ export default function Rocks({ bodies }) {
             resizeMode: 'stretch',
           }}
           fadeDuration={0}
-          source={require('retrogamebox/assets/images/rock.png')}
+          source={IMAGES.ROCK}
         />
       </View>
     );

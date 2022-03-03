@@ -5,7 +5,7 @@ const MIN_ATTACK = 10;
 const MIN_DEFENCE = 0;
 const MAX_SPEED = 30;
 const MAX_CRITICAL = 100;
-const MIN_CRITICAL = 0;
+const MIN_CRITICAL = 10;
 
 const setHP = (value) => (value >= MIN_HP ? value : MIN_HP);
 const setAttack = (value) => (value >= MIN_ATTACK ? value : MIN_ATTACK);
@@ -39,7 +39,7 @@ function playerReducer(state, action) {
       if (damage > 0) {
         return {
           ...state,
-          HP_CURRENT: setHP(state.HP_CURRENT - action.value),
+          HP_CURRENT: setHP(state.HP_CURRENT - damage),
         };
       } else {
         return state;

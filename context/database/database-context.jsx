@@ -30,7 +30,6 @@ export const DatabaseContextProvider = ({ children }) => {
       const unsubscribe = databaseModule.setUserInfoListener((doc) => {
         const source = doc.metadata.hasPendingWrites ? 'Local' : 'Server';
         const data = doc.data();
-        console.log(source, ' data: ', data);
         setProfile(data);
       });
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Image, View } from 'react-native';
+import { IMAGES } from '../../Constants';
 
 function Enemy({ body }) {
   const { x, y } = body.position;
@@ -24,7 +25,7 @@ function Enemy({ body }) {
           height: null,
           resizeMode: 'stretch',
         }}
-        source={require('../../../../assets/images/enemy.png')}
+        source={IMAGES.ENEMY}
       />
     </View>
   );

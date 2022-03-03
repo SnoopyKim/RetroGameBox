@@ -18,10 +18,10 @@ const setLevel = (prev, value) => {
       sp = 10;
       break;
     case 1:
-      atk = Math.round(Math.random() * 3);
+      atk = Math.round(Math.random() * 5);
       break;
     case 2:
-      def = Math.round(Math.random() * 3);
+      def = Math.round(Math.random() * 5);
       break;
   }
   return {

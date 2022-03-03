@@ -2,23 +2,10 @@ import { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Constants from '../../Constants';
 import Card from './Card';
-import ITEMS from './items';
-
-const getRandomItems = () => {
-  let results = [-1, -1, -1];
-  for (let i = 0; i < results.length; i++) {
-    let rand;
-    do {
-      rand = Math.floor(Math.random() * ITEMS.length);
-    } while (results.findIndex((v) => v === rand) !== -1);
-    results[i] = rand;
-  }
-  return results.map((idx) => ITEMS[idx]);
-};
+import { drawRandomCards } from './items';
 
 export default function Cards({ onSelect }) {
-  const [items, setItems] = useState(getRandomItems());
-
+  const [items, setItems] = useState(drawRandomCards(3));
   return (
     <>
       <Text style={styles.title}>NPC도 성장한다구!</Text>
