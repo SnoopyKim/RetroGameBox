@@ -10,24 +10,25 @@ import {
   Alert,
   TouchableOpacity,
 } from "react-native";
-import RedPuppet from "../myGameComponents/Puppet/RedPuppet";
-import BluePuppet from "../myGameComponents/Puppet/BluePuppet";
-import YellowPuppet from "../myGameComponents/Puppet/YellowPuppet";
-import Wall from "../myGameComponents/Wall";
-import Shelf from "../myGameComponents/Shelf";
-import Crane from "../myGameComponents/Crane";
+import RedPuppet from "./Components/Puppet/RedPuppet";
+import BluePuppet from "./Components/Puppet/BluePuppet";
+import YellowPuppet from "./Components/Puppet/YellowPuppet";
+import Wall from "./Components/Wall";
+import Shelf from "./Components/Shelf";
+import Crane from "./Components/Crane";
 import Matter, { Engine } from "matter-js";
-import Physics from "../myGameComponents/Physics";
-import Constants from "../myGameComponents/Constants";
+import Physics from "./Physics";
+import Constants from "./Constants";
+import { DialogContext } from "../../context/dialog/dialog-context";
 import { GameEngine } from "react-native-game-engine";
-import AssetLoading from "../components/AssetLoading";
+import AssetLoading from "../../components/AssetLoading";
+import ExitIcon from "../../assets/images/icon_exit.svg";
+const backgroundImg = require("../../assets/images/main_bg.png");
+const redBtn = require("../../assets/images/rainbowBtn.gif");
 
-const backgroundImg = require("../assets/images/main_bg.png");
-const redBtn = require("../assets/images/rainbowBtn.gif");
+let deepPurple = "purple";
 
-let deepPurple = "#6b5892";
-
-export default class Mygame extends Component {
+export default class CraneGameScreen extends Component {
   constructor(props) {
     super(props);
     this.timeInterval = null;
@@ -40,11 +41,13 @@ export default class Mygame extends Component {
       time: defaultTime,
     };
     this.gameEngine = null;
+    this.showConfirmDialog = DialogContext;
     this.entities = this.setupWorld();
   }
   setupTicks = () => {
     this.timeInterval = setInterval(this.timerTick, 1000);
   };
+
   timerTick = () => {
     if (this.state.time === 0) {
       this.setState({ running: false });
@@ -53,6 +56,11 @@ export default class Mygame extends Component {
         time: this.state.time - 1,
       });
     }
+  };
+  exitGame = () => {
+    showConfirmDialog("게임 종료", "게임을 나가시겠습니까?", () => {
+      navigation.goBack();
+    });
   };
   reset = () => {
     if (this.timeInterval) {
@@ -357,7 +365,7 @@ export default class Mygame extends Component {
             <View
               style={{ flexDirection: "row", justifyContent: "space-between" }}
             >
-              <Text style={{ fontSize: 20, fontFamily: "DGM" }}>
+              <Text style={{ color: "white", fontSize: 20, fontFamily: "DGM" }}>
                 score:{this.state.score} Time:{this.state.time}
               </Text>
               <TouchableOpacity
@@ -404,6 +412,17 @@ export default class Mygame extends Component {
               </TouchableOpacity>
             </View>
           </View>
+          <View style={styles.header}>
+            <TouchableOpacity
+              onPress={this.exitGame}
+              style={{
+                justifyContent: "flex-start",
+                alignContent: "flex-end",
+              }}
+            >
+              <ExitIcon width={26} height={26} style={{ color: "white" }} />
+            </TouchableOpacity>
+          </View>
         </ImageBackground>
       </View>
     );
@@ -415,6 +434,15 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     alignItems: "center",
     justifyContent: "center",
+  },
+  header: {
+    position: "absolute",
+    width: Constants.MAX_WIDTH,
+    height: 56,
+    paddingTop: 10,
+    paddingEnd: 15,
+    flexDirection: "row",
+    justifyContent: "flex-end",
   },
   backgroundImage: {
     flex: 1,
@@ -433,7 +461,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: Constants.MAX_WIDTH,
     height: 100,
-    backgroundColor: "#8b00ff",
+    backgroundColor: "black",
     top: Constants.MAX_HEIGHT / 1.45,
     flexDirection: "column",
   },

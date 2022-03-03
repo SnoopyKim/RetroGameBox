@@ -1,7 +1,7 @@
 import React, { Component, useState } from "react";
 import { View, Image } from "react-native";
-import Constants from "../Constants";
-import yellowslime from "../../assets/images/yellowSlime.gif";
+import Constants from "../../Constants";
+import yellowslime from "../../../../assets/images/yellowSlime.gif";
 
 export default function yellowPuppets({ bodies }) {
   const yellowPuppets = bodies.map((body, idx) => {

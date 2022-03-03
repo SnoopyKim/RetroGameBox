@@ -1,5 +1,5 @@
-import { StatusBar } from 'expo-status-bar';
-import { useContext } from 'react';
+import { StatusBar } from "expo-status-bar";
+import { useContext } from "react";
 import {
   Image,
   ImageBackground,
@@ -10,43 +10,45 @@ import {
   Text,
   TouchableOpacity,
   View,
-} from 'react-native';
-import ImageButton from '../components/buttons/ImageButton';
-import { AuthContext } from '../context/auth/auth-context';
-import { DialogContext } from './../context/dialog/dialog-context';
-import SettingIcon from '../assets/images/icon_setting.svg';
-import RankIcon from '../assets/images/icon_rank.svg';
+} from "react-native";
+import ImageButton from "../components/buttons/ImageButton";
+import { AuthContext } from "../context/auth/auth-context";
+import { DialogContext } from "./../context/dialog/dialog-context";
+import SettingIcon from "../assets/images/icon_setting.svg";
+import RankIcon from "../assets/images/icon_rank.svg";
 
-const backgroundImg = require('../assets/images/main_bg.png');
-const gameselectImg = require('../assets/images/selectBox.png');
+const backgroundImg = require("../assets/images/main_bg.png");
+const gameselectImg = require("../assets/images/selectBox.png");
+const craneImg = require("../assets/images/CraneBg.png");
+const JumpImg = require("../assets/images/JumpBg.png");
 
 const HomeScreen = ({ navigation }) => {
   const { isAuthenticated } = useContext(AuthContext);
   const { showSettingDialog, showRankDialog } = useContext(DialogContext);
 
   if (!isAuthenticated) {
-    navigation.replace('Login');
+    navigation.replace("Login");
     return <></>;
   }
 
   return (
     <SafeAreaView style={styles.center}>
-      <StatusBar style='light' />
+      <StatusBar style="light" />
       <ImageBackground
         style={styles.backgroundImage}
         source={backgroundImg}
-        resizeMode='cover'
+        resizeMode="cover"
       >
         <View style={styles.header}>
           <TouchableOpacity onPress={() => showRankDialog()}>
-            <RankIcon width={30} height={30} style={{ color: 'whitesmoke' }} />
+            <RankIcon width={30} height={30} style={{ color: "whitesmoke" }} />
           </TouchableOpacity>
           <View style={{ width: 10 }} />
           <TouchableOpacity onPress={() => showSettingDialog()}>
             <SettingIcon
               width={30}
               height={30}
-              style={{ color: 'whitesmoke' }}
+              style={{ color: "whitesmoke" }}
             />
           </TouchableOpacity>
         </View>
@@ -54,10 +56,21 @@ const HomeScreen = ({ navigation }) => {
         <ScrollView>
           <View style={styles.boxContainer}>
             <ImageButton
-              src={gameselectImg}
-              onPressed={() => navigation.navigate('GameMy')}
-              title={'312Game'}
-              titleColor={'white'}
+              src={craneImg}
+              onPressed={() => navigation.navigate("CraneGame")}
+              title={"뽑아뽑아"}
+              titleColor={"white"}
+              titleSize={30}
+              width={200}
+              height={200}
+            />
+          </View>
+          <View style={styles.boxContainer}>
+            <ImageButton
+              src={JumpImg}
+              onPressed={() => navigation.navigate("JumpGame")}
+              title={"올라올라"}
+              titleColor={"white"}
               titleSize={30}
               width={200}
               height={200}
@@ -66,20 +79,9 @@ const HomeScreen = ({ navigation }) => {
           <View style={styles.boxContainer}>
             <ImageButton
               src={gameselectImg}
-              onPressed={() => navigation.navigate('JumpGame')}
-              title={'JumpGame'}
-              titleColor={'white'}
-              titleSize={30}
-              width={200}
-              height={200}
-            />
-          </View>
-          <View style={styles.boxContainer}>
-            <ImageButton
-              src={gameselectImg}
-              onPressed={() => navigation.navigate('NPCGame')}
-              title={'NPCGame'}
-              titleColor={'white'}
+              onPressed={() => navigation.navigate("NPCGame")}
+              title={"NPCGame"}
+              titleColor={"white"}
               titleSize={30}
               width={300}
               height={200}
@@ -94,8 +96,8 @@ const HomeScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   center: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   backgroundImage: {
     flex: 1,
@@ -103,21 +105,21 @@ const styles = StyleSheet.create({
     width: null,
   },
   header: {
-    position: 'absolute',
+    position: "absolute",
     right: 20,
     top: 30,
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   titleText: {
     marginTop: 90,
     marginBottom: 20,
-    textAlign: 'center',
-    fontFamily: 'DGM',
+    textAlign: "center",
+    fontFamily: "DGM",
     fontSize: 40,
-    color: 'yellow',
+    color: "yellow",
   },
   boxContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     marginVertical: 10,
   },
   gameSelectBox: {

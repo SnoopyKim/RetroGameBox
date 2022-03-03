@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import Matter from "matter-js";
-import { useReducer, useRef, useState, useEffect } from "react";
+import { useReducer, useRef, useState, useEffect, useContext } from "react";
 import { render } from "react-dom";
 import {
   Button,
@@ -24,6 +24,8 @@ import JumpBar from "./components/JumpBar";
 import MoveSystem from "./MoveSystem";
 import { GameEngine } from "react-native-game-engine";
 import AssetLoading from "../../components/AssetLoading";
+import ExitIcon from "../../assets/images/icon_exit.svg";
+import { DialogContext } from "../../context/dialog/dialog-context";
 
 const initState = {
   running: true,
@@ -33,6 +35,7 @@ const backgroundImg = require("../../assets/images/main_bg.png");
 const JumpGameScreen = () => {
   const gameEngine = useRef(null);
   const matterEngine = useRef(null);
+  const { showConfirmDialog } = useContext(DialogContext);
 
   const [gameState, setGameState] = useState(initState);
   //나중에 initstate에 통합할것. 시간과 방향임.
@@ -292,6 +295,12 @@ const JumpGameScreen = () => {
         }
       });
     });
+
+    const exitGame = () => {
+      showConfirmDialog("게임 종료", "게임을 나가시겠습니까?", () => {
+        navigation.goBack();
+      });
+    };
     return {
       moveSystem: { engine: engine, world: world },
       floor: {
@@ -453,7 +462,11 @@ const JumpGameScreen = () => {
       },
     };
   };
-
+  const exitGame = () => {
+    showConfirmDialog("게임 종료", "게임을 나가시겠습니까?", () => {
+      navigation.goBack();
+    });
+  };
   return (
     <SafeAreaView style={styles.container}>
       <ImageBackground
@@ -463,6 +476,11 @@ const JumpGameScreen = () => {
       >
         <AssetLoading>
           <StatusBar style="dark" />
+          <View style={styles.header}>
+            <TouchableOpacity onPress={exitGame}>
+              <ExitIcon width={26} height={26} style={{ color: "white" }} />
+            </TouchableOpacity>
+          </View>
           <GameEngine
             ref={gameEngine}
             style={styles.gameContainer}
@@ -595,6 +613,15 @@ const styles = StyleSheet.create({
     position: "absolute",
     justifyContent: "center",
     alignItems: "center",
+  },
+  header: {
+    position: "absolute",
+    width: Constants.MAX_WIDTH,
+    height: 56,
+    paddingTop: 30,
+    paddingHorizontal: 20,
+    flexDirection: "row",
+    justifyContent: "flex-end",
   },
 });
 

@@ -1,7 +1,7 @@
 import React, { Component, useState } from "react";
 import { View, Image } from "react-native";
-import Constants from "../Constants";
-import blueslime from "../../assets/images/blueSlime.gif";
+import Constants from "../../Constants";
+import blueslime from "../../../../assets/images/blueSlime.gif";
 
 export default function bluePuppets({ bodies }) {
   const bluePuppets = bodies.map((body, idx) => {

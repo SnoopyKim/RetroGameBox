@@ -4,7 +4,7 @@ import {
   Text,
   TouchableOpacity,
   View,
-} from 'react-native';
+} from "react-native";
 
 const ImageButton = ({
   src,
@@ -29,8 +29,8 @@ const ImageButton = ({
       <ImageBackground
         style={{
           flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
+          justifyContent: "flex-end",
+          alignItems: "center",
           padding: 10,
         }}
         source={src}
@@ -39,10 +39,11 @@ const ImageButton = ({
         {title && (
           <Text
             style={{
-              position: 'absolute',
-              fontFamily: 'DGM',
+              position: "absolute",
+              fontFamily: "DGM",
               fontSize: titleSize || 20,
-              color: titleColor || 'black',
+              color: titleColor || "black",
+              padding: 15,
             }}
           >
             {title}

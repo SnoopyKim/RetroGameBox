@@ -1,7 +1,7 @@
 import React, { Component, useState } from "react";
 import { View, Image } from "react-native";
-import Constants from "../Constants";
-import redslime from "../../assets/images/redSlime.gif";
+import Constants from "../../Constants";
+import redslime from "../../../../assets/images/redSlime.gif";
 
 export default function redPuppets({ bodies }) {
   const redPuppets = bodies.map((body, idx) => {
