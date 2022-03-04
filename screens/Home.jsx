@@ -21,6 +21,7 @@ const backgroundImg = require("../assets/images/main_bg.png");
 const gameselectImg = require("../assets/images/selectBox.png");
 const craneImg = require("../assets/images/CraneBg.png");
 const JumpImg = require("../assets/images/JumpBg.png");
+const NpcImg = require("../assets/images/NpcBg.png");
 
 const HomeScreen = ({ navigation }) => {
   const { isAuthenticated } = useContext(AuthContext);
@@ -78,12 +79,12 @@ const HomeScreen = ({ navigation }) => {
           </View>
           <View style={styles.boxContainer}>
             <ImageButton
-              src={gameselectImg}
+              src={NpcImg}
               onPressed={() => navigation.navigate("NPCGame")}
-              title={"NPCGame"}
+              title={"던져던져"}
               titleColor={"white"}
               titleSize={30}
-              width={300}
+              width={200}
               height={200}
             />
           </View>

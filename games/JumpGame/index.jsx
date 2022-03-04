@@ -28,19 +28,46 @@ import ExitIcon from "../../assets/images/icon_exit.svg";
 import { DialogContext } from "../../context/dialog/dialog-context";
 
 const initState = {
-  running: true,
+  running: false,
+  score: 1000,
+  status: "PLAY",
 };
 const backgroundImg = require("../../assets/images/main_bg.png");
 
-const JumpGameScreen = () => {
+const JumpGameScreen = ({ navigation }) => {
   const gameEngine = useRef(null);
   const matterEngine = useRef(null);
   const { showConfirmDialog } = useContext(DialogContext);
 
   const [gameState, setGameState] = useState(initState);
-  //나중에 initstate에 통합할것. 시간과 방향임.
+
   const timer = useRef(null);
-  let directionLR;
+  useEffect(() => {
+    if (!gameState.running) return;
+
+    if (gameState.status === "CLEAR") {
+      //게임오버창 불러오기
+    }
+    if (gameState.score === 0) {
+      //게임오버창 불러오기
+    }
+
+    return () => {
+      clearTimeout(timer.current);
+    };
+  }, [gameState]);
+
+  const setupTicks = () => {
+    timeIn = setInterval(timerTick, 1000);
+  };
+
+  const timerTick = () => {
+    if (gameState.score === 0) {
+      setGameState({ ...gameState, running: false });
+    } else {
+      setGameState({ ...gameState, score: gameState.score - 1 });
+    }
+  };
 
   const initEntities = () => {
     let engine = Matter.Engine.create({ enableSleeping: false });
@@ -237,13 +264,13 @@ const JumpGameScreen = () => {
     });
 
     // 플레이어 캐릭터
-    let player = Matter.Bodies.circle(50, floor.position.y - 100, 25, {
+    let player = Matter.Bodies.circle(50, floor.position.y - 50, 25, {
       isStatic: false,
       name: "player",
     });
     let jumpBar = Matter.Bodies.rectangle(
       player.position.x,
-      player.position.y,
+      Constants.MAX_HEIGHT + 100,
       0,
       0,
       { isStatic: true }
@@ -292,6 +319,9 @@ const JumpGameScreen = () => {
           if (bodyA.name === "floor") {
             gameEngine.current.dispatch({ type: "landed" });
           }
+          if (bodyA.name === "reward") {
+            gameEngine.current.dispatch({ type: "CLEAR" });
+          }
         }
       });
     });
@@ -336,7 +366,7 @@ const JumpGameScreen = () => {
       stair1: {
         body: stair1,
         size: [50, 60],
-        color: "green",
+        color: "purple",
         renderer: Floor,
       },
       stair2: {
@@ -490,13 +520,16 @@ const JumpGameScreen = () => {
           ></GameEngine>
         </AssetLoading>
       </ImageBackground>
+      <View style={styles.textTimeBox}>
+        <Text style={{ fontFamily: "DGM", fontSize: 25 }}>
+          점수:{gameState.score} 최고기록:
+        </Text>
+      </View>
       <View style={styles.controls}>
         <View style={styles.btnContainer}>
           <TouchableOpacity
             style={styles.btns}
             onPressIn={() => {
-              directionLR = true;
-              console.log(directionLR);
               gameEngine.current.dispatch({ type: "MoveStartL" });
             }}
             onPressOut={() => {
@@ -515,8 +548,6 @@ const JumpGameScreen = () => {
           <TouchableOpacity
             style={styles.btns}
             onPressIn={() => {
-              directionLR = false;
-              console.log(directionLR);
               gameEngine.current.dispatch({ type: "MoveStartR" });
             }}
             onPressOut={() => {
@@ -535,10 +566,13 @@ const JumpGameScreen = () => {
           <TouchableOpacity
             style={styles.btns}
             onPressIn={() => {
+              setupTicks;
+              setGameState({ ...gameState, running: true });
               gameEngine.current.dispatch({ type: "JumpStart" });
             }}
             onPressOut={() => {
               gameEngine.current.dispatch({ type: "JumpEnd" });
+              console.log(gameState.score);
             }}
           >
             <View style={styles.btnSlot}>
@@ -547,7 +581,9 @@ const JumpGameScreen = () => {
                 resizeMode="contain"
                 style={{ width: 120, height: 120 }}
               ></Image>
-              <Text style={styles.textBox}>Jump</Text>
+              <Text style={styles.textBox}>
+                {gameState.score === 1000 ? "시작" : "점프"}
+              </Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -588,6 +624,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignContent: "center",
     width: Constants.MAX_WIDTH,
+  },
+  textTimeBox: {
+    position: "absolute",
+    top: Constants.MAX_HEIGHT / 1.27,
+    color: "white",
   },
   btnSlot: {
     width: 100,

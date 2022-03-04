@@ -38,6 +38,10 @@ const MoveSystem = (entities, { touches, time, dispatch, events }) => {
           f2Direction = true;
           stair5LR = true;
           stair5UD = true;
+          Matter.Body.setPosition(player, {
+            x: 20,
+            y: entities.floor.body.position.y - 100,
+          });
           break;
         case "MoveStartL":
           MoveL = true;
@@ -56,7 +60,10 @@ const MoveSystem = (entities, { touches, time, dispatch, events }) => {
           lastMove = false;
           break;
         case "spiked":
-          Alert.alert("You Died");
+          Matter.Body.setPosition(player, {
+            x: 20,
+            y: entities.floor.body.position.y - 100,
+          });
           break;
         case "landed":
           Matter.Body.setStatic(player, true);
@@ -88,11 +95,11 @@ const MoveSystem = (entities, { touches, time, dispatch, events }) => {
   //점프바 길이
   entities.jumpBar.size = [jGauge, 10];
   // //게임화면 터치하면 캐릭터 점프. 확인용
-  touches
-    .filter((t) => t.type === "press")
-    .forEach((t) => {
-      Matter.Body.applyForce(player, player.position, { x: 0.0, y: -0.1 });
-    });
+  // touches
+  //   .filter((t) => t.type === "press")
+  //   .forEach((t) => {
+  //     Matter.Body.applyForce(player, player.position, { x: 0.0, y: -0.1 });
+  //   });
 
   //floor2 좌우 움직임
   if (f2Direction) {

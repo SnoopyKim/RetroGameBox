@@ -363,12 +363,17 @@ export default class CraneGameScreen extends Component {
           </GameEngine>
           <View style={styles.controls}>
             <View
-              style={{ flexDirection: "row", justifyContent: "space-between" }}
+              style={{
+                top: 10,
+                flexDirection: "row",
+                justifyContent: "space-between",
+                bottom: 15,
+              }}
             >
               <Text style={{ color: "white", fontSize: 20, fontFamily: "DGM" }}>
-                score:{this.state.score} Time:{this.state.time}
+                점수:{this.state.score} 남은시간:{this.state.time} 최고기록:
               </Text>
-              <TouchableOpacity
+              {/* { <TouchableOpacity
                 style={styles.resetBtn}
                 onPress={() => {
                   this.gameEngine.dispatch({ type: "resetGame" }),
@@ -376,7 +381,7 @@ export default class CraneGameScreen extends Component {
                 }}
               >
                 <Text style={{ fontFamily: "DGM" }}>리셋</Text>
-              </TouchableOpacity>
+              </TouchableOpacity> } */}
             </View>
             <View style={{ alignItems: "center" }}>
               <TouchableOpacity
@@ -481,17 +486,16 @@ const styles = StyleSheet.create({
   control: {
     width: 120,
     height: 120,
+    top: 40,
     position: "absolute",
     borderRadius: 100,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "white",
   },
   craneBtn: {
     width: 120,
     height: 120,
     alignItems: "flex-end",
-    backgroundColor: "white",
     borderRadius: 140,
     justifyContent: "center",
   },
