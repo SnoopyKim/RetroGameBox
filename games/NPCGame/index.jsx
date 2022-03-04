@@ -3,6 +3,7 @@ import Matter from 'matter-js';
 import { useReducer, useRef, useState, useEffect, useContext } from 'react';
 import {
   Button,
+  ImageBackground,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -32,6 +33,7 @@ const initState = {
   round: 1,
   status: 'SELECT',
 };
+const backgroundImg = require('../../assets/images/main_bg.png');
 
 const NPCGameScreen = ({ navigation }) => {
   const { showConfirmDialog } = useContext(DialogContext);
@@ -217,32 +219,39 @@ const NPCGameScreen = ({ navigation }) => {
     <SafeAreaView style={styles.canvas}>
       <AssetLoading images={Object.values(IMAGES)}>
         <StatusBar style='light' />
-        <View style={styles.header}>
-          <TouchableOpacity onPress={exitGame}>
-            <ExitIcon width={26} height={26} style={{ color: '#333' }} />
-          </TouchableOpacity>
-        </View>
-        <GameEngine
-          ref={gameEngine}
-          style={styles.gameContainer}
-          entities={initEntities()}
-          systems={[AttackSystem]}
-          running={gameState.running}
-          onEvent={onEvent}
+        <ImageBackground
+          style={{ flex: 1.1 }}
+          source={backgroundImg}
+          fadeDuration={0}
+          resizeMode={'cover'}
         >
-          {{
-            WIN: <ResultText text={'WIN!'} />,
-            LOSE: <ResultText text={'LOSE...'} />,
-            SELECT: (
-              <Cards
-                onSelect={(item) => {
-                  playerDispatch({ type: 'CHANGE', value: item.value });
-                  gameEngine.current.dispatch({ type: 'START' });
-                }}
-              />
-            ),
-          }[gameState.status] || <></>}
-        </GameEngine>
+          <View style={styles.header}>
+            <TouchableOpacity style={styles.exit} onPress={exitGame}>
+              <ExitIcon width={26} height={26} style={{ color: '#333' }} />
+            </TouchableOpacity>
+          </View>
+          <GameEngine
+            ref={gameEngine}
+            style={styles.gameContainer}
+            entities={initEntities()}
+            systems={[AttackSystem]}
+            running={gameState.running}
+            onEvent={onEvent}
+          >
+            {{
+              WIN: <ResultText text={'WIN!'} />,
+              LOSE: <ResultText text={'LOSE...'} />,
+              SELECT: (
+                <Cards
+                  onSelect={(item) => {
+                    playerDispatch({ type: 'CHANGE', value: item.value });
+                    gameEngine.current.dispatch({ type: 'START' });
+                  }}
+                />
+              ),
+            }[gameState.status] || <></>}
+          </GameEngine>
+        </ImageBackground>
         <View style={styles.boardContainer}>
           <StatusBoard
             player={playerStatus}
@@ -251,6 +260,7 @@ const NPCGameScreen = ({ navigation }) => {
           />
         </View>
       </AssetLoading>
+
       {!gameState.running && (
         <GameResult
           gameID={'NPC'}
@@ -283,6 +293,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
   },
+  exit: {
+    width: 36,
+    height: 36,
+    borderRadius: 4,
+    backgroundColor: 'whitesmoke',
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 5,
+  },
   gameContainer: {
     // position: 'absolute',
     width: Constants.GAME_WIDTH,
@@ -306,9 +325,11 @@ const styles = StyleSheet.create({
     marginTop: Constants.GAME_HEIGHT / 3,
   },
   resultText: {
-    color: 'black',
+    color: 'whitesmoke',
     fontFamily: 'DGM',
     fontSize: 48,
+    textShadowColor: '#333',
+    textShadowRadius: 5,
   },
 });
 

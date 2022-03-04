@@ -22,7 +22,8 @@ const styles = StyleSheet.create({
   title: {
     marginVertical: 20,
     fontFamily: 'DGM',
-    fontSize: 20,
+    fontSize: 22,
+    color: 'whitesmoke',
     textAlign: 'center',
   },
   cardContainer: {

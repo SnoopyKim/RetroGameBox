@@ -1,25 +1,42 @@
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { Image, ImageBackground, StyleSheet, Text, View } from 'react-native';
 import { IMAGES } from '../../Constants';
 
 export default function StatusBoard({ player, enemy, round }) {
   return (
-    <View style={styles.board}>
+    <ImageBackground
+      style={styles.board}
+      source={IMAGES.BOARD}
+      fadeDuration={0}
+      resizeMode={'cover'}
+    >
       <View style={styles.row}>
         <Stats name={'NPC'} stats={player} align='flex-start' />
-        <View
-          style={{
-            justifyContent: 'flex-end',
-            alignItems: 'center',
-          }}
-        >
-          <Text style={{ ...styles.title, fontSize: 30, marginBottom: 10 }}>
+        <View style={styles.round}>
+          <Text
+            style={{
+              ...styles.title,
+              fontSize: 48,
+              marginBottom: 10,
+              textShadowColor: '#333',
+              textShadowRadius: 10,
+            }}
+          >
             {round}
           </Text>
-          <Text style={{ ...styles.title, fontSize: 24 }}>ROUND</Text>
+          <Text
+            style={{
+              ...styles.title,
+              fontSize: 36,
+              textShadowColor: '#333',
+              textShadowRadius: 10,
+            }}
+          >
+            ROUND
+          </Text>
         </View>
         <Stats name={'PLAYER'} stats={enemy} align='flex-end' />
       </View>
-    </View>
+    </ImageBackground>
   );
 }
 
@@ -76,10 +93,7 @@ const Stats = ({ name, stats, align = 'flex-start' || 'flex-end' }) => {
 
 const StatRow = ({ image, title, reverse }) => (
   <View
-    style={{
-      alignItems: 'center',
-      flexDirection: reverse ? 'row-reverse' : 'row',
-    }}
+    style={[styles.stat, { flexDirection: reverse ? 'row-reverse' : 'row' }]}
   >
     <Image
       style={[styles.image, { transform: [{ scaleX: reverse ? -1 : 1 }] }]}
@@ -101,6 +115,13 @@ const styles = StyleSheet.create({
   row: {
     flex: 1,
     flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  round: {
+    position: 'absolute',
+    height: '100%',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
   },
   image: {
     width: 30,
@@ -113,6 +134,11 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     marginBottom: 5,
   },
+  stat: {
+    alignItems: 'center',
+    borderRadius: 5,
+    backgroundColor: '#333333aa',
+  },
   name: {
     fontFamily: 'DGM',
     fontSize: 22,
@@ -121,7 +147,7 @@ const styles = StyleSheet.create({
   title: {
     fontFamily: 'DGM',
     fontSize: 20,
-    color: '#333',
+    color: 'whitesmoke',
     marginHorizontal: 5,
   },
 });
