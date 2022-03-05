@@ -57,18 +57,6 @@ const JumpGameScreen = ({ navigation }) => {
     };
   }, [gameState]);
 
-  const setupTicks = () => {
-    timeIn = setInterval(timerTick, 1000);
-  };
-
-  const timerTick = () => {
-    if (gameState.score === 0) {
-      setGameState({ ...gameState, running: false });
-    } else {
-      setGameState({ ...gameState, score: gameState.score - 1 });
-    }
-  };
-
   const initEntities = () => {
     let engine = Matter.Engine.create({ enableSleeping: false });
     let world = engine.world;
@@ -114,7 +102,7 @@ const JumpGameScreen = ({ navigation }) => {
       Constants.MAX_HEIGHT / 1.2 - 80,
       50,
       60,
-      { isStatic: true, name: "floor" }
+      { isStatic: true, name: "floor", check: "check1" }
     );
     let stair2 = Matter.Bodies.rectangle(20, floor2.position.y - 60, 40, 20, {
       isStatic: true,
@@ -127,6 +115,7 @@ const JumpGameScreen = ({ navigation }) => {
     let stair4 = Matter.Bodies.rectangle(20, stair3.position.y - 60, 40, 20, {
       isStatic: true,
       name: "floor",
+      check: "check2",
     });
     let wallMid = Matter.Bodies.rectangle(
       stair3.position.x + 40,
@@ -164,7 +153,7 @@ const JumpGameScreen = ({ navigation }) => {
       floor4.position.y + 130,
       50,
       20,
-      { isStatic: true, name: "floor" }
+      { isStatic: true, name: "floor", check: "check3" }
     );
     let stair7 = Matter.Bodies.rectangle(
       Constants.MAX_WIDTH / 2 + 20,
@@ -312,6 +301,8 @@ const JumpGameScreen = ({ navigation }) => {
     Matter.Events.on(engine, "collisionStart", (event) => {
       event.pairs.forEach((pair) => {
         const { bodyA, bodyB } = pair;
+        console.log(bodyA.name);
+        console.log(bodyB.name);
         if (bodyB.name === "player") {
           if (bodyA.name === "spike") {
             gameEngine.current.dispatch({ type: "spiked" });
@@ -321,6 +312,15 @@ const JumpGameScreen = ({ navigation }) => {
           }
           if (bodyA.name === "reward") {
             gameEngine.current.dispatch({ type: "CLEAR" });
+          }
+          if (bodyA.check === "check1") {
+            gameEngine.current.dispatch({ type: "check1" });
+          }
+          if (bodyA.check === "check2") {
+            gameEngine.current.dispatch({ type: "check2" });
+          }
+          if (bodyA.check === "check3") {
+            gameEngine.current.dispatch({ type: "check3" });
           }
         }
       });
@@ -366,7 +366,7 @@ const JumpGameScreen = ({ navigation }) => {
       stair1: {
         body: stair1,
         size: [50, 60],
-        color: "purple",
+        color: "green",
         renderer: Floor,
       },
       stair2: {
@@ -384,7 +384,7 @@ const JumpGameScreen = ({ navigation }) => {
       stair4: {
         body: stair4,
         size: [40, 20],
-        color: "purple",
+        color: "green",
         renderer: Floor,
       },
       stair5: {
@@ -396,7 +396,7 @@ const JumpGameScreen = ({ navigation }) => {
       stair6: {
         body: stair6,
         size: [50, 20],
-        color: "purple",
+        color: "green",
         renderer: Floor,
       },
       stair7: {
@@ -517,6 +517,11 @@ const JumpGameScreen = ({ navigation }) => {
             entities={initEntities()}
             systems={[MoveSystem]}
             running={gameState.running}
+            onEvent={(e) => {
+              if (e.type === "spiked") {
+                setGameState({ score: gameState.score - 5 });
+              }
+            }}
           ></GameEngine>
         </AssetLoading>
       </ImageBackground>
@@ -566,7 +571,6 @@ const JumpGameScreen = ({ navigation }) => {
           <TouchableOpacity
             style={styles.btns}
             onPressIn={() => {
-              setupTicks;
               setGameState({ ...gameState, running: true });
               gameEngine.current.dispatch({ type: "JumpStart" });
             }}
@@ -582,7 +586,7 @@ const JumpGameScreen = ({ navigation }) => {
                 style={{ width: 120, height: 120 }}
               ></Image>
               <Text style={styles.textBox}>
-                {gameState.score === 1000 ? "시작" : "점프"}
+                {gameState.running ? "점프" : "시작"}
               </Text>
             </View>
           </TouchableOpacity>

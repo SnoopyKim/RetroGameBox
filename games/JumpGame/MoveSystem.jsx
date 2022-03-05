@@ -11,6 +11,7 @@ let jGaugeD = true;
 let f2Direction = true;
 let stair5LR = true;
 let stair5UD = true;
+let checkpoint = 0;
 const MoveSystem = (entities, { touches, time, dispatch, events }) => {
   let engine = entities.moveSystem.engine;
   const player = entities.player.body;
@@ -38,6 +39,7 @@ const MoveSystem = (entities, { touches, time, dispatch, events }) => {
           f2Direction = true;
           stair5LR = true;
           stair5UD = true;
+          checkpoint = 0;
           Matter.Body.setPosition(player, {
             x: 20,
             y: entities.floor.body.position.y - 100,
@@ -60,10 +62,40 @@ const MoveSystem = (entities, { touches, time, dispatch, events }) => {
           lastMove = false;
           break;
         case "spiked":
-          Matter.Body.setPosition(player, {
-            x: 20,
-            y: entities.floor.body.position.y - 100,
-          });
+          if (checkpoint === 0) {
+            Matter.Body.setStatic(player, true);
+            Matter.Body.setStatic(player, false);
+            Matter.Body.setPosition(player, {
+              x: 20,
+              y: entities.floor.body.position.y - 100,
+            });
+            break;
+          } else if (checkpoint === 1) {
+            Matter.Body.setStatic(player, true);
+            Matter.Body.setStatic(player, false);
+            Matter.Body.setPosition(player, {
+              x: Constants.MAX_WIDTH - 20,
+              y: entities.floor.body.position.y - 100,
+            });
+            break;
+          } else if (checkpoint === 2) {
+            Matter.Body.setStatic(player, true);
+            Matter.Body.setStatic(player, false);
+            Matter.Body.setPosition(player, {
+              x: 20,
+              y: entities.stair4.body.position.y - 60,
+            });
+            break;
+          } else if (checkpoint === 3) {
+            Matter.Body.setStatic(player, true);
+            Matter.Body.setStatic(player, false);
+            Matter.Body.setPosition(player, {
+              x: entities.stair6.body.position.x,
+              y: entities.stair6.body.position.y - 60,
+            });
+            break;
+          }
+          dispatch({ type: "spiked" });
           break;
         case "landed":
           Matter.Body.setStatic(player, true);
@@ -78,16 +110,29 @@ const MoveSystem = (entities, { touches, time, dispatch, events }) => {
           if (lastMove) {
             Matter.Body.applyForce(player, player.position, {
               x: -0.015 * (jGauge / 20),
-              y: -0.03 * (jGauge / 20),
+              y: -0.027 * (jGauge / 20),
             });
           } else {
             Matter.Body.applyForce(player, player.position, {
               x: 0.015 * (jGauge / 20),
-              y: -0.03 * (jGauge / 20),
+              y: -0.027 * (jGauge / 20),
             });
           }
           jGauge = 0;
           jGaugeD = false;
+          break;
+        case "check1":
+          if (checkpoint < 1) {
+            checkpoint = 1;
+          }
+          break;
+        case "check2":
+          if (checkpoint < 2) {
+            checkpoint = 2;
+          }
+          break;
+        case "check3":
+          checkpoint = 3;
           break;
       }
     });
