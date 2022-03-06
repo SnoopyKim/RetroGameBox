@@ -18,6 +18,7 @@ import Floor from "./components/Floor";
 import Spike from "./components/Spike";
 import SpikeR from "./components/SpikeR";
 import Fire from "./components/Fire";
+import Ground from "./components/Ground";
 import Player from "./components/Player";
 import Reward from "./components/Reward";
 import JumpBar from "./components/JumpBar";
@@ -28,19 +29,34 @@ import ExitIcon from "../../assets/images/icon_exit.svg";
 import { DialogContext } from "../../context/dialog/dialog-context";
 
 const initState = {
-  running: true,
+  running: false,
+  score: 1000,
+  status: "PLAY",
 };
 const backgroundImg = require("../../assets/images/main_bg.png");
 
-const JumpGameScreen = () => {
+const JumpGameScreen = ({ navigation }) => {
   const gameEngine = useRef(null);
   const matterEngine = useRef(null);
   const { showConfirmDialog } = useContext(DialogContext);
 
   const [gameState, setGameState] = useState(initState);
-  //나중에 initstate에 통합할것. 시간과 방향임.
+
   const timer = useRef(null);
-  let directionLR;
+  useEffect(() => {
+    if (!gameState.running) return;
+
+    if (gameState.status === "CLEAR") {
+      //게임오버창 불러오기
+    }
+    if (gameState.score === 0) {
+      //게임오버창 불러오기
+    }
+
+    return () => {
+      clearTimeout(timer.current);
+    };
+  }, [gameState]);
 
   const initEntities = () => {
     let engine = Matter.Engine.create({ enableSleeping: false });
@@ -87,7 +103,7 @@ const JumpGameScreen = () => {
       Constants.MAX_HEIGHT / 1.2 - 80,
       50,
       60,
-      { isStatic: true, name: "floor" }
+      { isStatic: true, name: "floor", check: "check1" }
     );
     let stair2 = Matter.Bodies.rectangle(20, floor2.position.y - 60, 40, 20, {
       isStatic: true,
@@ -100,6 +116,7 @@ const JumpGameScreen = () => {
     let stair4 = Matter.Bodies.rectangle(20, stair3.position.y - 60, 40, 20, {
       isStatic: true,
       name: "floor",
+      check: "check2",
     });
     let wallMid = Matter.Bodies.rectangle(
       stair3.position.x + 40,
@@ -137,7 +154,7 @@ const JumpGameScreen = () => {
       floor4.position.y + 130,
       50,
       20,
-      { isStatic: true, name: "floor" }
+      { isStatic: true, name: "floor", check: "check3" }
     );
     let stair7 = Matter.Bodies.rectangle(
       Constants.MAX_WIDTH / 2 + 20,
@@ -237,13 +254,13 @@ const JumpGameScreen = () => {
     });
 
     // 플레이어 캐릭터
-    let player = Matter.Bodies.circle(50, floor.position.y - 100, 25, {
+    let player = Matter.Bodies.circle(50, floor.position.y - 50, 25, {
       isStatic: false,
       name: "player",
     });
     let jumpBar = Matter.Bodies.rectangle(
       player.position.x,
-      player.position.y,
+      Constants.MAX_HEIGHT + 100,
       0,
       0,
       { isStatic: true }
@@ -285,12 +302,26 @@ const JumpGameScreen = () => {
     Matter.Events.on(engine, "collisionStart", (event) => {
       event.pairs.forEach((pair) => {
         const { bodyA, bodyB } = pair;
+        console.log(bodyA.name);
+        console.log(bodyB.name);
         if (bodyB.name === "player") {
           if (bodyA.name === "spike") {
             gameEngine.current.dispatch({ type: "spiked" });
           }
           if (bodyA.name === "floor") {
             gameEngine.current.dispatch({ type: "landed" });
+          }
+          if (bodyA.name === "reward") {
+            gameEngine.current.dispatch({ type: "CLEAR" });
+          }
+          if (bodyA.check === "check1") {
+            gameEngine.current.dispatch({ type: "check1" });
+          }
+          if (bodyA.check === "check2") {
+            gameEngine.current.dispatch({ type: "check2" });
+          }
+          if (bodyA.check === "check3") {
+            gameEngine.current.dispatch({ type: "check3" });
           }
         }
       });
@@ -306,85 +337,84 @@ const JumpGameScreen = () => {
       floor: {
         body: floor,
         size: [Constants.MAX_WIDTH, 50],
-        color: "#964b00",
-        renderer: Floor,
+        renderer: Ground,
       },
       floor2: {
         body: floor2,
         size: [Constants.MAX_WIDTH / 2.5, 20],
-        color: "purple",
+        color: "#a300ef",
         renderer: Floor,
       },
       floor3: {
         body: floor3,
         size: [Constants.MAX_WIDTH / 4, 20],
-        color: "purple",
+        color: "#a300ef",
         renderer: Floor,
       },
       floor4: {
         body: floor4,
         size: [Constants.MAX_WIDTH / 2.5, 20],
-        color: "purple",
+        color: "#a300ef",
         renderer: Floor,
       },
       wallMid: {
         body: wallMid,
         size: [42, Constants.MAX_HEIGHT / 8],
-        color: "purple",
+        color: "#a300ef",
         renderer: Floor,
       },
       stair1: {
         body: stair1,
         size: [50, 60],
-        color: "green",
+        color: "#61f1f9",
         renderer: Floor,
       },
       stair2: {
         body: stair2,
         size: [40, 20],
-        color: "purple",
+        color: "#a300ef",
         renderer: Floor,
       },
       stair3: {
         body: stair3,
         size: [40, 20],
-        color: "purple",
+        color: "#a300ef",
         renderer: Floor,
       },
       stair4: {
         body: stair4,
         size: [40, 20],
-        color: "purple",
+        color: "#61f1f9",
         renderer: Floor,
       },
       stair5: {
         body: stair5,
         size: [50, 20],
-        color: "purple",
+        color: "#a300ef",
         renderer: Floor,
       },
       stair6: {
         body: stair6,
         size: [50, 20],
-        color: "purple",
+        color: "#61f1f9",
         renderer: Floor,
       },
       stair7: {
         body: stair7,
         size: [50, 20],
-        color: "purple",
+        color: "#a300ef",
         renderer: Floor,
       },
       stair8: {
         body: stair8,
         size: [50, 20],
-        color: "purple",
+        color: "#a300ef",
         renderer: Floor,
       },
       stair9: {
         body: stair9,
         size: [50, 20],
-        color: "purple",
+        color: "#a300ef",
         renderer: Floor,
       },
       player: {
@@ -472,7 +502,7 @@ const JumpGameScreen = () => {
       <ImageBackground
         style={styles.backgroundImage}
         source={backgroundImg}
-        resizeMode="stretch"
+        resizeMode="cover"
       >
         <AssetLoading>
           <StatusBar style="dark" />
@@ -487,16 +517,24 @@ const JumpGameScreen = () => {
             entities={initEntities()}
             systems={[MoveSystem]}
             running={gameState.running}
+            onEvent={(e) => {
+              if (e.type === "spiked") {
+                setGameState({ score: gameState.score - 5 });
+              }
+            }}
           ></GameEngine>
         </AssetLoading>
       </ImageBackground>
+      <View style={styles.textTimeBox}>
+        <Text style={{ fontFamily: "DGM", fontSize: 25 }}>
+          점수:{gameState.score} 최고기록:
+        </Text>
+      </View>
       <View style={styles.controls}>
         <View style={styles.btnContainer}>
           <TouchableOpacity
             style={styles.btns}
             onPressIn={() => {
-              directionLR = true;
-              console.log(directionLR);
               gameEngine.current.dispatch({ type: "MoveStartL" });
             }}
             onPressOut={() => {
@@ -515,8 +553,6 @@ const JumpGameScreen = () => {
           <TouchableOpacity
             style={styles.btns}
             onPressIn={() => {
-              directionLR = false;
-              console.log(directionLR);
               gameEngine.current.dispatch({ type: "MoveStartR" });
             }}
             onPressOut={() => {
@@ -535,10 +571,12 @@ const JumpGameScreen = () => {
           <TouchableOpacity
             style={styles.btns}
             onPressIn={() => {
+              setGameState({ ...gameState, running: true });
               gameEngine.current.dispatch({ type: "JumpStart" });
             }}
             onPressOut={() => {
               gameEngine.current.dispatch({ type: "JumpEnd" });
+              console.log(gameState.score);
             }}
           >
             <View style={styles.btnSlot}>
@@ -547,7 +585,9 @@ const JumpGameScreen = () => {
                 resizeMode="contain"
                 style={{ width: 120, height: 120 }}
               ></Image>
-              <Text style={styles.textBox}>Jump</Text>
+              <Text style={styles.textBox}>
+                {gameState.running ? "점프" : "시작"}
+              </Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -565,7 +605,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignSelf: `stretch`,
     width: null,
-    marginBottom: 200,
+    marginBottom: Constants.MAX_HEIGHT / 5,
   },
   gameContainer: {
     width: Constants.MAX_WIDTH,
@@ -585,9 +625,14 @@ const styles = StyleSheet.create({
   },
   btnContainer: {
     flexDirection: "row",
-    justifyContent: "center",
-    alignContent: "center",
+    justifyContent: "space-around",
+    alignContent: "space-around",
     width: Constants.MAX_WIDTH,
+  },
+  textTimeBox: {
+    position: "absolute",
+    top: Constants.MAX_HEIGHT / 1.27,
+    color: "white",
   },
   btnSlot: {
     width: 100,
@@ -597,6 +642,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "white",
+    marginHorizontal: 10,
   },
   btns: {
     width: 100,
@@ -608,7 +654,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   textBox: {
-    fontSize: 35,
+    fontSize: 25,
     fontFamily: "DGM",
     position: "absolute",
     justifyContent: "center",
