@@ -18,6 +18,7 @@ import Floor from "./components/Floor";
 import Spike from "./components/Spike";
 import SpikeR from "./components/SpikeR";
 import Fire from "./components/Fire";
+import Ground from "./components/Ground";
 import Player from "./components/Player";
 import Reward from "./components/Reward";
 import JumpBar from "./components/JumpBar";
@@ -336,85 +337,84 @@ const JumpGameScreen = ({ navigation }) => {
       floor: {
         body: floor,
         size: [Constants.MAX_WIDTH, 50],
-        color: "#964b00",
-        renderer: Floor,
+        renderer: Ground,
       },
       floor2: {
         body: floor2,
         size: [Constants.MAX_WIDTH / 2.5, 20],
-        color: "purple",
+        color: "#a300ef",
         renderer: Floor,
       },
       floor3: {
         body: floor3,
         size: [Constants.MAX_WIDTH / 4, 20],
-        color: "purple",
+        color: "#a300ef",
         renderer: Floor,
       },
       floor4: {
         body: floor4,
         size: [Constants.MAX_WIDTH / 2.5, 20],
-        color: "purple",
+        color: "#a300ef",
         renderer: Floor,
       },
       wallMid: {
         body: wallMid,
         size: [42, Constants.MAX_HEIGHT / 8],
-        color: "purple",
+        color: "#a300ef",
         renderer: Floor,
       },
       stair1: {
         body: stair1,
         size: [50, 60],
-        color: "green",
+        color: "#61f1f9",
         renderer: Floor,
       },
       stair2: {
         body: stair2,
         size: [40, 20],
-        color: "purple",
+        color: "#a300ef",
         renderer: Floor,
       },
       stair3: {
         body: stair3,
         size: [40, 20],
-        color: "purple",
+        color: "#a300ef",
         renderer: Floor,
       },
       stair4: {
         body: stair4,
         size: [40, 20],
-        color: "green",
+        color: "#61f1f9",
         renderer: Floor,
       },
       stair5: {
         body: stair5,
         size: [50, 20],
-        color: "purple",
+        color: "#a300ef",
         renderer: Floor,
       },
       stair6: {
         body: stair6,
         size: [50, 20],
-        color: "green",
+        color: "#61f1f9",
         renderer: Floor,
       },
       stair7: {
         body: stair7,
         size: [50, 20],
-        color: "purple",
+        color: "#a300ef",
         renderer: Floor,
       },
       stair8: {
         body: stair8,
         size: [50, 20],
-        color: "purple",
+        color: "#a300ef",
         renderer: Floor,
       },
       stair9: {
         body: stair9,
         size: [50, 20],
-        color: "purple",
+        color: "#a300ef",
         renderer: Floor,
       },
       player: {
@@ -502,7 +502,7 @@ const JumpGameScreen = ({ navigation }) => {
       <ImageBackground
         style={styles.backgroundImage}
         source={backgroundImg}
-        resizeMode="stretch"
+        resizeMode="cover"
       >
         <AssetLoading>
           <StatusBar style="dark" />
@@ -605,7 +605,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignSelf: `stretch`,
     width: null,
-    marginBottom: 200,
+    marginBottom: Constants.MAX_HEIGHT / 5,
   },
   gameContainer: {
     width: Constants.MAX_WIDTH,
@@ -625,8 +625,8 @@ const styles = StyleSheet.create({
   },
   btnContainer: {
     flexDirection: "row",
-    justifyContent: "center",
-    alignContent: "center",
+    justifyContent: "space-around",
+    alignContent: "space-around",
     width: Constants.MAX_WIDTH,
   },
   textTimeBox: {
@@ -642,6 +642,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "white",
+    marginHorizontal: 10,
   },
   btns: {
     width: 100,
@@ -653,7 +654,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   textBox: {
-    fontSize: 35,
+    fontSize: 25,
     fontFamily: "DGM",
     position: "absolute",
     justifyContent: "center",

@@ -26,7 +26,7 @@ import ExitIcon from "../../assets/images/icon_exit.svg";
 const backgroundImg = require("../../assets/images/main_bg.png");
 const redBtn = require("../../assets/images/rainbowBtn.gif");
 
-let deepPurple = "purple";
+let deepPurple = "black";
 
 export default class CraneGameScreen extends Component {
   constructor(props) {
@@ -248,7 +248,7 @@ export default class CraneGameScreen extends Component {
       crane: {
         body: crane,
         size: [15, Constants.MAX_HEIGHT / 2],
-        color: "gold",
+        color: "#f2ff5e",
         renderer: Crane,
       },
       craneBar: {
@@ -260,28 +260,28 @@ export default class CraneGameScreen extends Component {
       cranePin1: {
         body: cranePin1,
         size: [7, 50],
-        color: "gold",
+        color: "#f2ff5e",
         renderer: Crane,
         rotate: 45,
       },
       cranePin2: {
         body: cranePin2,
         size: [7, 50],
-        color: "gold",
+        color: "#f2ff5e",
         renderer: Crane,
         rotate: -45,
       },
       cranePin3: {
         body: cranePin3,
         size: [7, 60],
-        color: "gold",
+        color: "#f2ff5e",
         renderer: Crane,
         rotate: -10,
       },
       cranePin4: {
         body: cranePin4,
         size: [7, 60],
-        color: "gold",
+        color: "#f2ff5e",
         renderer: Crane,
         rotate: 10,
       },
