@@ -57,11 +57,7 @@ export default class CraneGameScreen extends Component {
       });
     }
   };
-  exitGame = () => {
-    showConfirmDialog("게임 종료", "게임을 나가시겠습니까?", () => {
-      navigation.goBack();
-    });
-  };
+
   reset = () => {
     if (this.timeInterval) {
       clearInterval(this.timeInterval);
@@ -419,7 +415,7 @@ export default class CraneGameScreen extends Component {
           </View>
           <View style={styles.header}>
             <TouchableOpacity
-              onPress={this.exitGame}
+              onPress={() => {}}
               style={{
                 justifyContent: "flex-start",
                 alignContent: "flex-end",

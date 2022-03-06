@@ -54,39 +54,74 @@ const HomeScreen = ({ navigation }) => {
           </TouchableOpacity>
         </View>
         <Text style={styles.titleText}>레트로 게임 모음</Text>
-        <ScrollView>
-          <View style={styles.boxContainer}>
-            <ImageButton
-              src={craneImg}
-              onPressed={() => navigation.navigate("CraneGame")}
-              title={"뽑아뽑아"}
-              titleColor={"white"}
-              titleSize={30}
-              width={200}
-              height={200}
-            />
+        <ScrollView style={{ marginTop: 50 }}>
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-around" }}
+          >
+            <View style={styles.boxContainer}>
+              <ImageButton
+                src={craneImg}
+                onPressed={() => navigation.navigate("CraneGame")}
+                title={" "}
+                titleColor={"white"}
+                titleSize={20}
+                width={150}
+                height={150}
+              />
+            </View>
+            <View style={styles.boxContainer}>
+              <ImageButton
+                src={JumpImg}
+                onPressed={() => navigation.navigate("JumpGame")}
+                title={" "}
+                titleColor={"white"}
+                titleSize={20}
+                width={150}
+                height={150}
+              />
+            </View>
           </View>
-          <View style={styles.boxContainer}>
-            <ImageButton
-              src={JumpImg}
-              onPressed={() => navigation.navigate("JumpGame")}
-              title={"올라올라"}
-              titleColor={"white"}
-              titleSize={30}
-              width={200}
-              height={200}
-            />
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-around" }}
+          >
+            <Text style={styles.gameTxt}>뽑아뽑아</Text>
+            <Text style={styles.gameTxt}>올라올라</Text>
           </View>
-          <View style={styles.boxContainer}>
-            <ImageButton
-              src={NpcImg}
-              onPressed={() => navigation.navigate("NPCGame")}
-              title={"던져던져"}
-              titleColor={"white"}
-              titleSize={30}
-              width={200}
-              height={200}
-            />
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-around",
+              marginTop: 20,
+            }}
+          >
+            <View style={styles.boxContainer}>
+              <ImageButton
+                src={NpcImg}
+                onPressed={() => navigation.navigate("NPCGame")}
+                title={" "}
+                titleColor={"white"}
+                titleSize={20}
+                width={150}
+                height={150}
+              />
+            </View>
+            <View style={styles.boxContainer}>
+              <ImageButton
+                src={gameselectImg}
+                onPressed={() => navigation.navigate("NPCGame")}
+                title={" "}
+                titleColor={"white"}
+                titleSize={20}
+                width={150}
+                height={150}
+              />
+            </View>
+          </View>
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-around" }}
+          >
+            <Text style={styles.gameTxt}>싸워싸워</Text>
+            <Text style={styles.gameTxt}>날아날아</Text>
           </View>
         </ScrollView>
       </ImageBackground>
@@ -112,22 +147,21 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   titleText: {
-    marginTop: 90,
+    marginTop: 120,
     marginBottom: 20,
     textAlign: "center",
     fontFamily: "DGM",
     fontSize: 40,
-    color: "yellow",
+    color: "#f2ff5e",
   },
   boxContainer: {
     alignItems: "center",
     marginVertical: 10,
   },
-  gameSelectBox: {
-    margin: 10,
-    marginTop: 10,
-    width: 150,
-    height: 150,
+  gameTxt: {
+    fontFamily: "DGM",
+    fontSize: 25,
+    color: "white",
   },
 });
 
