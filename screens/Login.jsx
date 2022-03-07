@@ -50,8 +50,14 @@ const LoginScreen = ({ navigation }) => {
       <ImageBackground
         style={styles.background}
         source={backgroundImg}
-        resizeMode='cover'
+        resizeMode="cover"
       >
+        {/* <View
+          style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+        > */}
+        <Text style={styles.title}>레게모</Text>
+        <Text style={styles.subTitle}>레트로 게임 모음</Text>
+        {/* </View> */}
         <SwitchTab
           options={['로그인', '회원가입']}
           initialIndex={0}
@@ -75,6 +81,7 @@ const LoginScreen = ({ navigation }) => {
             color={'purple'}
             leading={require('../assets/images/guest.png')}
             leadingTint={'purple'}
+            title={'게스트 로그인'}
             onPressed={() =>
               showConfirmDialog(
                 '게스트 로그인',
@@ -82,7 +89,6 @@ const LoginScreen = ({ navigation }) => {
                 () => guestLogin()
               )
             }
-            title={'게스트 로그인'}
           />
         </View>
       </ImageBackground>
@@ -93,10 +99,23 @@ const LoginScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   background: {
     flex: 1,
-    alignSelf: `stretch`,
-    width: null,
-    justifyContent: 'center',
     alignItems: 'center',
+    justifyContent: 'center',
+  },
+  title: {
+    fontFamily: 'DGM',
+    color: 'yellow',
+    fontSize: 48,
+    letterSpacing: 8,
+    textShadowColor: 'yellow',
+    textShadowRadius: 10,
+  },
+  subTitle: {
+    fontFamily: 'DGM',
+    color: 'yellow',
+    fontSize: 30,
+    marginTop: 5,
+    marginBottom: 30,
   },
   formWrapper: {
     width: 300,

@@ -1,16 +1,27 @@
-import { Keyboard, StyleSheet, Text, View } from 'react-native';
-import React, { useRef } from 'react';
+import {
+  Keyboard,
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+} from 'react-native';
+import React, { useRef, useState, useContext } from 'react';
 import Input from './Input';
 import TextButton from '../buttons/TextButton';
 import EmailIcon from '../../assets/images/icon_email.svg';
 import PasswordIcon from '../../assets/images/icon_password.svg';
 import NameIcon from '../../assets/images/icon_name.svg';
+import { DialogContext } from './../../context/dialog/dialog-context';
+import CheckBox from 'expo-checkbox';
 
 const LoginForm = ({ isRegister, onLogin, onRegister, color = '#333' }) => {
   const emailRef = useRef();
   const passwordRef = useRef();
   const pwconfirmRef = useRef();
   const nameRef = useRef();
+  const [isTermsChecked, setIsTermsChecked] = useState(false);
+
+  const { showAlertDialog, showTermsDialog } = useContext(DialogContext);
 
   const colorStyle = { color };
 
@@ -58,11 +69,11 @@ const LoginForm = ({ isRegister, onLogin, onRegister, color = '#333' }) => {
     const { value: email, isValid: emailIsValid } = emailRef.current.check();
     const { value: password, isValid: pwIsValid } = passwordRef.current.check();
 
-    if (emailIsValid && pwIsValid) {
+    if (!emailIsValid || !pwIsValid) {
+      // 로그인 양식 X
+    } else {
       // 로그인
       onLogin(email, password);
-    } else {
-      // 로그인 양식 X
     }
   };
 
@@ -73,11 +84,14 @@ const LoginForm = ({ isRegister, onLogin, onRegister, color = '#333' }) => {
     const { isValid: pwIsSame } = pwconfirmRef.current.check();
     const { value: name, isValid: nameIsValid } = nameRef.current.check();
 
-    if (emailIsValid && pwIsValid && pwIsSame && nameIsValid) {
-      // 회원가입
-      onRegister(email, password, name);
+    if (!emailIsValid || !pwIsValid || !pwIsSame || !nameIsValid) {
+      // 회원가입 양식 X
+    } else if (!isTermsChecked) {
+      // 약관 동의 X
+      showAlertDialog('이용약관 미동의', '약관에 동의해주세요');
     } else {
       // 회원가입 양식 X
+      onRegister(email, password, name);
     }
   };
 
@@ -136,6 +150,30 @@ const LoginForm = ({ isRegister, onLogin, onRegister, color = '#333' }) => {
           >
             <NameIcon style={colorStyle} />
           </Input>
+          <View style={styles.termsWrapper}>
+            <TouchableOpacity onPress={showTermsDialog}>
+              <Text
+                style={[
+                  styles.terms,
+                  { fontSize: 14, textDecorationLine: 'underline' },
+                ]}
+              >
+                회원가입 및 이용약관
+              </Text>
+            </TouchableOpacity>
+            <Text style={styles.terms}>에 동의합니다</Text>
+            <CheckBox
+              style={{
+                marginStart: 10,
+                width: 24,
+                height: 24,
+                borderRadius: 4,
+              }}
+              value={isTermsChecked}
+              onValueChange={(value) => setIsTermsChecked(value)}
+              color={isTermsChecked ? 'purple' : 'whitesmoke'}
+            />
+          </View>
         </>
       )}
       <View style={styles.button}>
@@ -170,6 +208,16 @@ const styles = StyleSheet.create({
     marginVertical: 8,
   },
   button: {
-    marginTop: 16,
+    marginTop: 12,
+  },
+  termsWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  terms: {
+    color: 'whitesmoke',
+    fontFamily: 'DGM',
+    fontSize: 12,
   },
 });
