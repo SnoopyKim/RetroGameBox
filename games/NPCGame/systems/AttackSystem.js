@@ -8,7 +8,16 @@ const AttackSystem = (entities, { events, time, dispatch }) => {
   const enemy = entities.enemy.body;
   const running = entities.gameStatus === 'FIGHT';
 
-  if (running) roundTime++;
+  if (running) {
+    roundTime++;
+    entities.rocks.bodies.forEach((rock) => {
+      const moveValue = rock.throw === 'player' ? 3 : -3;
+      Matter.Body.setPosition(rock, {
+        x: rock.position.x + moveValue,
+        y: rock.position.y,
+      });
+    });
+  }
   if (roundTime % player.atkSpeed === 0) {
     let playerRock = Matter.Bodies.circle(
       player.position.x,
@@ -24,7 +33,6 @@ const AttackSystem = (entities, { events, time, dispatch }) => {
 
     Matter.World.add(engine.world, playerRock);
     entities.rocks.bodies = [...entities.rocks.bodies, playerRock];
-    Matter.Body.applyForce(playerRock, playerRock.position, { x: 0.006, y: 0 });
   }
   if (roundTime % enemy.atkSpeed === 0) {
     let enemyRock = Matter.Bodies.circle(
@@ -39,7 +47,6 @@ const AttackSystem = (entities, { events, time, dispatch }) => {
     );
     Matter.World.add(engine.world, enemyRock);
     entities.rocks.bodies = [...entities.rocks.bodies, enemyRock];
-    Matter.Body.applyForce(enemyRock, enemyRock.position, { x: -0.0055, y: 0 });
   }
 
   if (events.length) {

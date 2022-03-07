@@ -8,7 +8,7 @@ export default function Cards({ onSelect }) {
   const [items, setItems] = useState(drawRandomCards(3));
   return (
     <>
-      <Text style={styles.title}>NPC도 성장한다구!</Text>
+      <Text style={styles.title}>나도 강해질꺼야!</Text>
       <View style={styles.cardContainer}>
         <Card data={items[0]} onPress={() => onSelect(items[0])} />
         <Card data={items[1]} onPress={() => onSelect(items[1])} />
@@ -22,7 +22,8 @@ const styles = StyleSheet.create({
   title: {
     marginVertical: 20,
     fontFamily: 'DGM',
-    fontSize: 20,
+    fontSize: 22,
+    color: 'whitesmoke',
     textAlign: 'center',
   },
   cardContainer: {

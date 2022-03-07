@@ -2,22 +2,22 @@ import Matter from 'matter-js';
 import Constants from '../Constants';
 import { generatePipes } from './utils';
 
-const Physics = (entities, { touches, time }) => {
+const Physics = (entities, { events, dispatch, time }) => {
   let { engine, world } = entities.physics;
   let bird = entities.bird.body;
 
-  touches
-    .filter((t) => t.type === 'press')
-    .forEach((t) => {
-      Matter.Body.applyForce(bird, bird.position, { x: 0.0, y: -0.1 });
-    });
+  events.forEach((e) => {
+    if (e.type === 'JUMP') {
+      Matter.Body.applyForce(bird, bird.position, { x: 0.0, y: -0.085 });
+    }
+  });
 
   for (let i = 1; i <= 4; i += 2) {
     if (
       entities['pipe' + i].body.position.x <=
       -1 * (Constants.PIPE_WIDTH / 2)
     ) {
-      entities.events.addScore();
+      dispatch({ type: 'score' });
       Matter.World.remove(world, entities['pipe' + i].body);
       Matter.World.remove(world, entities['pipe' + (i + 1)].body);
       let [pipe1Height, pipe2Height] = generatePipes();

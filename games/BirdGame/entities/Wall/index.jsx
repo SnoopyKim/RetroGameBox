@@ -1,18 +1,18 @@
-import { View } from 'react-native';
+import { View } from "react-native";
 
-export default function Wall({ size, body, color }) {
+export default function Wall({ size, body }) {
   const [width, height] = size;
   const { x, y } = body.position;
 
   return (
     <View
       style={{
-        position: 'absolute',
+        position: "absolute",
         left: x - width / 2,
         top: y - height / 2,
         width: width,
         height: height,
-        backgroundColor: color,
+        backgroundColor: "#a300ef",
       }}
     />
   );

@@ -7,6 +7,8 @@ import {
   setDoc,
   onSnapshot,
   updateDoc,
+  query,
+  where,
 } from 'firebase/firestore';
 import { getCurrentUser } from './auth';
 import app from './firebase';
@@ -21,6 +23,7 @@ export const addUser = async (uid, name) => {
       NPC: 0,
       JUMP: 0,
       CRANE: 0,
+      BIRD: 0,
     });
     return true;
   } catch (err) {
@@ -38,9 +41,16 @@ export const getUserInfo = async (uid) => {
 
 export const setUserName = async (uid, name) => {
   const userDoc = doc(firestore, 'users', uid);
+  const rankCol = collection(firestore, 'rank');
   try {
     await updateDoc(userDoc, {
       name,
+    });
+    const games = await getDocs(rankCol);
+    games.forEach((game) => {
+      if (game.get(uid)) {
+        updateDoc(game.ref, { [`${uid}.name`]: name });
+      }
     });
     return true;
   } catch (err) {

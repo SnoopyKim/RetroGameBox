@@ -28,6 +28,7 @@ import AssetLoading from "../../components/AssetLoading";
 import ExitIcon from "../../assets/images/icon_exit.svg";
 import { DialogContext } from "../../context/dialog/dialog-context";
 import GameResult from "../../components/GameResult";
+import { DatabaseContext } from "../../context/database/database-context";
 
 const initState = {
   running: true,
@@ -37,6 +38,7 @@ const initState = {
 const backgroundImg = require("../../assets/images/main_bg.png");
 
 const JumpGameScreen = ({ navigation }) => {
+  const { profile, unsubscribeProfile } = useContext(DatabaseContext);
   const { showConfirmDialog } = useContext(DialogContext);
   const gameEngine = useRef(null);
   const matterEngine = useRef(null);
@@ -44,20 +46,6 @@ const JumpGameScreen = ({ navigation }) => {
   const [gameState, setGameState] = useState(initState);
 
   const timer = useRef(null);
-  useEffect(() => {
-    if (!gameState.running) return;
-
-    if (gameState.status === "CLEAR") {
-      setGameState({ ...gameState, running: false });
-    }
-    if (gameState.score === 0) {
-      //게임오버창 불러오기
-    }
-
-    return () => {
-      clearTimeout(timer.current);
-    };
-  }, [gameState]);
 
   const initEntities = () => {
     let engine = Matter.Engine.create({ enableSleeping: false });
@@ -320,9 +308,13 @@ const JumpGameScreen = ({ navigation }) => {
             gameEngine.current.dispatch({ type: "check3" });
           }
           if (bodyA.name === "reward") {
-            setGameState({ ...gameState, status: "CLEAR", running: false });
+            setGameState((prev) => ({
+              ...prev,
+              status: "CLEAR",
+              running: false,
+            }));
             gameEngine.current.dispatch({ type: "clear" });
-            console.log(gameState.status);
+            console.log("indexEvent:" + gameState.status);
           }
         }
       });
@@ -505,11 +497,6 @@ const JumpGameScreen = ({ navigation }) => {
       >
         <AssetLoading>
           <StatusBar style="dark" />
-          <View style={styles.header}>
-            <TouchableOpacity onPress={exitGame}>
-              <ExitIcon width={26} height={26} style={{ color: "white" }} />
-            </TouchableOpacity>
-          </View>
           <GameEngine
             ref={gameEngine}
             style={styles.gameContainer}
@@ -526,7 +513,7 @@ const JumpGameScreen = ({ navigation }) => {
       </ImageBackground>
       <View style={styles.textTimeBox}>
         <Text style={{ fontFamily: "DGM", fontSize: 25 }}>
-          점수:{gameState.score} 최고기록:
+          점수:{gameState.score} 최고기록:{profile?.JUMP || "NONE"}
         </Text>
       </View>
       <View style={styles.controls}>
@@ -575,7 +562,6 @@ const JumpGameScreen = ({ navigation }) => {
             }}
             onPressOut={() => {
               gameEngine.current.dispatch({ type: "JumpEnd" });
-              console.log(gameState.score);
             }}
           >
             <View style={styles.btnSlot}>
@@ -599,6 +585,11 @@ const JumpGameScreen = ({ navigation }) => {
           exitGame={() => navigation.goBack()}
         />
       )}
+      <View style={styles.header}>
+        <TouchableOpacity onPress={exitGame}>
+          <ExitIcon width={26} height={26} style={{ color: "white" }} />
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 };

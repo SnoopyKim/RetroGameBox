@@ -25,8 +25,8 @@ const NameDialog = () => {
   const validateName = (text) => {
     if (!/^[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣]+$/.test(text)) {
       return '한글 혹은 영어로만 입력하세요';
-    } else if (text.length < 3) {
-      return '3글자 이상이어야 합니다';
+    } else if (text.length < 3 || text.length > 8) {
+      return '3 ~ 8 글자여야 합니다';
     } else if (name === text) {
       return '현재 닉네임과 같습니다';
     } else {

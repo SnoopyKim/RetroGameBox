@@ -1,37 +1,36 @@
-import { StatusBar } from 'expo-status-bar';
-import Matter from 'matter-js';
-import { useReducer, useRef, useState, useEffect, useContext } from 'react';
+import { StatusBar } from "expo-status-bar";
+import Matter from "matter-js";
+import { useRef, useState, useEffect, useContext } from "react";
 import {
-  Button,
+  ImageBackground,
   SafeAreaView,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-} from 'react-native';
-import { GameEngine } from 'react-native-game-engine';
-import Enemy from './components/Enemy';
-import Floor from './components/Floor';
-import Player from './components/Player';
-import StatusBoard from './components/StatusBoard';
-import Constants, { IMAGES } from './Constants';
-import AttackSystem from './systems/AttackSystem';
-import Rocks from './components/Rocks';
-import AssetLoading from '../../components/AssetLoading';
-import { usePlayerStatus } from './hooks/PlayerStatus';
-import { useEnemyStatus } from './hooks/EnemyStatus';
-import TextButton from '../../components/buttons/TextButton';
-import Cards from './components/Cards';
-import ExitIcon from '../../assets/images/icon_exit.svg';
-import { DialogContext } from '../../context/dialog/dialog-context';
-import GameResult from '../../components/GameResult';
+} from "react-native";
+import { GameEngine } from "react-native-game-engine";
+import Enemy from "./components/Enemy";
+import Floor from "./components/Floor";
+import Player from "./components/Player";
+import StatusBoard from "./components/StatusBoard";
+import Constants, { IMAGES } from "./Constants";
+import AttackSystem from "./systems/AttackSystem";
+import Rocks from "./components/Rocks";
+import AssetLoading from "../../components/AssetLoading";
+import { usePlayerStatus } from "./hooks/PlayerStatus";
+import { useEnemyStatus } from "./hooks/EnemyStatus";
+import Cards from "./components/Cards";
+import ExitIcon from "../../assets/images/icon_exit.svg";
+import { DialogContext } from "../../context/dialog/dialog-context";
+import GameResult from "../../components/GameResult";
 
 const initState = {
   running: true,
   round: 1,
-  status: 'SELECT',
+  status: "SELECT",
 };
+const backgroundImg = require("../../assets/images/main_bg.png");
 
 const NPCGameScreen = ({ navigation }) => {
   const { showConfirmDialog } = useContext(DialogContext);
@@ -47,18 +46,18 @@ const NPCGameScreen = ({ navigation }) => {
   useEffect(() => {
     if (!gameState.running) return;
 
-    if (gameState.status === 'WIN') {
+    if (gameState.status === "WIN") {
       timer.current = setTimeout(() => {
-        playerDispatch({ type: 'RECOVER' });
-        enemyDispatch({ type: 'LEVEL', value: gameState.round - 1 });
+        playerDispatch({ type: "RECOVER" });
+        enemyDispatch({ type: "LEVEL", value: gameState.round - 1 });
         setGameState({
           ...gameState,
           round: gameState.round + 1,
-          status: 'SELECT',
+          status: "SELECT",
         });
       }, 3000);
     }
-    if (gameState.status === 'LOSE') {
+    if (gameState.status === "LOSE") {
       timer.current = setTimeout(
         () => setGameState({ ...gameState, running: false }),
         3000
@@ -72,19 +71,19 @@ const NPCGameScreen = ({ navigation }) => {
 
   useEffect(() => {
     if (
-      gameState.status === 'SELECT' &&
+      gameState.status === "SELECT" &&
       gameEngine.current &&
       matterEngine.current
     ) {
       Matter.Engine.clear(matterEngine.current);
       gameEngine.current.swap(initEntities());
     }
-    if (gameState.status !== 'FIGHT') return;
+    if (gameState.status !== "FIGHT") return;
 
     if (enemyStatus.HP_CURRENT === 0) {
-      gameEngine.current.dispatch({ type: 'WIN' });
+      gameEngine.current.dispatch({ type: "WIN" });
     } else if (playerStatus.HP_CURRENT === 0) {
-      gameEngine.current.dispatch({ type: 'LOSE' });
+      gameEngine.current.dispatch({ type: "LOSE" });
     }
   }, [playerStatus, enemyStatus, gameState]);
 
@@ -101,13 +100,13 @@ const NPCGameScreen = ({ navigation }) => {
     );
 
     let player = Matter.Bodies.rectangle(
-      35,
+      50,
       Constants.GAME_HEIGHT - 70,
-      30,
+      60,
       60,
       {
         isStatic: true,
-        name: 'player',
+        name: "player",
         atkSpeed: playerStatus.SPEED,
         chamfer: { radius: [15, 15, 0, 0] },
         collisionFilter: {
@@ -117,13 +116,13 @@ const NPCGameScreen = ({ navigation }) => {
     );
 
     let enemy = Matter.Bodies.rectangle(
-      Constants.GAME_WIDTH - 35,
+      Constants.GAME_WIDTH - 50,
       Constants.GAME_HEIGHT - 70,
-      30,
+      60,
       60,
       {
         isStatic: true,
-        name: 'enemy',
+        name: "enemy",
         atkSpeed: enemyStatus.SPEED,
         chamfer: { radius: [15, 15, 0, 0] },
         collisionFilter: {
@@ -133,25 +132,25 @@ const NPCGameScreen = ({ navigation }) => {
     );
 
     Matter.World.add(matterEngine.current.world, [floor, player, enemy]);
-    Matter.Events.on(matterEngine.current, 'collisionStart', (event) => {
+    Matter.Events.on(matterEngine.current, "collisionStart", (event) => {
       event.pairs.forEach((pair) => {
         const { bodyA, bodyB } = pair;
-        if (bodyB.name === 'rock') {
-          gameEngine.current.dispatch({ type: 'ERASE', rock: bodyB });
-          if (bodyA.name === 'enemy') {
+        if (bodyB.name === "rock") {
+          gameEngine.current.dispatch({ type: "ERASE", rock: bodyB });
+          if (bodyA.name === "enemy") {
             // 적이 맞음
             let damageValue = playerStatus.ATTACK_POWER;
-            if (bodyB.throw === 'player' && bodyB.ct <= playerStatus.CRITICAL) {
+            if (bodyB.throw === "player" && bodyB.ct <= playerStatus.CRITICAL) {
               damageValue *= 2;
             }
             enemyDispatch({
-              type: 'DAMAGE',
+              type: "DAMAGE",
               value: damageValue,
             });
-          } else if (bodyA.name === 'player') {
+          } else if (bodyA.name === "player") {
             // 플레이어가 맞음
             playerDispatch({
-              type: 'DAMAGE',
+              type: "DAMAGE",
               value: enemyStatus.ATTACK_POWER,
             });
           }
@@ -182,33 +181,33 @@ const NPCGameScreen = ({ navigation }) => {
   };
 
   const exitGame = () => {
-    showConfirmDialog('게임 종료', '게임을 나가시겠습니까?', () => {
+    showConfirmDialog("게임 종료", "게임을 나가시겠습니까?", () => {
       navigation.goBack();
     });
   };
 
   const resetGame = () => {
-    playerDispatch({ type: 'INIT' });
-    enemyDispatch({ type: 'INIT' });
+    playerDispatch({ type: "INIT" });
+    enemyDispatch({ type: "INIT" });
     setGameState(initState);
   };
 
   const onEvent = (event) => {
     switch (event.type) {
-      case 'WIN':
+      case "WIN":
         setGameState({
           ...gameState,
-          status: 'WIN',
+          status: "WIN",
         });
         break;
-      case 'LOSE':
+      case "LOSE":
         setGameState({
           ...gameState,
-          status: 'LOSE',
+          status: "LOSE",
         });
         break;
-      case 'START':
-        setGameState({ ...gameState, status: 'FIGHT' });
+      case "START":
+        setGameState({ ...gameState, status: "FIGHT" });
         break;
     }
   };
@@ -216,33 +215,40 @@ const NPCGameScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.canvas}>
       <AssetLoading images={Object.values(IMAGES)}>
-        <StatusBar style='light' />
-        <View style={styles.header}>
-          <TouchableOpacity onPress={exitGame}>
-            <ExitIcon width={26} height={26} style={{ color: '#333' }} />
-          </TouchableOpacity>
-        </View>
-        <GameEngine
-          ref={gameEngine}
-          style={styles.gameContainer}
-          entities={initEntities()}
-          systems={[AttackSystem]}
-          running={gameState.running}
-          onEvent={onEvent}
+        <StatusBar style="light" />
+        <ImageBackground
+          style={{ flex: 1.1 }}
+          source={backgroundImg}
+          fadeDuration={0}
+          resizeMode={"cover"}
         >
-          {{
-            WIN: <ResultText text={'WIN!'} />,
-            LOSE: <ResultText text={'LOSE...'} />,
-            SELECT: (
-              <Cards
-                onSelect={(item) => {
-                  playerDispatch({ type: 'CHANGE', value: item.value });
-                  gameEngine.current.dispatch({ type: 'START' });
-                }}
-              />
-            ),
-          }[gameState.status] || <></>}
-        </GameEngine>
+          <View style={styles.header}>
+            <TouchableOpacity style={styles.exit} onPress={exitGame}>
+              <ExitIcon width={26} height={26} style={{ color: "#333" }} />
+            </TouchableOpacity>
+          </View>
+          <GameEngine
+            ref={gameEngine}
+            style={styles.gameContainer}
+            entities={initEntities()}
+            systems={[AttackSystem]}
+            running={gameState.running}
+            onEvent={onEvent}
+          >
+            {{
+              WIN: <ResultText text={"이겼다!"} />,
+              LOSE: <ResultText text={"졌다..."} />,
+              SELECT: (
+                <Cards
+                  onSelect={(item) => {
+                    playerDispatch({ type: "CHANGE", value: item.value });
+                    gameEngine.current.dispatch({ type: "START" });
+                  }}
+                />
+              ),
+            }[gameState.status] || <></>}
+          </GameEngine>
+        </ImageBackground>
         <View style={styles.boardContainer}>
           <StatusBoard
             player={playerStatus}
@@ -251,9 +257,10 @@ const NPCGameScreen = ({ navigation }) => {
           />
         </View>
       </AssetLoading>
+
       {!gameState.running && (
         <GameResult
-          gameID={'NPC'}
+          gameID={"NPC"}
           score={gameState.round}
           resetGame={resetGame}
           exitGame={() => navigation.goBack()}
@@ -274,14 +281,23 @@ const ResultText = ({ text }) => {
 const styles = StyleSheet.create({
   canvas: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: "white",
   },
   header: {
     height: 56,
     paddingTop: 30,
     paddingHorizontal: 20,
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
+    flexDirection: "row",
+    justifyContent: "flex-end",
+  },
+  exit: {
+    width: 36,
+    height: 36,
+    borderRadius: 4,
+    backgroundColor: "whitesmoke",
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 5,
   },
   gameContainer: {
     // position: 'absolute',
@@ -291,7 +307,7 @@ const styles = StyleSheet.create({
     // bottom: 0,
     // left: 0,
     // right: 0,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   boardContainer: {
     // position: 'absolute',
@@ -301,14 +317,16 @@ const styles = StyleSheet.create({
     // top: Constants.GAME_HEIGHT,
   },
   resultWrapper: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     marginTop: Constants.GAME_HEIGHT / 3,
   },
   resultText: {
-    color: 'black',
-    fontFamily: 'DGM',
+    color: "whitesmoke",
+    fontFamily: "DGM",
     fontSize: 48,
+    textShadowColor: "#333",
+    textShadowRadius: 5,
   },
 });
 

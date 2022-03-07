@@ -24,17 +24,18 @@ import { GameEngine } from "react-native-game-engine";
 import AssetLoading from "../../components/AssetLoading";
 import ExitIcon from "../../assets/images/icon_exit.svg";
 import GameResult from "../../components/GameResult";
+import { DatabaseContext } from "../../context/database/database-context";
 
 const backgroundImg = require("../../assets/images/main_bg.png");
 const redBtn = require("../../assets/images/rainbowBtn.gif");
 
 let deepPurple = "black";
-
 export default class CraneGameScreen extends Component {
+  static contextType = DatabaseContext;
   constructor(props) {
     super(props);
     this.timeInterval = null;
-    const defaultTime = 10;
+    const defaultTime = 60;
     this.state = {
       running: true,
       isMove: false,
@@ -370,6 +371,7 @@ export default class CraneGameScreen extends Component {
             >
               <Text style={{ color: "white", fontSize: 20, fontFamily: "DGM" }}>
                 점수:{this.state.score} 남은시간:{this.state.time} 최고기록:
+                {this.context.profile?.CRANE || "NONE"}
               </Text>
               {/* { <TouchableOpacity
                 style={styles.resetBtn}
@@ -392,7 +394,7 @@ export default class CraneGameScreen extends Component {
                     if (this.state.isMove === false) {
                       this.setState({ isMove: true });
                       this.gameEngine.dispatch({ type: "craneMove" });
-                      if (this.state.time === 10) {
+                      if (this.state.time === 60) {
                         this.setState(this.setupTicks);
                       }
                     } else {

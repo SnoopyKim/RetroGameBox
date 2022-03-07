@@ -23,7 +23,6 @@ const Physics = (entities, { touches, time, dispatch, events }) => {
   //엔진 상태
   if (events.length) {
     events.forEach((e) => {
-      console.log(e.type);
       switch (e.type) {
         case "craneMove":
           craneMove = true;

@@ -27,7 +27,6 @@ const MoveSystem = (entities, { touches, time, dispatch, events }) => {
   //이벤트 상태
   if (events.length) {
     events.forEach((e) => {
-      console.log(e.type);
       switch (e.type) {
         case "started":
           MoveL = false;
@@ -39,7 +38,7 @@ const MoveSystem = (entities, { touches, time, dispatch, events }) => {
           f2Direction = true;
           stair5LR = true;
           stair5UD = true;
-          checkpoint = 3;
+          checkpoint = 0;
           Matter.Body.setPosition(player, {
             x: 20,
             y: entities.floor.body.position.y - 100,
@@ -106,7 +105,6 @@ const MoveSystem = (entities, { touches, time, dispatch, events }) => {
           break;
         case "JumpEnd":
           Jumping = false;
-          console.log("JUMPGAUGE:" + jGauge / 10);
           if (lastMove) {
             Matter.Body.applyForce(player, player.position, {
               x: -0.015 * (jGauge / 20),
@@ -136,9 +134,10 @@ const MoveSystem = (entities, { touches, time, dispatch, events }) => {
           break;
         case "clear":
           Matter.Body.setPosition(player, {
-            x: 110,
-            y: entities.floor4.body.position.y - 20,
+            x: 80,
+            y: entities.floor4.body.position.y - 60,
           });
+          Matter.Body.setStatic(player, true);
       }
     });
   }

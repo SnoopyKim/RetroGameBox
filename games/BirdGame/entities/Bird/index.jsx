@@ -1,19 +1,30 @@
-import { View } from 'react-native';
+import { View, Image } from "react-native";
 
-export default function Bird({ size, body, color }) {
-  const [width, height] = size;
-  const { x, y } = body.position;
+export default function Bird({ body }) {
+  const radius = body.circleRadius;
+  const x = body.position.x - radius;
+  const y = body.position.y - radius;
 
   return (
     <View
       style={{
-        position: 'absolute',
-        left: x - width / 2,
-        top: y - height / 2,
-        width: width,
-        height: height,
-        backgroundColor: color,
+        position: "absolute",
+        left: x,
+        top: y,
+        width: radius * 2 + 4,
+        height: radius * 2 + 4,
       }}
-    />
+    >
+      <Image
+        style={{
+          flex: 1,
+          width: null,
+          height: null,
+          resizeMode: "stretch",
+        }}
+        fadeDuration={0}
+        source={require("retrogamebox/assets/images/redSlime.gif")}
+      />
+    </View>
   );
 }

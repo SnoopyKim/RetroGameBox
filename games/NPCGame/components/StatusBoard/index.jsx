@@ -1,29 +1,47 @@
-import { Image, StyleSheet, Text, View } from 'react-native';
-import { IMAGES } from '../../Constants';
+import { Image, ImageBackground, StyleSheet, Text, View } from "react-native";
+import { DatabaseContext } from "retrogamebox/context/database/database-context";
+import { IMAGES } from "../../Constants";
+import { useContext } from "react";
 
 export default function StatusBoard({ player, enemy, round }) {
+  const { profile } = useContext(DatabaseContext);
   return (
-    <View style={styles.board}>
+    <ImageBackground style={styles.board} fadeDuration={0} resizeMode={"cover"}>
       <View style={styles.row}>
-        <Stats name={'NPC'} stats={player} align='flex-start' />
-        <View
-          style={{
-            justifyContent: 'flex-end',
-            alignItems: 'center',
-          }}
-        >
-          <Text style={{ ...styles.title, fontSize: 30, marginBottom: 10 }}>
+        <Stats
+          name={profile ? profile.name : "게스트"}
+          stats={player}
+          align="flex-start"
+        />
+        <View style={styles.round}>
+          <Text
+            style={{
+              ...styles.title,
+              fontSize: 48,
+              textShadowColor: "#333",
+              textShadowRadius: 10,
+            }}
+          >
             {round}
           </Text>
-          <Text style={{ ...styles.title, fontSize: 24 }}>ROUND</Text>
+          <Text
+            style={{
+              ...styles.title,
+              fontSize: 30,
+              textShadowColor: "#333",
+              textShadowRadius: 10,
+            }}
+          >
+            라운드
+          </Text>
         </View>
-        <Stats name={'PLAYER'} stats={enemy} align='flex-end' />
+        <Stats name={"나쁜놈"} stats={enemy} align="flex-end" />
       </View>
-    </View>
+    </ImageBackground>
   );
 }
 
-const Stats = ({ name, stats, align = 'flex-start' || 'flex-end' }) => {
+const Stats = ({ name, stats, align = "flex-start" || "flex-end" }) => {
   const {
     HP_MAX,
     HP_CURRENT,
@@ -34,14 +52,14 @@ const Stats = ({ name, stats, align = 'flex-start' || 'flex-end' }) => {
     SPECIAL,
   } = stats;
 
-  const reverse = align !== 'flex-start';
+  const reverse = align !== "flex-start";
 
   return (
     <View
       style={{
         flex: 1,
-        height: '100%',
-        justifyContent: 'space-between',
+        height: "100%",
+        justifyContent: "space-between",
         alignItems: align,
       }}
     >
@@ -63,7 +81,7 @@ const Stats = ({ name, stats, align = 'flex-start' || 'flex-end' }) => {
 
       <StatRow
         image={IMAGES.HEALTH}
-        title={HP_CURRENT + ' / ' + HP_MAX}
+        title={HP_CURRENT + " / " + HP_MAX}
         reverse={reverse}
       />
       <StatRow image={IMAGES.ATTACK} title={ATTACK_POWER} reverse={reverse} />
@@ -76,16 +94,13 @@ const Stats = ({ name, stats, align = 'flex-start' || 'flex-end' }) => {
 
 const StatRow = ({ image, title, reverse }) => (
   <View
-    style={{
-      alignItems: 'center',
-      flexDirection: reverse ? 'row-reverse' : 'row',
-    }}
+    style={[styles.stat, { flexDirection: reverse ? "row-reverse" : "row" }]}
   >
     <Image
       style={[styles.image, { transform: [{ scaleX: reverse ? -1 : 1 }] }]}
       source={image}
       fadeDuration={0}
-      resizeMode='contain'
+      resizeMode="contain"
     />
     <Text style={styles.title}>{title || 0}</Text>
   </View>
@@ -94,34 +109,48 @@ const StatRow = ({ image, title, reverse }) => (
 const styles = StyleSheet.create({
   board: {
     flex: 1,
-    flexDirection: 'column',
+    flexDirection: "column",
     paddingHorizontal: 20,
     paddingVertical: 16,
+    backgroundColor: "black",
   },
   row: {
     flex: 1,
-    flexDirection: 'row',
+    flexDirection: "row",
+    justifyContent: "center",
+  },
+  round: {
+    position: "absolute",
+    height: "100%",
+    justifyContent: "flex-end",
+    alignItems: "center",
   },
   image: {
     width: 30,
     height: 30,
+    backgroundColor: "black",
   },
   nameWrapper: {
     width: 140,
-    alignItems: 'center',
-    backgroundColor: '#333',
+    alignItems: "center",
+    backgroundColor: "#333",
     paddingVertical: 5,
     marginBottom: 5,
   },
+  stat: {
+    alignItems: "center",
+    borderRadius: 5,
+    backgroundColor: "#333333aa",
+  },
   name: {
-    fontFamily: 'DGM',
+    fontFamily: "DGM",
     fontSize: 22,
-    color: 'whitesmoke',
+    color: "whitesmoke",
   },
   title: {
-    fontFamily: 'DGM',
+    fontFamily: "DGM",
     fontSize: 20,
-    color: '#333',
+    color: "whitesmoke",
     marginHorizontal: 5,
   },
 });

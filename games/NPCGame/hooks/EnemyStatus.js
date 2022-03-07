@@ -9,7 +9,7 @@ const setHP = (value) => (value >= MIN_HP ? value : MIN_HP);
 const setSpeed = (value) => (value >= MAX_SPEED ? value : MAX_SPEED);
 
 const setLevel = (prev, value) => {
-  const hp = Math.round(Math.random() * 50);
+  const hp = Math.round(Math.random() * 30) + 20;
   let atk = 0,
     def = 0,
     sp = 0;
@@ -18,10 +18,10 @@ const setLevel = (prev, value) => {
       sp = 10;
       break;
     case 1:
-      atk = Math.round(Math.random() * 5);
+      atk = Math.round(Math.random() * 3) + 2;
       break;
     case 2:
-      def = Math.round(Math.random() * 5);
+      def = Math.round(Math.random() * 3) + 2;
       break;
   }
   return {

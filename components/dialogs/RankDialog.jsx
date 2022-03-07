@@ -1,15 +1,20 @@
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import React, { useContext, useEffect, useState } from 'react';
-import DialogWrapper from './DialogWrapper';
-import { DialogContext } from '../../context/dialog/dialog-context';
-import TextButton from '../buttons/TextButton';
-import CloseIcon from '../../assets/images/icon_close.svg';
-import NameIcon from '../../assets/images/icon_name.svg';
-import { AuthContext } from '../../context/auth/auth-context';
-import { DatabaseContext } from '../../context/database/database-context';
-import SwitchTab from '../tabs/SwitchTab';
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import React, { useContext, useEffect, useState } from "react";
+import DialogWrapper from "./DialogWrapper";
+import { DialogContext } from "../../context/dialog/dialog-context";
+import TextButton from "../buttons/TextButton";
+import CloseIcon from "../../assets/images/icon_close.svg";
+import NameIcon from "../../assets/images/icon_name.svg";
+import { AuthContext } from "../../context/auth/auth-context";
+import { DatabaseContext } from "../../context/database/database-context";
+import SwitchTab from "../tabs/SwitchTab";
 
-const GAME_ID_LIST = ['CRANE', 'JUMP', 'NPC'];
+const GAME_LIST = [
+  { id: "CRANE", name: "뽑아" },
+  { id: "JUMP", name: "올라" },
+  { id: "BIRD", name: "날아" },
+  { id: "NPC", name: "싸워" },
+];
 
 const RankDialog = () => {
   const { getRankList } = useContext(DatabaseContext);
@@ -19,7 +24,7 @@ const RankDialog = () => {
   const [rankList, setRankList] = useState([]);
 
   useEffect(() => {
-    getRankList(GAME_ID_LIST[gameIndex]).then((result) => {
+    getRankList(GAME_LIST[gameIndex].id).then((result) => {
       const sortedRanks = result.sort((a, b) => b.score - a.score);
       if (sortedRanks.length > 10) {
         setRankList(sortedRanks.slice(0, 10));
@@ -32,14 +37,14 @@ const RankDialog = () => {
   return (
     <DialogWrapper>
       <TouchableOpacity style={styles.close} onPress={dismiss}>
-        <CloseIcon width={30} height={30} style={{ color: '#333' }} />
+        <CloseIcon width={30} height={30} style={{ color: "#333" }} />
       </TouchableOpacity>
       <View style={styles.titleWrapper}>
         <Text style={styles.title}>랭킹</Text>
       </View>
       <SwitchTab
-        options={GAME_ID_LIST}
-        defaultColor={'#ddd'}
+        options={GAME_LIST.map((game) => game.name)}
+        defaultColor={"#ddd"}
         onSwitched={(prev, curr) => setGameIndex(curr)}
       />
       <View style={styles.rankingBoard}>
@@ -59,7 +64,7 @@ const RankDialog = () => {
         {rankList.length === 0 && (
           <View style={styles.empty}>
             <Text style={styles.emptyText}>
-              네트워크 오류 혹은{'\n'}저장된 기록이 없습니다
+              네트워크 오류 혹은{"\n"}저장된 기록이 없습니다
             </Text>
           </View>
         )}
@@ -82,46 +87,46 @@ export default RankDialog;
 
 const styles = StyleSheet.create({
   close: {
-    position: 'absolute',
+    position: "absolute",
     top: 10,
     right: 10,
   },
   titleWrapper: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 14,
   },
   title: {
-    color: '#333',
-    fontFamily: 'DGM',
+    color: "#333",
+    fontFamily: "DGM",
     fontSize: 20,
   },
   rankingBoard: {
     marginTop: 16,
   },
   rankingHeader: {
-    flexDirection: 'row',
-    borderBottomColor: '#333',
+    flexDirection: "row",
+    borderBottomColor: "#333",
     borderBottomWidth: 2,
     marginBottom: 6,
     paddingBottom: 6,
   },
   headerText: {
     flex: 1,
-    fontFamily: 'DGM',
-    color: '#333',
+    fontFamily: "DGM",
+    color: "#333",
     fontSize: 16,
-    textAlign: 'center',
+    textAlign: "center",
   },
   rankRow: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginVertical: 6,
-    alignItems: 'center',
+    alignItems: "center",
   },
   rowText: {
     flex: 1,
-    fontFamily: 'DGM',
-    color: '#333',
-    textAlign: 'center',
+    fontFamily: "DGM",
+    color: "#333",
+    textAlign: "center",
   },
   rank: {
     fontSize: 16,
@@ -135,13 +140,13 @@ const styles = StyleSheet.create({
   },
   empty: {
     height: 100,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   emptyText: {
-    fontFamily: 'DGM',
-    color: '#333',
-    textAlign: 'center',
+    fontFamily: "DGM",
+    color: "#333",
+    textAlign: "center",
     fontSize: 15,
     lineHeight: 20,
   },
