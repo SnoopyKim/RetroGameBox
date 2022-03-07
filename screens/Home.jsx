@@ -17,19 +17,11 @@ import { DialogContext } from './../context/dialog/dialog-context';
 import SettingIcon from '../assets/images/icon_setting.svg';
 import RankIcon from '../assets/images/icon_rank.svg';
 
-<<<<<<< HEAD
 const backgroundImg = require('../assets/images/main_bg.png');
 const gameselectImg = require('../assets/images/selectBox.png');
 const craneImg = require('../assets/images/CraneBg.png');
 const JumpImg = require('../assets/images/JumpBg.png');
-const NPCImg = require('../assets/images/NPCBg.jpg');
-=======
-const backgroundImg = require("../assets/images/main_bg.png");
-const gameselectImg = require("../assets/images/selectBox.png");
-const craneImg = require("../assets/images/CraneBg.png");
-const JumpImg = require("../assets/images/JumpBg.png");
-const NpcImg = require("../assets/images/NpcBg.png");
->>>>>>> eadac94f50a3c182f3167a54c9938b93ad11bf0a
+const NpcImg = require('../assets/images/NpcBg.png');
 
 const HomeScreen = ({ navigation }) => {
   const { isAuthenticated } = useContext(AuthContext);
@@ -42,12 +34,12 @@ const HomeScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.center}>
-      <StatusBar style='light' />
+      <StatusBar style="light" />
       <ImageBackground
         style={styles.backgroundImage}
         source={backgroundImg}
         fadeDuration={0}
-        resizeMode='cover'
+        resizeMode="cover"
       >
         <View style={styles.header}>
           <TouchableOpacity onPress={() => showRankDialog()}>
@@ -91,17 +83,21 @@ const HomeScreen = ({ navigation }) => {
           </View>
           <View style={styles.boxContainer}>
             <ImageButton
-<<<<<<< HEAD
-              src={NPCImg}
-              onPressed={() => navigation.navigate('NPCGame')}
-              title={'싸워싸워'}
+              src={JumpImg}
+              onPressed={() => navigation.navigate('BirdGame')}
+              title={'뛰어뛰어'}
               titleColor={'white'}
-=======
+              titleSize={30}
+              width={200}
+              height={200}
+            />
+          </View>
+          <View style={styles.boxContainer}>
+            <ImageButton
               src={NpcImg}
-              onPressed={() => navigation.navigate("NPCGame")}
-              title={"던져던져"}
-              titleColor={"white"}
->>>>>>> eadac94f50a3c182f3167a54c9938b93ad11bf0a
+              onPressed={() => navigation.navigate('NPCGame')}
+              title={'던져던져'}
+              titleColor={'white'}
               titleSize={30}
               width={200}
               height={200}

@@ -1,5 +1,6 @@
 import React from 'react';
-import { View } from 'react-native';
+import { View, Image } from 'react-native';
+import { IMAGES } from '../../Constants';
 
 function Floor({ body }) {
   const { x, y } = body.position;
@@ -17,7 +18,16 @@ function Floor({ body }) {
         height,
         backgroundColor: 'black',
       }}
-    />
+    >
+      <Image
+        style={{
+          flex: 1,
+          resizeMode: 'stretch',
+        }}
+        source={IMAGES.GROUND}
+        fadeDuration={0}
+      />
+    </View>
   );
 }
 

@@ -16,7 +16,7 @@ import SettingDialog from '../components/dialogs/SettingDialog';
 import RankDialog from '../components/dialogs/RankDialog';
 import RegisterDialog from '../components/dialogs/RegisterDialog';
 import NameDialog from '../components/dialogs/NameDialog';
-import SnakeGameScreen from './../games/SnakeGame/index';
+import BirdGameScreen from './../games/BirdGame';
 
 const Stack = createNativeStackNavigator();
 
@@ -27,7 +27,7 @@ const AppNavigator = () => {
       <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen name="CraneGame" component={CraneGameScreen} />
       <Stack.Screen name="JumpGame" component={JumpGameScreen} />
-      <Stack.Screen name="SnakeGame" component={SnakeGameScreen} />
+      <Stack.Screen name="BirdGame" component={BirdGameScreen} />
       <Stack.Screen name="NPCGame" component={NPCGameScreen} />
     </Stack.Navigator>
   );

@@ -6,7 +6,7 @@ import { DatabaseContext } from '../context/database/database-context';
 const GameResult = ({ gameID, score, resetGame, exitGame }) => {
   const { profile, recordRank } = useContext(DatabaseContext);
   const isGuest = profile === undefined;
-  const canRecord = !isGuest && profile[gameID] < score;
+  const canRecord = !isGuest && (profile[gameID] || 0) < score;
 
   return (
     <View style={styles.background}>

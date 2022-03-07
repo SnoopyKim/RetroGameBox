@@ -24,6 +24,7 @@ function Enemy({ body }) {
           width: null,
           height: null,
           resizeMode: 'stretch',
+          transform: [{ scaleX: -1 }],
         }}
         source={IMAGES.ENEMY}
       />

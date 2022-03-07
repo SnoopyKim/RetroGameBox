@@ -1,7 +1,10 @@
 import { Image, ImageBackground, StyleSheet, Text, View } from 'react-native';
+import { DatabaseContext } from 'retrogamebox/context/database/database-context';
 import { IMAGES } from '../../Constants';
+import { useContext } from 'react';
 
 export default function StatusBoard({ player, enemy, round }) {
+  const { profile } = useContext(DatabaseContext);
   return (
     <ImageBackground
       style={styles.board}
@@ -10,13 +13,16 @@ export default function StatusBoard({ player, enemy, round }) {
       resizeMode={'cover'}
     >
       <View style={styles.row}>
-        <Stats name={'NPC'} stats={player} align='flex-start' />
+        <Stats
+          name={profile ? profile.name : '게스트'}
+          stats={player}
+          align="flex-start"
+        />
         <View style={styles.round}>
           <Text
             style={{
               ...styles.title,
               fontSize: 48,
-              marginBottom: 10,
               textShadowColor: '#333',
               textShadowRadius: 10,
             }}
@@ -26,15 +32,15 @@ export default function StatusBoard({ player, enemy, round }) {
           <Text
             style={{
               ...styles.title,
-              fontSize: 36,
+              fontSize: 30,
               textShadowColor: '#333',
               textShadowRadius: 10,
             }}
           >
-            ROUND
+            라운드
           </Text>
         </View>
-        <Stats name={'PLAYER'} stats={enemy} align='flex-end' />
+        <Stats name={'나쁜놈'} stats={enemy} align="flex-end" />
       </View>
     </ImageBackground>
   );
@@ -99,7 +105,7 @@ const StatRow = ({ image, title, reverse }) => (
       style={[styles.image, { transform: [{ scaleX: reverse ? -1 : 1 }] }]}
       source={image}
       fadeDuration={0}
-      resizeMode='contain'
+      resizeMode="contain"
     />
     <Text style={styles.title}>{title || 0}</Text>
   </View>

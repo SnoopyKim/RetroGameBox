@@ -1,6 +1,6 @@
 import { View } from 'react-native';
 
-export default function Wall({ size, body, color }) {
+export default function Wall({ size, body }) {
   const [width, height] = size;
   const { x, y } = body.position;
 
@@ -12,7 +12,7 @@ export default function Wall({ size, body, color }) {
         top: y - height / 2,
         width: width,
         height: height,
-        backgroundColor: color,
+        backgroundColor: 'purple',
       }}
     />
   );

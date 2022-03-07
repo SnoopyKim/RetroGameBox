@@ -12,8 +12,9 @@ export default Constants = {
 
 export const IMAGES = {
   BOARD: require('retrogamebox/assets/images/npc/board.png'),
-  PLAYER: require('retrogamebox/assets/images/npc/player.png'),
-  ENEMY: require('retrogamebox/assets/images/npc/enemy.png'),
+  PLAYER: require('retrogamebox/assets/images/blueSlime.gif'),
+  ENEMY: require('retrogamebox/assets/images/yellowSlime.gif'),
+  GROUND: require('retrogamebox/assets/images/ground.png'),
   ROCK: require('retrogamebox/assets/images/npc/rock.png'),
   HEALTH: require('retrogamebox/assets/images/npc/health.png'),
   ATTACK: require('retrogamebox/assets/images/npc/attack.png'),

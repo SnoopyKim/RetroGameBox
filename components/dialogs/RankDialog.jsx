@@ -9,7 +9,12 @@ import { AuthContext } from '../../context/auth/auth-context';
 import { DatabaseContext } from '../../context/database/database-context';
 import SwitchTab from '../tabs/SwitchTab';
 
-const GAME_ID_LIST = ['CRANE', 'JUMP', 'NPC'];
+const GAME_LIST = [
+  { id: 'CRANE', name: '뽑아' },
+  { id: 'JUMP', name: '올라' },
+  { id: 'BIRD', name: '뛰어' },
+  { id: 'NPC', name: '던져' },
+];
 
 const RankDialog = () => {
   const { getRankList } = useContext(DatabaseContext);
@@ -19,7 +24,7 @@ const RankDialog = () => {
   const [rankList, setRankList] = useState([]);
 
   useEffect(() => {
-    getRankList(GAME_ID_LIST[gameIndex]).then((result) => {
+    getRankList(GAME_LIST[gameIndex].id).then((result) => {
       const sortedRanks = result.sort((a, b) => b.score - a.score);
       if (sortedRanks.length > 10) {
         setRankList(sortedRanks.slice(0, 10));
@@ -38,7 +43,7 @@ const RankDialog = () => {
         <Text style={styles.title}>랭킹</Text>
       </View>
       <SwitchTab
-        options={GAME_ID_LIST}
+        options={GAME_LIST.map((game) => game.name)}
         defaultColor={'#ddd'}
         onSwitched={(prev, curr) => setGameIndex(curr)}
       />

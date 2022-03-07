@@ -1,11 +1,9 @@
 import { StatusBar } from 'expo-status-bar';
 import Matter from 'matter-js';
-import { useReducer, useRef, useState, useEffect, useContext } from 'react';
+import { useRef, useState, useEffect, useContext } from 'react';
 import {
-  Button,
   ImageBackground,
   SafeAreaView,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -22,7 +20,6 @@ import Rocks from './components/Rocks';
 import AssetLoading from '../../components/AssetLoading';
 import { usePlayerStatus } from './hooks/PlayerStatus';
 import { useEnemyStatus } from './hooks/EnemyStatus';
-import TextButton from '../../components/buttons/TextButton';
 import Cards from './components/Cards';
 import ExitIcon from '../../assets/images/icon_exit.svg';
 import { DialogContext } from '../../context/dialog/dialog-context';
@@ -103,9 +100,9 @@ const NPCGameScreen = ({ navigation }) => {
     );
 
     let player = Matter.Bodies.rectangle(
-      35,
+      50,
       Constants.GAME_HEIGHT - 70,
-      30,
+      60,
       60,
       {
         isStatic: true,
@@ -119,9 +116,9 @@ const NPCGameScreen = ({ navigation }) => {
     );
 
     let enemy = Matter.Bodies.rectangle(
-      Constants.GAME_WIDTH - 35,
+      Constants.GAME_WIDTH - 50,
       Constants.GAME_HEIGHT - 70,
-      30,
+      60,
       60,
       {
         isStatic: true,
@@ -218,7 +215,7 @@ const NPCGameScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.canvas}>
       <AssetLoading images={Object.values(IMAGES)}>
-        <StatusBar style='light' />
+        <StatusBar style="light" />
         <ImageBackground
           style={{ flex: 1.1 }}
           source={backgroundImg}
@@ -239,8 +236,8 @@ const NPCGameScreen = ({ navigation }) => {
             onEvent={onEvent}
           >
             {{
-              WIN: <ResultText text={'WIN!'} />,
-              LOSE: <ResultText text={'LOSE...'} />,
+              WIN: <ResultText text={'이겼다!'} />,
+              LOSE: <ResultText text={'졌다...'} />,
               SELECT: (
                 <Cards
                   onSelect={(item) => {
