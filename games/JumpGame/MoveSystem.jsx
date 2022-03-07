@@ -39,7 +39,7 @@ const MoveSystem = (entities, { touches, time, dispatch, events }) => {
           f2Direction = true;
           stair5LR = true;
           stair5UD = true;
-          checkpoint = 0;
+          checkpoint = 3;
           Matter.Body.setPosition(player, {
             x: 20,
             y: entities.floor.body.position.y - 100,
@@ -134,6 +134,11 @@ const MoveSystem = (entities, { touches, time, dispatch, events }) => {
         case "check3":
           checkpoint = 3;
           break;
+        case "clear":
+          Matter.Body.setPosition(player, {
+            x: 110,
+            y: entities.floor4.body.position.y - 20,
+          });
       }
     });
   }

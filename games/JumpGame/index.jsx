@@ -27,18 +27,19 @@ import { GameEngine } from "react-native-game-engine";
 import AssetLoading from "../../components/AssetLoading";
 import ExitIcon from "../../assets/images/icon_exit.svg";
 import { DialogContext } from "../../context/dialog/dialog-context";
+import GameResult from "../../components/GameResult";
 
 const initState = {
-  running: false,
+  running: true,
   score: 1000,
   status: "PLAY",
 };
 const backgroundImg = require("../../assets/images/main_bg.png");
 
 const JumpGameScreen = ({ navigation }) => {
+  const { showConfirmDialog } = useContext(DialogContext);
   const gameEngine = useRef(null);
   const matterEngine = useRef(null);
-  const { showConfirmDialog } = useContext(DialogContext);
 
   const [gameState, setGameState] = useState(initState);
 
@@ -47,7 +48,7 @@ const JumpGameScreen = ({ navigation }) => {
     if (!gameState.running) return;
 
     if (gameState.status === "CLEAR") {
-      //게임오버창 불러오기
+      setGameState({ ...gameState, running: false });
     }
     if (gameState.score === 0) {
       //게임오버창 불러오기
@@ -302,17 +303,12 @@ const JumpGameScreen = ({ navigation }) => {
     Matter.Events.on(engine, "collisionStart", (event) => {
       event.pairs.forEach((pair) => {
         const { bodyA, bodyB } = pair;
-        console.log(bodyA.name);
-        console.log(bodyB.name);
         if (bodyB.name === "player") {
           if (bodyA.name === "spike") {
             gameEngine.current.dispatch({ type: "spiked" });
           }
           if (bodyA.name === "floor") {
             gameEngine.current.dispatch({ type: "landed" });
-          }
-          if (bodyA.name === "reward") {
-            gameEngine.current.dispatch({ type: "CLEAR" });
           }
           if (bodyA.check === "check1") {
             gameEngine.current.dispatch({ type: "check1" });
@@ -323,15 +319,15 @@ const JumpGameScreen = ({ navigation }) => {
           if (bodyA.check === "check3") {
             gameEngine.current.dispatch({ type: "check3" });
           }
+          if (bodyA.name === "reward") {
+            setGameState({ ...gameState, status: "CLEAR", running: false });
+            gameEngine.current.dispatch({ type: "clear" });
+            console.log(gameState.status);
+          }
         }
       });
     });
 
-    const exitGame = () => {
-      showConfirmDialog("게임 종료", "게임을 나가시겠습니까?", () => {
-        navigation.goBack();
-      });
-    };
     return {
       moveSystem: { engine: engine, world: world },
       floor: {
@@ -497,6 +493,9 @@ const JumpGameScreen = ({ navigation }) => {
       navigation.goBack();
     });
   };
+  const resetGame = () => {
+    setGameState(initState);
+  };
   return (
     <SafeAreaView style={styles.container}>
       <ImageBackground
@@ -592,6 +591,14 @@ const JumpGameScreen = ({ navigation }) => {
           </TouchableOpacity>
         </View>
       </View>
+      {gameState.status === "CLEAR" && (
+        <GameResult
+          gameID={"JUMP"}
+          score={gameState.score}
+          resetGame={resetGame}
+          exitGame={() => navigation.goBack()}
+        />
+      )}
     </SafeAreaView>
   );
 };

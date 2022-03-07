@@ -23,6 +23,8 @@ import { DialogContext } from "../../context/dialog/dialog-context";
 import { GameEngine } from "react-native-game-engine";
 import AssetLoading from "../../components/AssetLoading";
 import ExitIcon from "../../assets/images/icon_exit.svg";
+import GameResult from "../../components/GameResult";
+
 const backgroundImg = require("../../assets/images/main_bg.png");
 const redBtn = require("../../assets/images/rainbowBtn.gif");
 
@@ -32,7 +34,7 @@ export default class CraneGameScreen extends Component {
   constructor(props) {
     super(props);
     this.timeInterval = null;
-    const defaultTime = 60;
+    const defaultTime = 10;
     this.state = {
       running: true,
       isMove: false,
@@ -390,7 +392,7 @@ export default class CraneGameScreen extends Component {
                     if (this.state.isMove === false) {
                       this.setState({ isMove: true });
                       this.gameEngine.dispatch({ type: "craneMove" });
-                      if (this.state.time === 60) {
+                      if (this.state.time === 10) {
                         this.setState(this.setupTicks);
                       }
                     } else {
@@ -415,7 +417,9 @@ export default class CraneGameScreen extends Component {
           </View>
           <View style={styles.header}>
             <TouchableOpacity
-              onPress={() => {}}
+              onPress={() => {
+                this.props.navigation.goBack();
+              }}
               style={{
                 justifyContent: "flex-start",
                 alignContent: "flex-end",
@@ -424,6 +428,14 @@ export default class CraneGameScreen extends Component {
               <ExitIcon width={26} height={26} style={{ color: "white" }} />
             </TouchableOpacity>
           </View>
+          {this.state.time === 0 && (
+            <GameResult
+              gameID={"CRANE"}
+              score={this.state.score}
+              resetGame={() => this.setState(this.reset)}
+              exitGame={() => this.props.navigation.goBack()}
+            />
+          )}
         </ImageBackground>
       </View>
     );
