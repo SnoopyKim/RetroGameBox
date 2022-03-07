@@ -42,11 +42,17 @@ const HomeScreen = ({ navigation }) => {
         resizeMode="cover"
       >
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => showRankDialog()}>
+          <TouchableOpacity
+            style={styles.action}
+            onPress={() => showRankDialog()}
+          >
             <RankIcon width={30} height={30} style={{ color: 'whitesmoke' }} />
           </TouchableOpacity>
           <View style={{ width: 10 }} />
-          <TouchableOpacity onPress={() => showSettingDialog()}>
+          <TouchableOpacity
+            style={styles.action}
+            onPress={() => showSettingDialog()}
+          >
             <SettingIcon
               width={30}
               height={30}
@@ -127,6 +133,11 @@ const styles = StyleSheet.create({
     top: 30,
     flexDirection: 'row',
   },
+  action: {
+    padding: 6,
+    backgroundColor: '#800080aa',
+    borderRadius: 10,
+  },
   titleText: {
     marginTop: 80,
     marginBottom: 30,
@@ -153,7 +164,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     alignSelf: 'center',
     textAlign: 'center',
-    backgroundColor: '#333333aa',
+    backgroundColor: '#800080aa',
     color: 'whitesmoke',
     fontFamily: 'DGM',
     fontSize: 12,
